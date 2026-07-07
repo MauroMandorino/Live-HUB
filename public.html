@@ -102,6 +102,7 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 
 .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
 .cal-filters{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid var(--border2);color:var(--text2)}
 .tab.active{background:var(--text);color:var(--surface);border-color:var(--text)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
@@ -194,6 +195,7 @@ const I18N = {
     noEvents:'No upcoming events', allTypes:'All', today:'Today',
     meeting:'Research meeting', congress:'Congress', deadline:'Abstract / deadline', other:'Other',
     rssTitle:'Latest papers', rssLoading:'Loading the latest papers...', rssEmpty:'No articles available right now.', rssFailed:'Could not load the article feed right now.',
+    sortNewest:'Newest', sortTopRated:'Top rated',
     requestPdf:'Request PDF', yourEmail:'Your email', note:'Note (optional)', notePh:'Any detail that helps us find the right version...',
     send:'Send request', cancel:'Cancel', requestSent:'Request sent \u2014 you\'ll be contacted once the PDF is available.', ratings:'ratings',
     tipSectionTitle:'Tip of the week', tipNoPosts:'No posts yet', tipBack:'Back to all tips', tipPublished:'Published' },
@@ -217,6 +219,7 @@ const I18N = {
     noEvents:'Nessun evento in programma', allTypes:'Tutti', today:'Oggi',
     meeting:'Research meeting', congress:'Congresso', deadline:'Abstract / scadenza', other:'Altro',
     rssTitle:'Ultimi articoli', rssLoading:'Caricamento degli ultimi articoli...', rssEmpty:'Nessun articolo disponibile al momento.', rssFailed:'Impossibile caricare il feed articoli in questo momento.',
+    sortNewest:'Pi\u00f9 recenti', sortTopRated:'Pi\u00f9 votati',
     requestPdf:'Richiedi PDF', yourEmail:'La tua email', note:'Nota (opzionale)', notePh:'Qualsiasi dettaglio utile per trovare la versione giusta...',
     send:'Invia richiesta', cancel:'Annulla', requestSent:'Richiesta inviata \u2014 sarai contattato non appena il PDF sar\u00e0 disponibile.', ratings:'voti',
     tipSectionTitle:'Tip of the week', tipNoPosts:'Nessun post ancora', tipBack:'Torna a tutti i tip', tipPublished:'Pubblicato' },
@@ -240,6 +243,7 @@ const I18N = {
     noEvents:'Aucun \u00e9v\u00e9nement \u00e0 venir', allTypes:'Tous', today:'Aujourd\u2019hui',
     meeting:'R\u00e9union de recherche', congress:'Congr\u00e8s', deadline:'Abstract / \u00e9ch\u00e9ance', other:'Autre',
     rssTitle:'Derniers articles', rssLoading:'Chargement des derniers articles...', rssEmpty:'Aucun article disponible pour le moment.', rssFailed:'Impossible de charger le flux d\u2019articles pour le moment.',
+    sortNewest:'Plus r\u00e9cents', sortTopRated:'Les mieux not\u00e9s',
     requestPdf:'Demander le PDF', yourEmail:'Votre email', note:'Note (facultatif)', notePh:'Tout d\u00e9tail utile pour trouver la bonne version...',
     send:'Envoyer la demande', cancel:'Annuler', requestSent:'Demande envoy\u00e9e \u2014 vous serez contact\u00e9 d\u00e8s que le PDF sera disponible.', ratings:'votes',
     tipSectionTitle:'Tip of the week', tipNoPosts:'Aucun post pour l\u2019instant', tipBack:'Retour \u00e0 tous les tips', tipPublished:'Publi\u00e9' },
@@ -263,6 +267,7 @@ const I18N = {
     noEvents:'No hay eventos pr\u00f3ximos', allTypes:'Todos', today:'Hoy',
     meeting:'Reuni\u00f3n de investigaci\u00f3n', congress:'Congreso', deadline:'Abstract / plazo', other:'Otro',
     rssTitle:'\u00daltimos art\u00edculos', rssLoading:'Cargando los \u00faltimos art\u00edculos...', rssEmpty:'No hay art\u00edculos disponibles en este momento.', rssFailed:'No se pudo cargar el feed de art\u00edculos en este momento.',
+    sortNewest:'M\u00e1s recientes', sortTopRated:'Mejor valorados',
     requestPdf:'Solicitar PDF', yourEmail:'Tu email', note:'Nota (opcional)', notePh:'Cualquier detalle \u00fatil para encontrar la versi\u00f3n correcta...',
     send:'Enviar solicitud', cancel:'Cancelar', requestSent:'Solicitud enviada \u2014 te contactaremos en cuanto el PDF est\u00e9 disponible.', ratings:'valoraciones',
     tipSectionTitle:'Tip of the week', tipNoPosts:'A\u00fan no hay publicaciones', tipBack:'Volver a todos los tips', tipPublished:'Publicado' }
@@ -354,12 +359,18 @@ function renderCalendar(){
 }
 
 /* ---- Papers RSS ---- */
-// TODO: replace with your real PubMed / Inoreader RSS feed URLs (one per saved search/query)
 const RSS_FEEDS = [
-  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1A2b3C4d5E6f7G8h9I0jKlmNoPQRstuVWxyz/?limit=15&utm_campaign=pubmed-2"
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1TehQ7T6jkwRzgsoum9KDjDM1hRdmim4JpRjMAQS8pS3R2mky9/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1Z9x4_PuU6zH6JZfff5DlGoQfGiUZdk3QNKoM3ARYhF9J0nsJY/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1X_9X95vFP0PBATuDIWyDZVJrFAGh6srgD37WpfAc-kYgR5Ixq/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1vUePJ4Z_tEYAAV_lF6OtQQE1Y65tREu48hUCibph7TdpIcM-I/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1D73V0aa8O89K8n_ESLEWLahVzA9f6sIBUKXblGNQw2yFNzEOD/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/1xA-2MTbcyzfSn_M2LtbikixaTyIZ3NfBGWNZor1mjnMCP7Q8v/?limit=20&utm_campaign=pubmed-2",
+  "https://pubmed.ncbi.nlm.nih.gov/rss/search/12IsuG7_Y-aPSGmRLRYNUTRIP1w3XsAznHSHhPYLVMlgSC_kv5/?limit=20&utm_campaign=pubmed-2"
 ];
 
 let rssArticles = [], rssLoading = true, rssFailed = false;
+let rssSortMode = 'date'; // 'date' | 'rating'
 let ratingsMap = {}; // articleId -> {sum, count}
 let myRatings = {};
 try { myRatings = JSON.parse(localStorage.getItem('myArticleRatings') || '{}'); } catch(e) { myRatings = {}; }
@@ -386,7 +397,7 @@ async function loadRssArticles(){
     let items = [];
     results.forEach(function(res){ if (res && res.status === 'ok' && res.items) items = items.concat(res.items); });
     items.sort(function(a,b){ return new Date(b.pubDate) - new Date(a.pubDate); });
-    rssArticles = items.slice(0, 25);
+    rssArticles = items.slice(0, 60);
     rssLoading = false;
   } catch (e) {
     rssFailed = true; rssLoading = false;
@@ -453,13 +464,36 @@ function articleMarkup(item){
     '</div>';
 }
 
+function setSortMode(mode){ rssSortMode = mode; renderRss(); }
+
+function sortedArticles(){
+  const list = rssArticles.slice();
+  if (rssSortMode === 'rating') {
+    list.sort(function(a, b){
+      const ra = ratingsMap[articleId(a)] || { sum:0, count:0 };
+      const rb = ratingsMap[articleId(b)] || { sum:0, count:0 };
+      const avgA = ra.count ? ra.sum / ra.count : 0;
+      const avgB = rb.count ? rb.sum / rb.count : 0;
+      if (avgB !== avgA) return avgB - avgA;
+      return (rb.count || 0) - (ra.count || 0);
+    });
+  } else {
+    list.sort(function(a, b){ return new Date(b.pubDate) - new Date(a.pubDate); });
+  }
+  return list;
+}
+
 function renderRss(){
   const el = document.getElementById('rss-container');
   if (!el) return;
   if (rssFailed) { el.innerHTML = '<div class="alert alert-err">'+t('rssFailed')+'</div>'; return; }
   if (rssLoading) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('rssLoading')+'</div></div>'; return; }
-  if (!rssArticles.length) { el.innerHTML = '<div class="empty"><i class="ti ti-news-off" style="font-size:24px"></i><div style="margin-top:8px">'+t('rssEmpty')+'</div></div>'; return; }
-  el.innerHTML = rssArticles.map(articleMarkup).join('');
+  const tabsHtml = '<div class="tabs" style="margin-bottom:1rem">'+
+    '<div class="tab '+(rssSortMode==='date'?'active':'')+'" onclick="setSortMode(\'date\')">'+t('sortNewest')+'</div>'+
+    '<div class="tab '+(rssSortMode==='rating'?'active':'')+'" onclick="setSortMode(\'rating\')">'+t('sortTopRated')+'</div>'+
+    '</div>';
+  if (!rssArticles.length) { el.innerHTML = tabsHtml + '<div class="empty"><i class="ti ti-news-off" style="font-size:24px"></i><div style="margin-top:8px">'+t('rssEmpty')+'</div></div>'; return; }
+  el.innerHTML = tabsHtml + sortedArticles().map(articleMarkup).join('');
 }
 
 /* ---- Submit a research idea (embedded) ---- */
@@ -608,6 +642,7 @@ window.setLang = setLang;
 window.onEventsUpdated = function(data){ events = data; eventsReady = true; renderCalendar(); };
 window.onEventsFailed = function(){ eventsFailed = true; renderCalendar(); };
 window.rateArticle = rateArticle;
+window.setSortMode = setSortMode;
 window.openRequestForm = openRequestForm;
 window.closeRequestForm = closeRequestForm;
 window.updateRequestDraft = updateRequestDraft;
