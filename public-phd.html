@@ -527,13 +527,19 @@ function renderStudyCard(s){
         onclick="event.stopPropagation()"
         onblur="saveTitle('${s.id}',this.value)"
         onkeydown="if(event.key==='Enter')this.blur()"
-        placeholder="Study title">
+        placeholder="Study title" ${s.published?'disabled':''}>
     </div>
+    ${s.published?'<span class="badge b-published" style="flex-shrink:0"><i class="ti ti-lock"></i>Published</span>':''}
     <div style="display:flex;align-items:center;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
       <button class="btn btn-danger btn-sm" onclick="deleteStudy('${s.id}')" title="Delete study"><i class="ti ti-trash"></i></button>
     </div>
   </div>
-  ${open?`<div class="study-body">
+  ${open?(s.published?renderStudySummaryBody(s):renderStudyEditBody(s,pp,ds)):''}
+</div>`;
+}
+
+function renderStudyEditBody(s,pp,ds){
+  return `<div class="study-body">
 
     <!-- OBJECTIVES -->
     <div class="pipe-section" style="margin-bottom:1rem">
@@ -682,8 +688,95 @@ function renderStudyCard(s){
       </div>
 
     </div>
-  </div>`:''}
-</div>`;
+
+    <div style="margin-top:1.25rem;display:flex;justify-content:flex-end">
+      <button class="btn btn-sm btn-primary" onclick="publishStudy('${s.id}')"><i class="ti ti-lock"></i> Publish</button>
+    </div>
+  </div>`;
+}
+
+function renderStudySummaryBody(s){
+  const pp=paperProgress(s.paperWriting);
+  const ds=s.dataset||{name:'',link:''};
+  const pres=s.presentations||[];
+  return `<div class="study-body">
+
+    ${s.objectives?`
+    <div class="pipe-section" style="margin-bottom:1rem">
+      <div class="pipe-hd"><i class="ti ti-target" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Objectives of the study</span></div>
+      <div class="pipe-body" style="font-size:13px;color:var(--text2);line-height:1.5;white-space:pre-wrap">${esc(s.objectives)}</div>
+    </div>`:''}
+
+    ${ds.link?`
+    <div class="pipe-section" style="margin-bottom:1rem">
+      <div class="pipe-hd"><i class="ti ti-database" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Dataset</span></div>
+      <div class="pipe-body"><a href="${esc(ds.link)}" target="_blank" rel="noopener" class="file-chip"><i class="ti ti-external-link" style="font-size:11px"></i>${esc(ds.name||'Dataset')}</a></div>
+    </div>`:''}
+
+    <div class="pipeline">
+      <div class="pipe-section">
+        <div class="pipe-hd"><i class="ti ti-database" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Data collection</span>${statusBadge(s.dataCollection.status)}</div>
+        ${s.dataCollection.notes?`<div class="pipe-body" style="font-size:12px;color:var(--text2)">${esc(s.dataCollection.notes)}</div>`:''}
+      </div>
+
+      <div class="pipe-section">
+        <div class="pipe-hd"><i class="ti ti-chart-dots" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Data analysis</span>${statusBadge(s.dataAnalysis.status)}</div>
+        ${s.dataAnalysis.notes?`<div class="pipe-body" style="font-size:12px;color:var(--text2)">${esc(s.dataAnalysis.notes)}</div>`:''}
+      </div>
+
+      <div class="pipe-section">
+        <div class="pipe-hd">
+          <i class="ti ti-writing" style="font-size:16px;color:var(--text2)"></i>
+          <span class="pipe-hd-title">Paper writing</span>
+          <span style="font-size:11px;color:var(--text2);margin-right:4px">${pp}/4 sections</span>
+          ${statusBadge(s.paperWriting.status)}
+        </div>
+        <div class="pipe-body">
+          <div class="prog-bar"><div class="prog-fill" style="width:${pp*25}%"></div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+            ${['intro','methods','results','discussion'].filter(sec=>s.paperWriting[sec]).map(sec=>`<span class="chip" style="background:var(--green-bg);color:var(--green-tx)"><i class="ti ti-check" style="font-size:10px"></i> ${sec.charAt(0).toUpperCase()+sec.slice(1)}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-section">
+        <div class="pipe-hd"><i class="ti ti-send" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Submission & publication</span>${statusBadge(s.submission.status)}</div>
+        ${(s.submission.journal||s.submission.revisionNotes)?`<div class="pipe-body" style="font-size:12px;color:var(--text2)">
+          ${s.submission.journal?`<div><strong style="color:var(--text)">Journal:</strong> ${esc(s.submission.journal)}</div>`:''}
+          ${s.submission.revisionNotes?`<div style="margin-top:4px">${esc(s.submission.revisionNotes)}</div>`:''}
+        </div>`:''}
+      </div>
+    </div>
+
+    ${pres.length?`
+    <div class="pipe-section" style="margin-top:1rem">
+      <div class="pipe-hd"><i class="ti ti-presentation" style="font-size:16px;color:var(--text2)"></i><span class="pipe-hd-title">Presentations</span></div>
+      <div class="pipe-body">
+        ${pres.map(p=>`
+        <div class="pres-item">
+          <span class="pres-year">${esc(p.year)}</span>
+          <div class="pres-info">
+            <div class="pres-congress">${esc(p.congress)}</div>
+            ${p.description?`<div class="pres-desc">${esc(p.description)}</div>`:''}
+            <span class="pres-type pres-${p.type}">${p.type.charAt(0).toUpperCase()+p.type.slice(1)}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <div style="margin-top:1.25rem;display:flex;justify-content:flex-end">
+      <button class="btn btn-sm" onclick="unpublishStudy('${s.id}')"><i class="ti ti-edit"></i> Edit</button>
+    </div>
+  </div>`;
+}
+
+window.publishStudy=function(id){
+  const s=getStudies().find(x=>x.id===id);
+  if(s){s.published=true;persist();}
+}
+window.unpublishStudy=function(id){
+  const s=getStudies().find(x=>x.id===id);
+  if(s){s.published=false;persist();}
 }
 
 window.saveTitle=function(id,val){
