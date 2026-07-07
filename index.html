@@ -230,6 +230,7 @@ const I18N = {
       body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
       charts:'Charts (optional)', addChart:'Add chart', chartTitle:'Chart title', chartRows:'Data', addRow:'Add row', removeChart:'Remove chart',
       label:'Label', value:'Value', save:'Publish', cancel:'Cancel', edit:'Edit', delete:'Delete', noPosts:'No posts yet', publishedOn:'Published' },
+    phdT:{ studentsTitle:'PhD students', backToList:'Back to all students', studiesCount:'studies', noStudies:'No studies added yet' },
     locale:'en-GB'
   },
   it: {
@@ -262,6 +263,7 @@ const I18N = {
       body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
       charts:'Grafici (opzionale)', addChart:'Aggiungi grafico', chartTitle:'Titolo grafico', chartRows:'Dati', addRow:'Aggiungi riga', removeChart:'Rimuovi grafico',
       label:'Etichetta', value:'Valore', save:'Pubblica', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noPosts:'Nessun post ancora', publishedOn:'Pubblicato' },
+    phdT:{ studentsTitle:'Dottorandi', backToList:'Torna a tutti i dottorandi', studiesCount:'studi', noStudies:'Nessuno studio ancora aggiunto' },
     locale:'it-IT'
   },
   fr: {
@@ -294,6 +296,7 @@ const I18N = {
       body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
       charts:'Graphiques (facultatif)', addChart:'Ajouter un graphique', chartTitle:'Titre du graphique', chartRows:'Donn\u00e9es', addRow:'Ajouter une ligne', removeChart:'Supprimer le graphique',
       label:'\u00c9tiquette', value:'Valeur', save:'Publier', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noPosts:'Aucun post pour l\u2019instant', publishedOn:'Publi\u00e9' },
+    phdT:{ studentsTitle:'Doctorants', backToList:'Retour \u00e0 tous les doctorants', studiesCount:'\u00e9tudes', noStudies:'Aucune \u00e9tude ajout\u00e9e pour l\u2019instant' },
     locale:'fr-FR'
   },
   es: {
@@ -326,6 +329,7 @@ const I18N = {
       body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
       charts:'Gr\u00e1ficos (opcional)', addChart:'A\u00f1adir gr\u00e1fico', chartTitle:'T\u00edtulo del gr\u00e1fico', chartRows:'Datos', addRow:'A\u00f1adir fila', removeChart:'Eliminar gr\u00e1fico',
       label:'Etiqueta', value:'Valor', save:'Publicar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noPosts:'A\u00fan no hay publicaciones', publishedOn:'Publicado' },
+    phdT:{ studentsTitle:'Doctorandos', backToList:'Volver a todos los doctorandos', studiesCount:'estudios', noStudies:'A\u00fan no hay estudios a\u00f1adidos' },
     locale:'es-ES'
   }
 };
@@ -341,7 +345,7 @@ const AREAS = [
       {id:'calendar', key:'calendar', type:'calendar'},
       {id:'tip',      key:'tip',      type:'tip'},
       {id:'rss',      key:'rss',      type:'rss'},
-      {id:'phd',      key:'phd',      type:'placeholder'}
+      {id:'phd',      key:'phd',      type:'phd'}
     ]},
   { id:'techstack', key:'techstack', owner:'Area owner', pin:'TECH-2026', icon:'ti-code',        bg:'rgba(20,20,40,.08)', tx:'#141428',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
@@ -373,6 +377,17 @@ let pdfRequests = [], pdfRequestsReady = false, pdfRequestsFailed = false;
 let tipPosts = [], tipPostsReady = false, tipPostsFailed = false;
 let tipEditing = null; // { id?, title, coverImage, body, charts:[{title,rows:[{label,value}]}] }
 let tipListView = 'list';
+
+const PHD_STUDENTS = [
+  { id:'parma',    name:'Salvatore Mazzei',    place:'Parma' },
+  { id:'foro',     name:'Valerio Persichetti', place:'Foro Italico (Rome)' },
+  { id:'valencia', name:'Costanza Gavioli',    place:'Valencia' },
+  { id:'verona',   name:'Lorenzo Di Girolamo', place:'Verona' },
+  { id:'chieti',   name:'Giorgia Silvestri',   place:'Chieti/Pescara' }
+];
+let phdSelected = null;
+let phdStudies = [];
+let phdReady = false, phdFailed = false;
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -456,6 +471,8 @@ function renderPanels(){
     } else if (s.type === 'tip') {
       renderTipPanel();
       if (window.startTipPostsListener) window.startTipPostsListener();
+    } else if (s.type === 'phd') {
+      renderPhdPanel();
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
@@ -886,6 +903,94 @@ function renderTipPanel(){
 
 window.setLang = setLang;
 window.selectArea = selectArea;
+
+/* ---- PhD activities (owner overview, no PIN needed per student) ---- */
+function phdStatusBadge(v){
+  const map = {
+    to_start:'<span class="badge b-todo" style="background:var(--blue-bg);color:var(--blue-tx)">To start</span>',
+    ongoing:'<span class="badge" style="background:var(--amber-bg);color:var(--amber-tx)">Ongoing</span>',
+    done:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Done</span>',
+    blocked:'<span class="badge" style="background:var(--coral-bg);color:var(--coral-tx)">Blocked</span>',
+    not_submitted:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Not submitted</span>',
+    submitted:'<span class="badge" style="background:var(--purple-bg);color:var(--purple-tx)">Submitted</span>',
+    under_review:'<span class="badge" style="background:var(--teal-bg);color:var(--teal-tx)">Under review</span>',
+    published:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Published</span>',
+    not_started:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Not started</span>',
+    in_progress:'<span class="badge" style="background:var(--amber-bg);color:var(--amber-tx)">In progress</span>',
+    completed:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Completed</span>'
+  };
+  return map[v] || v;
+}
+function phdPaperProgress(pw){ return ['intro','methods','results','discussion'].filter(function(k){ return pw[k]; }).length; }
+
+function selectPhdStudent(id){
+  phdSelected = id;
+  phdStudies = [];
+  phdReady = false;
+  phdFailed = false;
+  renderPhdPanel();
+  if (window.startPhdListener) window.startPhdListener(id);
+}
+function backToPhdList(){ phdSelected = null; renderPhdPanel(); }
+
+function phdStudyMarkup(s){
+  const pp = phdPaperProgress(s.paperWriting || {});
+  const ds = s.dataset || { name:'', link:'' };
+  const pres = s.presentations || [];
+  return '<div class="idea-card">'+
+    '<div class="idea-header" style="cursor:default"><div>'+
+    '<div class="idea-title">'+esc(s.title)+(s.published?' <span class="badge" style="background:var(--green-bg);color:var(--green-tx);margin-left:6px"><i class="ti ti-lock"></i> Published</span>':'')+'</div>'+
+    '</div></div>'+
+    '<div style="padding:0 1.25rem 1.25rem">'+
+    (s.objectives ? '<div class="field-block"><label>Objectives</label><div class="val">'+esc(s.objectives)+'</div></div>' : '')+
+    (ds.link ? '<div class="field-block"><label>Dataset</label><div class="val"><a href="'+esc(ds.link)+'" target="_blank" rel="noopener">'+esc(ds.name||'Dataset')+'</a></div></div>' : '')+
+    '<div class="field-block"><label>Data collection</label><div class="val">'+phdStatusBadge((s.dataCollection||{}).status||'to_start')+(s.dataCollection&&s.dataCollection.notes?' \u2014 '+esc(s.dataCollection.notes):'')+'</div></div>'+
+    '<div class="field-block"><label>Data analysis</label><div class="val">'+phdStatusBadge((s.dataAnalysis||{}).status||'to_start')+(s.dataAnalysis&&s.dataAnalysis.notes?' \u2014 '+esc(s.dataAnalysis.notes):'')+'</div></div>'+
+    '<div class="field-block"><label>Paper writing</label><div class="val">'+phdStatusBadge((s.paperWriting||{}).status||'not_started')+' \u00b7 '+pp+'/4 sections</div></div>'+
+    '<div class="field-block"><label>Submission</label><div class="val">'+phdStatusBadge((s.submission||{}).status||'not_submitted')+(s.submission&&s.submission.journal?' \u2014 '+esc(s.submission.journal):'')+'</div></div>'+
+    (pres.length ? '<div class="field-block"><label>Presentations</label><div class="val">'+pres.map(function(p){ return esc(p.congress)+' ('+esc(p.year)+')'; }).join(', ')+'</div></div>' : '')+
+    '</div></div>';
+}
+
+function renderPhdPanel(){
+  const el = document.getElementById('panel-phd');
+  if (!el) return;
+
+  if (!phdSelected) {
+    el.innerHTML = '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+t('phdT').studentsTitle+'</div>'+
+      '<div class="area-grid">'+PHD_STUDENTS.map(function(st){
+        return '<div class="area-card" onclick="selectPhdStudent(\''+st.id+'\')">'+
+          '<div class="area-icon" style="background:var(--blue-bg);color:var(--blue-tx)"><i class="ti ti-user"></i></div>'+
+          '<div class="area-nm">'+esc(st.name)+'</div>'+
+          '<div class="area-st">'+esc(st.place)+'</div></div>';
+      }).join('')+'</div>';
+    return;
+  }
+
+  const student = PHD_STUDENTS.find(function(x){ return x.id === phdSelected; });
+  let body;
+  if (phdFailed) {
+    body = '<div class="alert alert-err">'+t('offline')+'</div>';
+  } else if (!phdReady) {
+    body = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>';
+  } else if (!phdStudies.length) {
+    body = '<div class="empty"><i class="ti ti-book-2" style="font-size:26px"></i><div style="margin-top:8px">'+t('phdT').noStudies+'</div></div>';
+  } else {
+    body = phdStudies.map(phdStudyMarkup).join('');
+  }
+
+  el.innerHTML = '<div style="margin-bottom:1rem">'+
+    '<button class="btn btn-sm" onclick="backToPhdList()"><i class="ti ti-arrow-left"></i> '+t('phdT').backToList+'</button>'+
+    '</div>'+
+    '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+esc(student ? student.name : '')+' \u2014 '+phdStudies.length+' '+t('phdT').studiesCount+'</div>'+
+    body;
+}
+
+window.selectPhdStudent = selectPhdStudent;
+window.backToPhdList = backToPhdList;
+window.onPhdStudiesUpdated = function(data){ phdStudies = data; phdReady = true; renderPhdPanel(); };
+window.onPhdStudiesFailed = function(){ phdFailed = true; renderPhdPanel(); };
+
 window.checkPin = checkPin;
 window.setSub = setSub;
 window.logout = logout;
@@ -1088,6 +1193,21 @@ window.saveTipPost = async function (id, payload) {
 window.deleteTipPost = async function (id) {
   if (!db) return;
   await deleteDoc(doc(db, 'tipPosts', id));
+};
+
+let phdUnsub = null;
+window.startPhdListener = function (studentId) {
+  if (!db) { if (window.onPhdStudiesFailed) window.onPhdStudiesFailed(); return; }
+  if (phdUnsub) { phdUnsub(); phdUnsub = null; }
+  phdUnsub = onSnapshot(doc(db, 'universities', studentId),
+    function (snap) {
+      const data = snap.exists() ? (snap.data().studies || []) : [];
+      if (window.onPhdStudiesUpdated) window.onPhdStudiesUpdated(data);
+    },
+    function () {
+      if (window.onPhdStudiesFailed) window.onPhdStudiesFailed();
+    }
+  );
 };
 </script>
 </body>
