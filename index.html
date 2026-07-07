@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Hub</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+@font-face { font-family:'Virage'; font-weight:600; font-style:normal; src:url('assets/fonts/Virage-Semibold.otf') format('opentype'); font-display:swap; }
+@font-face { font-family:'Virage'; font-weight:700; font-style:normal; src:url('assets/fonts/Virage-Bold.otf') format('opentype'); font-display:swap; }
+:root{
+  --font-sans:'Geist','Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Virage','Geist',system-ui,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --bg:#F6F8FA;--surface:#fff;--surface2:#EAEEF1;
+  --border:#E1E6F0;--border2:#a1a1a1;
+  --text:#171717;--text2:#4d4d4d;--text3:#888888;
+  --radius:0 12px 0 12px;--radius-sm:6px;
+  --accent:#141428;--accent-press:#0c0c18;--accent-soft:rgba(20,20,40,.08);--accent-contrast:#fff;
+  --psg-navy:#004070;--psg-red:#E30613;--psg-gold:#CEAB5D;
+
+  --blue-bg:#e2edfd;--blue-tx:#0a5bc4;
+  --green-bg:#e8f4ec;--green-tx:#11733d;
+  --amber-bg:#fdf0d6;--amber-tx:#92580a;
+  --purple-bg:#f6edd4;--purple-tx:#856316;
+  --teal-bg:rgba(20,20,40,.06);--teal-tx:#141428;
+  --coral-bg:#fbe6e4;--coral-tx:#c0291f;
+  --grey-bg:#f0f1f3;--grey-tx:#5a6473;
+  --red:#c0291f;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#171717;--surface:#212121;--surface2:#2a2a2a;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.22);
+  --text:#f2f2f2;--text2:#b4b4b4;--text3:#888888;
+  --accent:#7f8fdc;--accent-press:#a3b0e6;--accent-soft:rgba(127,143,220,.14);--accent-contrast:#141428;
+  --blue-bg:#0a5bc4;--blue-tx:#e2edfd;
+  --green-bg:#11733d;--green-tx:#e8f4ec;
+  --amber-bg:#92580a;--amber-tx:#fdf0d6;
+  --purple-bg:#856316;--purple-tx:#f6edd4;
+  --teal-bg:rgba(127,143,220,.14);--teal-tx:#c7cef2;
+  --coral-bg:#c0291f;--coral-tx:#fbe6e4;
+  --grey-bg:#3a3f47;--grey-tx:#c2c8d1;
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh}
+.hidden{display:none!important}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.25rem}
+.logo{font-family:var(--font-display);font-weight:700;font-size:21px;display:flex;align-items:center;gap:9px;color:var(--text)}
+.logo img{height:28px;width:auto}
+.logo i{color:var(--accent)}
+.sub{font-size:14px;color:var(--text2);margin-top:4px;font-family:var(--font-sans)}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:transparent;font-size:14px;cursor:pointer;color:var(--text);font-family:var(--font-sans);text-decoration:none}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--accent);color:var(--accent-contrast);border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-press);border-color:var(--accent-press)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-green{border-color:var(--green-tx);color:var(--green-tx)}
+.btn-green:hover{background:var(--green-bg)}
+.btn-red{border-color:var(--red);color:var(--red)}
+.btn-red:hover{background:rgba(192,41,31,.08)}
+input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:var(--font-sans);font-size:14px;outline:none}
+
+.lang-switch{display:flex;gap:4px}
+.lang-btn{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.lang-btn.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+.top-strip{display:flex;justify-content:flex-end;margin-bottom:1rem}
+.hero{position:relative;overflow:hidden;background:#141428;border-radius:var(--radius);padding:2rem 1.75rem;margin-bottom:1.75rem}
+.hero .wm{position:absolute;right:-6%;bottom:-30%;width:60%;opacity:.10;filter:invert(1);pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.hero .logo{color:#fff}
+.hero .sub{color:rgba(255,255,255,.78)}
+
+.area-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:1.5rem}
+.area-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;cursor:pointer;transition:border-color .15s,transform .1s}
+.area-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.area-card.sel{border-width:2px}
+.area-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px}
+.area-nm{font-size:14px;font-weight:600}
+.area-st{font-size:12px;color:var(--text2);margin-top:2px}
+.pin-area{margin-top:1.75rem;padding-top:1.75rem;border-top:0.5px solid var(--border)}
+.pin-row{display:flex;gap:8px;margin-top:10px}
+.pin-row input{max-width:180px;flex:0 0 auto}
+.alert{padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;margin-top:8px}
+.alert-err{background:rgba(226,75,74,.1);color:var(--red);border:0.5px solid rgba(226,75,74,.3)}
+
+.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
+.sub-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.sub-tab{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid var(--border2);color:var(--text2);white-space:nowrap}
+.sub-tab.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+.panel{display:none}
+.panel.active{display:block}
+.placeholder{text-align:center;padding:3.5rem 1rem;color:var(--text3)}
+.placeholder i{font-size:28px}
+.placeholder .ph-title{font-size:14px;color:var(--text2);margin-top:10px;font-weight:600}
+.placeholder .ph-sub{font-size:12px;margin-top:4px}
+
+.ext-link-card{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--teal-bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.ext-link-card .txt{font-size:13px;color:var(--teal-tx)}
+.ext-link-card .txt strong{display:block;font-size:14px;margin-bottom:2px}
+.ext-link-card .btn{border-color:var(--teal-tx);color:var(--teal-tx);background:var(--surface)}
+.ext-link-card .btn:hover{background:var(--teal-bg)}
+
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem}
+.tab{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid var(--border2);color:var(--text2)}
+.tab.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-pending{background:var(--amber-bg);color:var(--amber-tx)}
+.b-accepted{background:var(--green-bg);color:var(--green-tx)}
+.b-declined{background:var(--coral-bg);color:var(--coral-tx)}
+.idea-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
+.idea-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.idea-header:hover{background:var(--surface2)}
+.idea-title{font-size:15px;font-weight:600}
+.idea-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.idea-body{padding:0 1.25rem 1.25rem;display:none}
+.idea-body.open{display:block}
+.field-block{margin-top:.9rem}
+.field-block label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.field-block .val{font-size:13px;color:var(--text);white-space:pre-wrap;line-height:1.5}
+.idea-actions{display:flex;gap:8px;margin-top:1.1rem;flex-wrap:wrap}
+.decision-form{margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:var(--radius-sm)}
+.field-row{display:flex;gap:12px}
+.field-row>div{flex:1}
+.field-row input,.field-row select{margin-top:4px}
+
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.cal-filters{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.cal-head{background:var(--surface2);text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);padding:6px 2px}
+.cal-cell{background:var(--surface);min-height:74px;padding:4px;font-size:11px;cursor:pointer}
+.cal-cell:hover{background:var(--surface2)}
+.cal-empty{background:var(--bg);cursor:default}
+.cal-today .cal-daynum{background:var(--text);color:var(--surface);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
+.cal-daynum{font-size:11px;color:var(--text2);margin-bottom:3px}
+.cal-chip{border-radius:5px;padding:1px 5px;margin-bottom:2px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.cal-blue{background:var(--blue-bg);color:var(--blue-tx)}
+.cal-purple{background:var(--purple-bg);color:var(--purple-tx)}
+.cal-gold{background:var(--purple-bg);color:var(--purple-tx)}
+.cal-grey{background:var(--grey-bg);color:var(--grey-tx)}
+.cal-coral{background:var(--coral-bg);color:var(--coral-tx)}
+.cal-amber{background:var(--amber-bg);color:var(--amber-tx)}
+.cal-more{font-size:10px;color:var(--text3)}
+.badge.b-cal-blue{background:var(--blue-bg);color:var(--blue-tx)}
+.badge.b-cal-purple{background:var(--purple-bg);color:var(--purple-tx)}
+.badge.b-cal-gold{background:var(--purple-bg);color:var(--purple-tx)}
+.badge.b-cal-grey{background:var(--grey-bg);color:var(--grey-tx)}
+.badge.b-cal-coral{background:var(--coral-bg);color:var(--coral-tx)}
+.badge.b-cal-amber{background:var(--amber-bg);color:var(--amber-tx)}
+@media(max-width:600px){.cal-cell{min-height:56px;font-size:10px}.cal-chip{font-size:9px}}
+.empty{text-align:center;padding:3rem 1rem;color:var(--text3)}
+.spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--blue-tx);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="top-strip">
+  <div class="lang-switch" id="lang-switch"></div>
+</div>
+
+<div id="screen-home">
+  <div class="hero">
+    <img class="wm" src="assets/logos/psg-watermark.svg" alt="" aria-hidden="true">
+    <div class="hero-content">
+      <div class="logo"><img src="assets/logos/psg-crest-white.svg" alt=""> <span data-t="hubTitle">Research Hub</span></div>
+      <div class="sub" data-t="hubSub">Select your area and enter your access code</div>
+    </div>
+  </div>
+  <div class="area-grid" id="area-list"></div>
+  <div class="pin-area">
+    <div style="font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px">
+      <i class="ti ti-lock" style="font-size:15px"></i> <span data-t="pinLabel">Enter your area access code</span>
+    </div>
+    <div class="pin-row">
+      <input type="password" id="pin-input" maxlength="12">
+      <button class="btn btn-primary" onclick="checkPin()"><i class="ti ti-arrow-right"></i> <span data-t="accessBtn">Access</span></button>
+    </div>
+    <div id="pin-error" class="alert alert-err hidden" data-t="pinError">Incorrect code. Please try again.</div>
+  </div>
+</div>
+
+<div id="screen-area" class="hidden">
+  <div class="top-bar">
+    <div>
+      <div class="logo" id="area-name"></div>
+      <div class="sub" id="area-owner"></div>
+    </div>
+    <button class="btn btn-sm" onclick="logout()"><i class="ti ti-logout"></i> <span data-t="logout">Log out</span></button>
+  </div>
+  <div class="sub-tabs" id="sub-tabs"></div>
+  <div id="panels"></div>
+</div>
+
+</div>
+
+<script>
+const I18N = {
+  en: {
+    hubTitle:'Research Hub', hubSub:'Select your area and enter your access code',
+    pinLabel:'Enter your area access code', accessBtn:'Access', pinError:'Incorrect code. Please try again.',
+    logout:'Log out', subsections:'subsections', subsection:'subsection',
+    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview'},
+    comingTitle:'coming soon', comingSub:'This module will be built next inside the same hub.',
+    extIdeaTitle:'Submit a new research idea', extIdeaSub:'Share this public link with stakeholders to collect new proposals.', extIdeaBtn:'Open form',
+    tPending:'Pending', tAccepted:'Accepted', tDeclined:'Declined', tAll:'All',
+    pendingTotal:function(p,tt){return p+' pending \u00b7 '+tt+' total submissions';},
+    emptyView:'No ideas in this view', connecting:'Connecting to the database...', offline:'Could not reach the database. Check your connection and reload.',
+    fSubmitter:'Submitter', fObjective:'Objective', fSample:'Sample', fMethods:'Methods', fLinks:'Related links', fNotes:'Additional notes',
+    fScreeningNotes:'Screening notes', fScreeningPh:'Optional note (visible only to the area owner)',
+    accept:'Accept', decline:'Decline', reset:'Reset to pending',
+    decisionTitleAccept:'Accept this idea', decisionTitleDecline:'Decline this idea',
+    fExplain:'Explanation for the submitter (optional)', phExplain:'Add a short note explaining your decision...',
+    meetingLabel:'Propose a meeting to discuss this idea', meetingDate:'Date', meetingTime:'Time',
+    sendDecision:'Send decision', cancelBtn:'Cancel',
+    cal:{ addEvent:'Add event', editEvent:'Edit event', title:'Title', type:'Type', date:'Date', time:'Time',
+      notes:'Notes (optional)', save:'Save', delete:'Delete', upcoming:'Upcoming events', noEvents:'No events yet',
+      today:'Today', meeting:'Research meeting', congress:'Congress', deadline:'Abstract / deadline', other:'Other',
+      allTypes:'All' },
+    rss:{ requestsTitle:'PDF requests received', noRequests:'No PDF requests yet', requester:'Requested by',
+      article:'Article', note:'Note', markFulfilled:'Mark as fulfilled', markPending:'Reopen', fulfilled:'Fulfilled', pending:'Pending',
+      infoTitle:'Article feed & ratings', infoSub:'Stakeholders see and rate the live article feed, and request PDFs, from the public overview page.' },
+    locale:'en-GB'
+  },
+  it: {
+    hubTitle:'Research Hub', hubSub:'Seleziona la tua area e inserisci il codice di accesso',
+    pinLabel:'Inserisci il codice di accesso dell\u2019area', accessBtn:'Accedi', pinError:'Codice errato. Riprova.',
+    logout:'Esci', subsections:'sottosezioni', subsection:'sottosezione',
+    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica'},
+    comingTitle:'in arrivo', comingSub:'Questo modulo verr\u00e0 costruito nei prossimi passaggi, dentro lo stesso hub.',
+    extIdeaTitle:'Sottometti una nuova idea di ricerca', extIdeaSub:'Condividi questo link pubblico con gli stakeholder per raccogliere nuove proposte.', extIdeaBtn:'Apri il form',
+    tPending:'In attesa', tAccepted:'Accettate', tDeclined:'Rifiutate', tAll:'Tutte',
+    pendingTotal:function(p,tt){return p+' in attesa \u00b7 '+tt+' sottomissioni totali';},
+    emptyView:'Nessuna idea in questa vista', connecting:'Connessione al database...', offline:'Impossibile raggiungere il database. Controlla la connessione e ricarica.',
+    fSubmitter:'Sottoposta da', fObjective:'Obiettivo', fSample:'Campione', fMethods:'Metodi', fLinks:'Link correlati', fNotes:'Note aggiuntive',
+    fScreeningNotes:'Note di screening', fScreeningPh:'Nota opzionale (visibile solo al responsabile area)',
+    accept:'Accetta', decline:'Rifiuta', reset:'Riporta in attesa',
+    decisionTitleAccept:'Accetta questa idea', decisionTitleDecline:'Rifiuta questa idea',
+    fExplain:'Spiegazione per chi ha sottomesso (opzionale)', phExplain:'Aggiungi una breve nota per spiegare la tua decisione...',
+    meetingLabel:'Proponi un meeting per discutere questa idea', meetingDate:'Data', meetingTime:'Ora',
+    sendDecision:'Invia decisione', cancelBtn:'Annulla',
+    cal:{ addEvent:'Aggiungi evento', editEvent:'Modifica evento', title:'Titolo', type:'Tipo', date:'Data', time:'Ora',
+      notes:'Note (opzionale)', save:'Salva', delete:'Elimina', upcoming:'Prossimi eventi', noEvents:'Nessun evento ancora',
+      today:'Oggi', meeting:'Research meeting', congress:'Congresso', deadline:'Abstract / scadenza', other:'Altro',
+      allTypes:'Tutti' },
+    rss:{ requestsTitle:'Richieste PDF ricevute', noRequests:'Nessuna richiesta PDF ancora', requester:'Richiesta da',
+      article:'Articolo', note:'Nota', markFulfilled:'Segna come evasa', markPending:'Riapri', fulfilled:'Evasa', pending:'In attesa',
+      infoTitle:'Feed articoli e valutazioni', infoSub:'Gli stakeholder vedono e votano il feed articoli in diretta, e richiedono i PDF, dalla pagina pubblica.' },
+    locale:'it-IT'
+  },
+  fr: {
+    hubTitle:'Research Hub', hubSub:'S\u00e9lectionnez votre domaine et saisissez votre code d\u2019acc\u00e8s',
+    pinLabel:'Saisissez le code d\u2019acc\u00e8s du domaine', accessBtn:'Acc\u00e9der', pinError:'Code incorrect. Veuillez r\u00e9essayer.',
+    logout:'D\u00e9connexion', subsections:'sous-sections', subsection:'sous-section',
+    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u'},
+    comingTitle:'bient\u00f4t disponible', comingSub:'Ce module sera d\u00e9velopp\u00e9 prochainement, au sein du m\u00eame hub.',
+    extIdeaTitle:'Soumettre une nouvelle id\u00e9e de recherche', extIdeaSub:'Partagez ce lien public avec les parties prenantes pour recueillir de nouvelles propositions.', extIdeaBtn:'Ouvrir le formulaire',
+    tPending:'En attente', tAccepted:'Accept\u00e9es', tDeclined:'Refus\u00e9es', tAll:'Toutes',
+    pendingTotal:function(p,tt){return p+' en attente \u00b7 '+tt+' soumissions au total';},
+    emptyView:'Aucune id\u00e9e dans cette vue', connecting:'Connexion \u00e0 la base de donn\u00e9es...', offline:"Impossible d'acc\u00e9der \u00e0 la base de donn\u00e9es. V\u00e9rifiez votre connexion et rechargez.",
+    fSubmitter:'Soumis par', fObjective:'Objectif', fSample:'\u00c9chantillon', fMethods:'M\u00e9thodes', fLinks:'Liens associ\u00e9s', fNotes:'Notes suppl\u00e9mentaires',
+    fScreeningNotes:'Notes d\u2019\u00e9valuation', fScreeningPh:'Note facultative (visible uniquement par le responsable)',
+    accept:'Accepter', decline:'Refuser', reset:'Remettre en attente',
+    decisionTitleAccept:'Accepter cette id\u00e9e', decisionTitleDecline:'Refuser cette id\u00e9e',
+    fExplain:'Explication pour l\u2019auteur (facultatif)', phExplain:'Ajoutez une courte note pour expliquer votre d\u00e9cision...',
+    meetingLabel:'Proposer une r\u00e9union pour discuter de cette id\u00e9e', meetingDate:'Date', meetingTime:'Heure',
+    sendDecision:'Envoyer la d\u00e9cision', cancelBtn:'Annuler',
+    cal:{ addEvent:'Ajouter un \u00e9v\u00e9nement', editEvent:'Modifier l\u2019\u00e9v\u00e9nement', title:'Titre', type:'Type', date:'Date', time:'Heure',
+      notes:'Notes (facultatif)', save:'Enregistrer', delete:'Supprimer', upcoming:'\u00c9v\u00e9nements \u00e0 venir', noEvents:'Aucun \u00e9v\u00e9nement pour l\u2019instant',
+      today:'Aujourd\u2019hui', meeting:'R\u00e9union de recherche', congress:'Congr\u00e8s', deadline:'Abstract / \u00e9ch\u00e9ance', other:'Autre',
+      allTypes:'Tous' },
+    rss:{ requestsTitle:'Demandes de PDF re\u00e7ues', noRequests:'Aucune demande de PDF pour l\u2019instant', requester:'Demand\u00e9 par',
+      article:'Article', note:'Note', markFulfilled:'Marquer comme trait\u00e9e', markPending:'Rouvrir', fulfilled:'Trait\u00e9e', pending:'En attente',
+      infoTitle:'Flux d\u2019articles et \u00e9valuations', infoSub:'Les parties prenantes voient et notent le flux d\u2019articles en direct, et demandent des PDF, depuis la page publique.' },
+    locale:'fr-FR'
+  },
+  es: {
+    hubTitle:'Research Hub', hubSub:'Selecciona tu \u00e1rea e introduce tu c\u00f3digo de acceso',
+    pinLabel:'Introduce el c\u00f3digo de acceso del \u00e1rea', accessBtn:'Acceder', pinError:'C\u00f3digo incorrecto. Int\u00e9ntalo de nuevo.',
+    logout:'Cerrar sesi\u00f3n', subsections:'subsecciones', subsection:'subsecci\u00f3n',
+    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen'},
+    comingTitle:'pr\u00f3ximamente', comingSub:'Este m\u00f3dulo se construir\u00e1 a continuaci\u00f3n, dentro del mismo hub.',
+    extIdeaTitle:'Enviar una nueva idea de investigaci\u00f3n', extIdeaSub:'Comparte este enlace p\u00fablico con los interesados para recopilar nuevas propuestas.', extIdeaBtn:'Abrir formulario',
+    tPending:'Pendientes', tAccepted:'Aceptadas', tDeclined:'Rechazadas', tAll:'Todas',
+    pendingTotal:function(p,tt){return p+' pendientes \u00b7 '+tt+' env\u00edos totales';},
+    emptyView:'No hay ideas en esta vista', connecting:'Conectando a la base de datos...', offline:'No se pudo conectar a la base de datos. Comprueba tu conexi\u00f3n y recarga.',
+    fSubmitter:'Enviado por', fObjective:'Objetivo', fSample:'Muestra', fMethods:'M\u00e9todos', fLinks:'Enlaces relacionados', fNotes:'Notas adicionales',
+    fScreeningNotes:'Notas de evaluaci\u00f3n', fScreeningPh:'Nota opcional (visible solo para el responsable del \u00e1rea)',
+    accept:'Aceptar', decline:'Rechazar', reset:'Volver a pendiente',
+    decisionTitleAccept:'Aceptar esta idea', decisionTitleDecline:'Rechazar esta idea',
+    fExplain:'Explicaci\u00f3n para quien envi\u00f3 la idea (opcional)', phExplain:'A\u00f1ade una breve nota explicando tu decisi\u00f3n...',
+    meetingLabel:'Proponer una reuni\u00f3n para hablar de esta idea', meetingDate:'Fecha', meetingTime:'Hora',
+    sendDecision:'Enviar decisi\u00f3n', cancelBtn:'Cancelar',
+    cal:{ addEvent:'A\u00f1adir evento', editEvent:'Editar evento', title:'T\u00edtulo', type:'Tipo', date:'Fecha', time:'Hora',
+      notes:'Notas (opcional)', save:'Guardar', delete:'Eliminar', upcoming:'Pr\u00f3ximos eventos', noEvents:'A\u00fan no hay eventos',
+      today:'Hoy', meeting:'Reuni\u00f3n de investigaci\u00f3n', congress:'Congreso', deadline:'Abstract / plazo', other:'Otro',
+      allTypes:'Todos' },
+    rss:{ requestsTitle:'Solicitudes de PDF recibidas', noRequests:'A\u00fan no hay solicitudes de PDF', requester:'Solicitado por',
+      article:'Art\u00edculo', note:'Nota', markFulfilled:'Marcar como resuelta', markPending:'Reabrir', fulfilled:'Resuelta', pending:'Pendiente',
+      infoTitle:'Feed de art\u00edculos y valoraciones', infoSub:'Los interesados ven y punt\u00faan el feed de art\u00edculos en vivo, y solicitan PDF, desde la p\u00e1gina p\u00fablica.' },
+    locale:'es-ES'
+  }
+};
+
+let lang = 'en';
+try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
+function t(key){ return (I18N[lang] && I18N[lang][key]) || I18N.en[key]; }
+
+const AREAS = [
+  { id:'research',  key:'research',  owner:'Area owner', pin:'RES-2026',  icon:'ti-microscope',  bg:'#e2edfd', tx:'#0a5bc4',
+    subs:[
+      {id:'ideas',    key:'ideas',    type:'ideas'},
+      {id:'calendar', key:'calendar', type:'calendar'},
+      {id:'tip',      key:'tip',      type:'placeholder'},
+      {id:'rss',      key:'rss',      type:'rss'},
+      {id:'phd',      key:'phd',      type:'placeholder'}
+    ]},
+  { id:'techstack', key:'techstack', owner:'Area owner', pin:'TECH-2026', icon:'ti-code',        bg:'rgba(20,20,40,.08)', tx:'#141428',
+    subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
+  { id:'designviz', key:'designviz', owner:'Area owner', pin:'DSGN-2026', icon:'ti-chart-dots',  bg:'#f6edd4', tx:'#856316',
+    subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
+  { id:'quarterly', key:'quarterly', owner:'Area owner', pin:'QTR-2026',  icon:'ti-calendar-stats', bg:'#fdf0d6', tx:'#92580a',
+    subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
+  { id:'education', key:'education', owner:'Area owner', pin:'EDU-2026',  icon:'ti-school',      bg:'#f0f1f3', tx:'#5a6473',
+    subs:[ {id:'overview', key:'overview', type:'placeholder'} ]}
+];
+
+const SUBMIT_IDEA_URL = "public.html#idea-container";
+
+let selArea = null, current = null, activeSub = null;
+let firebaseReady = false, firebaseFailed = false;
+let ideas = [], ideaFilter = 'pending', openIdeaId = null;
+let composing = null; // { id, status, explain, meeting, date, time }
+
+let events = [], eventsReady = false, eventsFailed = false;
+let calDate = new Date(); calDate.setDate(1);
+let calFilter = 'all';
+let eventDraft = null; // { id?, title, type, date, time, notes }
+let eventsListenerStarted = false;
+const EVENT_TYPES = ['meeting','congress','deadline','other'];
+const EVENT_COLORS = { meeting:'blue', congress:'gold', deadline:'coral', other:'grey' };
+
+let pdfRequests = [], pdfRequestsReady = false, pdfRequestsFailed = false;
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderLangSwitch(){
+  document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(function(l){
+    return '<button class="lang-btn '+(l===lang?'active':'')+'" onclick="setLang(\''+l+'\')">'+l.toUpperCase()+'</button>';
+  }).join('');
+}
+function setLang(l){
+  lang = l;
+  try { localStorage.setItem('hubLang', l); } catch(e) {}
+  renderLangSwitch();
+  applyStaticText();
+  renderHome();
+  if (current) openArea(current, true);
+}
+
+function applyStaticText(){
+  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t); });
+  document.getElementById('pin-input').placeholder = t('pinLabel');
+}
+
+function renderHome(){
+  document.getElementById('area-list').innerHTML = AREAS.map(function(a){
+    return '<div class="area-card" id="ac-'+a.id+'" onclick="selectArea(\''+a.id+'\')">'+
+      '<div class="area-icon" style="background:'+a.bg+';color:'+a.tx+'"><i class="ti '+a.icon+'"></i></div>'+
+      '<div class="area-nm">'+I18N[lang].areas[a.key]+'</div>'+
+      '<div class="area-st">'+a.subs.length+' '+(a.subs.length>1?t('subsections'):t('subsection'))+'</div></div>';
+  }).join('');
+}
+
+function selectArea(id){
+  selArea = id;
+  AREAS.forEach(function(a){
+    const el = document.getElementById('ac-' + a.id);
+    el.classList.toggle('sel', a.id === id);
+    el.style.borderColor = a.id === id ? a.tx : '';
+  });
+  document.getElementById('pin-input').focus();
+}
+
+function checkPin(){
+  const pin = document.getElementById('pin-input').value.trim();
+  const a = AREAS.find(function(x){ return x.pin === pin && (!selArea || x.id === selArea); });
+  document.getElementById('pin-error').classList.toggle('hidden', !!a);
+  if (a) openArea(a);
+}
+
+function openArea(a, keepSub){
+  current = a;
+  if (!keepSub) activeSub = a.subs[0].id;
+  document.getElementById('screen-home').classList.add('hidden');
+  document.getElementById('screen-area').classList.remove('hidden');
+  document.getElementById('area-name').innerHTML = '<img src="assets/logos/psg-crest-black.svg" style="height:24px"> '+I18N[lang].areas[a.key];
+  document.getElementById('area-owner').textContent = a.owner;
+  document.getElementById('sub-tabs').innerHTML = a.subs.map(function(s){
+    return '<div class="sub-tab '+(s.id===activeSub?'active':'')+'" onclick="setSub(\''+s.id+'\')">'+I18N[lang].subs[s.key]+'</div>';
+  }).join('');
+  renderPanels();
+}
+
+function setSub(id){
+  activeSub = id;
+  document.querySelectorAll('.sub-tab').forEach(function(el,i){ el.classList.toggle('active', current.subs[i].id === id); });
+  renderPanels();
+}
+
+function renderPanels(){
+  const container = document.getElementById('panels');
+  container.innerHTML = current.subs.map(function(s){ return '<div class="panel '+(s.id===activeSub?'active':'')+'" id="panel-'+s.id+'"></div>'; }).join('');
+  current.subs.forEach(function(s){
+    if (s.type === 'ideas') {
+      renderIdeasPanel();
+      if (window.startIdeasListener) window.startIdeasListener();
+    } else if (s.type === 'calendar') {
+      renderCalendarPanel();
+      if (window.startEventsListener) window.startEventsListener();
+    } else if (s.type === 'rss') {
+      renderRssPanel();
+      if (window.startPdfRequestsListener) window.startPdfRequestsListener();
+    } else {
+      const el = document.getElementById('panel-' + s.id);
+      el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
+        '<div class="ph-title">'+esc(I18N[lang].subs[s.key])+' \u2014 '+t('comingTitle')+'</div>'+
+        '<div class="ph-sub">'+t('comingSub')+'</div></div>';
+    }
+  });
+}
+
+function extLinkMarkup(){
+  return '<div class="ext-link-card"><div class="txt"><strong>'+t('extIdeaTitle')+'</strong>'+t('extIdeaSub')+'</div>'+
+    '<a class="btn" href="'+SUBMIT_IDEA_URL+'" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> '+t('extIdeaBtn')+'</a></div>';
+}
+
+function logout(){
+  current = selArea = null;
+  document.getElementById('screen-area').classList.add('hidden');
+  document.getElementById('screen-home').classList.remove('hidden');
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-error').classList.add('hidden');
+  AREAS.forEach(function(a){ const el = document.getElementById('ac-'+a.id); el.classList.remove('sel'); el.style.borderColor=''; });
+}
+
+function fmtDate(ts){
+  if (!ts || !ts.toDate) return '';
+  return ts.toDate().toLocaleDateString(I18N[lang].locale, {day:'numeric', month:'short', year:'numeric'});
+}
+
+function renderIdeasPanel(){
+  const el = document.getElementById('panel-ideas');
+  if (!el) return;
+  let body;
+  if (firebaseFailed) {
+    body = '<div class="alert alert-err">'+t('offline')+'</div>';
+  } else if (!firebaseReady) {
+    body = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>';
+  } else {
+    body = ideasMarkup();
+  }
+  el.innerHTML = extLinkMarkup() + body;
+}
+
+function ideasMarkup(){
+  const list = ideaFilter === 'all' ? ideas : ideas.filter(function(i){ return i.status === ideaFilter; });
+  const pendingCount = ideas.filter(function(i){ return i.status === 'pending'; }).length;
+  const tabsHtml = '<div class="tabs">'+
+    '<div class="tab '+(ideaFilter==='pending'?'active':'')+'" onclick="setIdeaFilter(\'pending\')">'+t('tPending')+'</div>'+
+    '<div class="tab '+(ideaFilter==='accepted'?'active':'')+'" onclick="setIdeaFilter(\'accepted\')">'+t('tAccepted')+'</div>'+
+    '<div class="tab '+(ideaFilter==='declined'?'active':'')+'" onclick="setIdeaFilter(\'declined\')">'+t('tDeclined')+'</div>'+
+    '<div class="tab '+(ideaFilter==='all'?'active':'')+'" onclick="setIdeaFilter(\'all\')">'+t('tAll')+'</div></div>'+
+    '<div class="sub" style="margin-bottom:1rem">'+t('pendingTotal')(pendingCount, ideas.length)+'</div>';
+
+  if (!list.length) {
+    return tabsHtml + '<div class="empty"><i class="ti ti-inbox" style="font-size:28px"></i><div style="margin-top:8px">'+t('emptyView')+'</div></div>';
+  }
+
+  return tabsHtml + list.map(function(i){
+    return '<div class="idea-card">'+
+      '<div class="idea-header" onclick="toggleIdea(\''+i.id+'\')"><div>'+
+      '<div class="idea-title">'+esc(i.title)+'</div>'+
+      '<div class="idea-meta">'+esc(i.submitterName)+' \u00b7 '+fmtDate(i.createdAt)+'</div></div>'+
+      '<span class="badge b-'+i.status+'">'+i.status+'</span></div>'+
+      '<div class="idea-body '+(openIdeaId===i.id?'open':'')+'">'+
+      '<div class="field-block"><label>'+t('fSubmitter')+'</label><div class="val">'+esc(i.submitterName)+' \u2014 '+esc(i.submitterEmail)+'</div></div>'+
+      '<div class="field-block"><label>'+t('fObjective')+'</label><div class="val">'+esc(i.objective)+'</div></div>'+
+      '<div class="field-block"><label>'+t('fSample')+'</label><div class="val">'+esc(i.sample)+'</div></div>'+
+      '<div class="field-block"><label>'+t('fMethods')+'</label><div class="val">'+esc(i.methods)+'</div></div>'+
+      (i.links ? '<div class="field-block"><label>'+t('fLinks')+'</label><div class="val">'+esc(i.links)+'</div></div>' : '')+
+      (i.notes ? '<div class="field-block"><label>'+t('fNotes')+'</label><div class="val">'+esc(i.notes)+'</div></div>' : '')+
+      '<div class="field-block"><label>'+t('fScreeningNotes')+'</label>'+
+      '<textarea rows="2" placeholder="'+t('fScreeningPh')+'" onblur="saveIdeaNote(\''+i.id+'\',this.value)">'+esc(i.screeningNotes)+'</textarea></div>'+
+      (composing && composing.id === i.id ? decisionFormMarkup(i) :
+      '<div class="idea-actions">'+
+      (i.status!=='accepted' ? '<button class="btn btn-sm btn-green" onclick="openDecision(\''+i.id+'\',\'accepted\')"><i class="ti ti-check"></i> '+t('accept')+'</button>' : '')+
+      (i.status!=='declined' ? '<button class="btn btn-sm btn-red" onclick="openDecision(\''+i.id+'\',\'declined\')"><i class="ti ti-x"></i> '+t('decline')+'</button>' : '')+
+      (i.status!=='pending' ? '<button class="btn btn-sm" onclick="setIdeaStatus(\''+i.id+'\',\'pending\')"><i class="ti ti-refresh"></i> '+t('reset')+'</button>' : '')+
+      '</div>')+
+      '</div></div>';
+  }).join('');
+}
+
+function decisionFormMarkup(i){
+  const c = composing;
+  const title = c.status === 'accepted' ? t('decisionTitleAccept') : t('decisionTitleDecline');
+  return '<div class="decision-form">'+
+    '<div class="field-block"><label>'+esc(title)+'</label></div>'+
+    '<div class="field-block"><label>'+t('fExplain')+'</label>'+
+    '<textarea rows="3" placeholder="'+t('phExplain')+'" oninput="updateDraft(\'explain\',this.value)">'+esc(c.explain)+'</textarea></div>'+
+    '<div class="field-block" style="display:flex;align-items:center;gap:8px">'+
+    '<input type="checkbox" id="meet-chk" style="width:auto" '+(c.meeting?'checked':'')+' onchange="updateDraft(\'meeting\',this.checked)">'+
+    '<label style="margin:0;text-transform:none;font-size:13px;font-weight:400;color:var(--text)" for="meet-chk">'+t('meetingLabel')+'</label></div>'+
+    (c.meeting ? '<div class="field-row" style="margin-top:.6rem">'+
+      '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('meetingDate')+'</label>'+
+      '<input type="date" value="'+esc(c.date)+'" onchange="updateDraft(\'date\',this.value)"></div>'+
+      '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('meetingTime')+'</label>'+
+      '<input type="time" value="'+esc(c.time)+'" onchange="updateDraft(\'time\',this.value)"></div>'+
+      '</div>' : '')+
+    '<div class="idea-actions">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmDecision(\''+i.id+'\')"><i class="ti ti-send"></i> '+t('sendDecision')+'</button>'+
+    '<button class="btn btn-sm" onclick="cancelDecision()">'+t('cancelBtn')+'</button>'+
+    '</div></div>';
+}
+
+function openDecision(id, status){
+  composing = { id: id, status: status, explain: '', meeting: false, date: '', time: '' };
+  openIdeaId = id;
+  renderIdeasPanel();
+}
+function cancelDecision(){ composing = null; renderIdeasPanel(); }
+function updateDraft(field, val){ if (composing) composing[field] = val; }
+function confirmDecision(id){
+  if (!composing) return;
+  const idea = ideas.find(function(x){ return x.id === id; });
+  const draft = composing;
+  composing = null;
+  if (window.applyDecision) window.applyDecision(id, draft, idea);
+}
+
+function setIdeaFilter(f){ ideaFilter = f; renderIdeasPanel(); }
+function toggleIdea(id){ openIdeaId = openIdeaId === id ? null : id; renderIdeasPanel(); }
+
+/* ---- Research calendar ---- */
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+function isoDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function monthLabel(d){ const s = d.toLocaleDateString(I18N[lang].locale, {month:'long', year:'numeric'}); return s.charAt(0).toUpperCase()+s.slice(1); }
+function dayHeaders(){
+  const base = new Date(2024,0,1); // a Monday
+  const out = [];
+  for (let i=0;i<7;i++){ const d = new Date(base); d.setDate(base.getDate()+i); out.push(d.toLocaleDateString(I18N[lang].locale,{weekday:'short'})); }
+  return out;
+}
+
+function changeMonth(delta){ calDate = new Date(calDate.getFullYear(), calDate.getMonth()+delta, 1); renderCalendarPanel(); }
+function goToday(){ calDate = new Date(); calDate.setDate(1); renderCalendarPanel(); }
+function setCalFilter(f){ calFilter = f; renderCalendarPanel(); }
+
+function filteredEvents(){ return calFilter === 'all' ? events : events.filter(function(e){ return e.type === calFilter; }); }
+
+function openAddEvent(dateStr){
+  eventDraft = { id: null, title:'', type:'meeting', date: dateStr, time:'', notes:'' };
+  renderCalendarPanel();
+}
+function openEditEvent(id){
+  const ev = events.find(function(e){ return e.id === id; });
+  if (!ev) return;
+  eventDraft = { id: ev.id, title: ev.title, type: ev.type, date: ev.date, time: ev.time || '', notes: ev.notes || '' };
+  renderCalendarPanel();
+}
+function closeEventForm(){ eventDraft = null; renderCalendarPanel(); }
+function updateEventDraft(field, val){ if (eventDraft) eventDraft[field] = val; }
+function confirmSaveEvent(){
+  if (!eventDraft || !eventDraft.title || !eventDraft.date) return;
+  if (window.saveEvent) window.saveEvent(Object.assign({}, eventDraft));
+  eventDraft = null;
+}
+function confirmDeleteEvent(id){
+  if (window.deleteEvent) window.deleteEvent(id);
+  eventDraft = null;
+}
+
+function eventFormMarkup(){
+  const d = eventDraft;
+  return '<div class="decision-form">'+
+    '<div class="field-block"><label>'+(d.id ? t('cal').editEvent : t('cal').addEvent)+'</label></div>'+
+    '<div class="field-block"><label>'+t('cal').title+'</label>'+
+    '<input type="text" value="'+esc(d.title)+'" oninput="updateEventDraft(\'title\',this.value)"></div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').type+'</label>'+
+    '<select onchange="updateEventDraft(\'type\',this.value)" style="width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text)">'+
+    EVENT_TYPES.map(function(ty){ return '<option value="'+ty+'" '+(d.type===ty?'selected':'')+'>'+t('cal')[ty]+'</option>'; }).join('')+
+    '</select></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').date+'</label>'+
+    '<input type="date" value="'+esc(d.date)+'" onchange="updateEventDraft(\'date\',this.value)"></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').time+'</label>'+
+    '<input type="time" value="'+esc(d.time)+'" onchange="updateEventDraft(\'time\',this.value)"></div>'+
+    '</div>'+
+    '<div class="field-block"><label>'+t('cal').notes+'</label>'+
+    '<textarea rows="2" oninput="updateEventDraft(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
+    '<div class="idea-actions">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmSaveEvent()"><i class="ti ti-check"></i> '+t('cal').save+'</button>'+
+    (d.id ? '<button class="btn btn-sm btn-red" onclick="confirmDeleteEvent(\''+d.id+'\')"><i class="ti ti-trash"></i> '+t('cal').delete+'</button>' : '')+
+    '<button class="btn btn-sm" onclick="closeEventForm()">'+t('cancelBtn')+'</button>'+
+    '</div></div>';
+}
+
+function calendarGridMarkup(){
+  const y = calDate.getFullYear(), m = calDate.getMonth();
+  const first = new Date(y, m, 1);
+  const offset = (first.getDay() + 6) % 7; // Monday = 0
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+  const todayStr = isoDate(new Date());
+  const evs = filteredEvents();
+
+  let cells = '';
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - offset + 1;
+    if (dayNum < 1 || dayNum > daysInMonth) { cells += '<div class="cal-cell cal-empty"></div>'; continue; }
+    const d = new Date(y, m, dayNum);
+    const dStr = isoDate(d);
+    const dayEvents = evs.filter(function(e){ return e.date === dStr; });
+    const isToday = dStr === todayStr;
+    cells += '<div class="cal-cell '+(isToday?'cal-today':'')+'" onclick="openAddEvent(\''+dStr+'\')">'+
+      '<div class="cal-daynum">'+dayNum+'</div>'+
+      dayEvents.slice(0,3).map(function(e){
+        const c = EVENT_COLORS[e.type] || 'blue';
+        return '<div class="cal-chip cal-'+c+'" onclick="event.stopPropagation();openEditEvent(\''+e.id+'\')">'+esc(e.title)+'</div>';
+      }).join('') +
+      (dayEvents.length > 3 ? '<div class="cal-more">+'+(dayEvents.length-3)+'</div>' : '') +
+      '</div>';
+  }
+
+  const headers = dayHeaders().map(function(h){ return '<div class="cal-head">'+h+'</div>'; }).join('');
+
+  return '<div class="cal-nav">'+
+    '<button class="btn btn-sm" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>'+
+    '<div style="font-weight:600;font-size:15px">'+monthLabel(calDate)+'</div>'+
+    '<button class="btn btn-sm" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>'+
+    '<button class="btn btn-sm" onclick="goToday()">'+t('cal').today+'</button>'+
+    '</div>'+
+    '<div class="cal-filters">'+
+    '<div class="tab '+(calFilter==='all'?'active':'')+'" onclick="setCalFilter(\'all\')">'+t('cal').allTypes+'</div>'+
+    EVENT_TYPES.map(function(ty){ return '<div class="tab '+(calFilter===ty?'active':'')+'" onclick="setCalFilter(\''+ty+'\')">'+t('cal')[ty]+'</div>'; }).join('')+
+    '</div>'+
+    '<div class="cal-grid">'+headers+cells+'</div>';
+}
+
+function upcomingListMarkup(){
+  const todayStr = isoDate(new Date());
+  const upcoming = filteredEvents().filter(function(e){ return e.date >= todayStr; }).sort(function(a,b){ return (a.date+a.time) < (b.date+b.time) ? -1 : 1; }).slice(0,8);
+  if (!upcoming.length) return '<div class="empty"><i class="ti ti-calendar-off" style="font-size:26px"></i><div style="margin-top:8px">'+t('cal').noEvents+'</div></div>';
+  return upcoming.map(function(e){
+    const c = EVENT_COLORS[e.type] || 'blue';
+    const dLabel = new Date(e.date+'T00:00:00').toLocaleDateString(I18N[lang].locale, {day:'numeric',month:'short',year:'numeric'});
+    return '<div class="idea-card" style="cursor:pointer" onclick="openEditEvent(\''+e.id+'\')">'+
+      '<div class="idea-header"><div>'+
+      '<div class="idea-title">'+esc(e.title)+'</div>'+
+      '<div class="idea-meta">'+dLabel+(e.time?' \u00b7 '+e.time:'')+'</div></div>'+
+      '<span class="badge b-cal-'+c+'">'+t('cal')[e.type]+'</span></div></div>';
+  }).join('');
+}
+
+function renderCalendarPanel(){
+  const el = document.getElementById('panel-calendar');
+  if (!el) return;
+  let body;
+  if (eventsFailed) {
+    body = '<div class="alert alert-err">'+t('offline')+'</div>';
+  } else if (!eventsReady) {
+    body = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>';
+  } else {
+    body = calendarGridMarkup() +
+      (eventDraft ? eventFormMarkup() : '') +
+      '<div class="sub" style="margin:1.5rem 0 .75rem;font-weight:600;color:var(--text)">'+t('cal').upcoming+'</div>' +
+      upcomingListMarkup();
+  }
+  el.innerHTML = body;
+}
+
+/* ---- Papers RSS / PDF requests ---- */
+function toggleFulfilled(id, current){
+  if (window.setPdfRequestStatus) window.setPdfRequestStatus(id, current === 'fulfilled' ? 'pending' : 'fulfilled');
+}
+
+function renderRssPanel(){
+  const el = document.getElementById('panel-rss');
+  if (!el) return;
+
+  const info = '<div class="card" style="background:var(--teal-bg);border-color:var(--border);margin-bottom:1.25rem">'+
+    '<div style="font-weight:600;font-size:14px;color:var(--teal-tx)">'+t('rss').infoTitle+'</div>'+
+    '<div class="sub" style="color:var(--teal-tx);margin-top:4px">'+t('rss').infoSub+'</div></div>';
+
+  let body;
+  if (pdfRequestsFailed) {
+    body = '<div class="alert alert-err">'+t('offline')+'</div>';
+  } else if (!pdfRequestsReady) {
+    body = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>';
+  } else if (!pdfRequests.length) {
+    body = '<div class="empty"><i class="ti ti-file-off" style="font-size:26px"></i><div style="margin-top:8px">'+t('rss').noRequests+'</div></div>';
+  } else {
+    body = '<div class="sub" style="margin-bottom:.75rem;font-weight:600;color:var(--text)">'+t('rss').requestsTitle+'</div>' +
+      pdfRequests.map(function(r){
+        const dLabel = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString(I18N[lang].locale,{day:'numeric',month:'short',year:'numeric'}) : '';
+        return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
+          '<div class="idea-title">'+esc(r.articleTitle)+'</div>'+
+          '<div class="idea-meta">'+t('rss').requester+': '+esc(r.requesterEmail)+' \u00b7 '+dLabel+'</div></div>'+
+          '<span class="badge '+(r.status==='fulfilled'?'b-accepted':'b-pending')+'">'+(r.status==='fulfilled'?t('rss').fulfilled:t('rss').pending)+'</span></div>'+
+          '<div style="padding:0 1.25rem 1.25rem">'+
+          (r.articleLink ? '<div class="field-block"><label>'+t('rss').article+'</label><div class="val"><a href="'+esc(r.articleLink)+'" target="_blank" rel="noopener">'+esc(r.articleLink)+'</a></div></div>' : '')+
+          (r.notes ? '<div class="field-block"><label>'+t('rss').note+'</label><div class="val">'+esc(r.notes)+'</div></div>' : '')+
+          '<div class="idea-actions"><button class="btn btn-sm" onclick="toggleFulfilled(\''+r.id+'\',\''+r.status+'\')"><i class="ti ti-check"></i> '+(r.status==='fulfilled'?t('rss').markPending:t('rss').markFulfilled)+'</button></div>'+
+          '</div></div>';
+      }).join('');
+  }
+
+  el.innerHTML = info + body;
+}
+
+window.setLang = setLang;
+window.selectArea = selectArea;
+window.checkPin = checkPin;
+window.setSub = setSub;
+window.logout = logout;
+window.setIdeaFilter = setIdeaFilter;
+window.toggleIdea = toggleIdea;
+window.openDecision = openDecision;
+window.cancelDecision = cancelDecision;
+window.updateDraft = updateDraft;
+window.confirmDecision = confirmDecision;
+window.changeMonth = changeMonth;
+window.goToday = goToday;
+window.setCalFilter = setCalFilter;
+window.openAddEvent = openAddEvent;
+window.openEditEvent = openEditEvent;
+window.closeEventForm = closeEventForm;
+window.updateEventDraft = updateEventDraft;
+window.confirmSaveEvent = confirmSaveEvent;
+window.confirmDeleteEvent = confirmDeleteEvent;
+window.onEventsUpdated = function(data){ events = data; eventsReady = true; renderCalendarPanel(); };
+window.onEventsFailed = function(){ eventsFailed = true; renderCalendarPanel(); };
+window.toggleFulfilled = toggleFulfilled;
+window.onPdfRequestsUpdated = function(data){ pdfRequests = data; pdfRequestsReady = true; renderRssPanel(); };
+window.onPdfRequestsFailed = function(){ pdfRequestsFailed = true; renderRssPanel(); };
+window.onIdeasUpdated = function(data){ ideas = data; firebaseReady = true; renderIdeasPanel(); };
+window.onIdeasFailed = function(){ firebaseFailed = true; renderIdeasPanel(); };
+
+document.getElementById('pin-input').addEventListener('keydown', function(e){ if (e.key === 'Enter') checkPin(); });
+
+renderLangSwitch();
+applyStaticText();
+renderHome();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
+  authDomain: "phd-tracker-22d93.firebaseapp.com",
+  projectId: "phd-tracker-22d93",
+  storageBucket: "phd-tracker-22d93.firebasestorage.app",
+  messagingSenderId: "252875836800",
+  appId: "1:252875836800:web:dc6575ffab316da3744565"
+};
+
+let db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {
+  if (window.onIdeasFailed) window.onIdeasFailed();
+}
+
+// TODO: replace with your own EmailJS credentials (emailjs.com — free tier, no backend needed).
+// Use the same EmailJS account as submit-idea.html; create a separate template for decisions
+// with variables: to_email, submitter_name, idea_title, decision, explanation, meeting_proposed, meeting_date, meeting_time.
+const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID_DECISION = "YOUR_EMAILJS_TEMPLATE_ID_DECISION";
+if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') window.emailjs.init(EMAILJS_PUBLIC_KEY);
+
+window.applyDecision = async function (id, draft, idea) {
+  if (!db) return;
+  await updateDoc(doc(db, 'researchIdeas', id), {
+    status: draft.status,
+    decisionMessage: draft.explain || '',
+    meetingProposed: !!draft.meeting,
+    meetingDate: draft.meeting ? (draft.date || '') : '',
+    meetingTime: draft.meeting ? (draft.time || '') : ''
+  });
+
+  if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY' && idea) {
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_DECISION, {
+      to_email: idea.submitterEmail,
+      submitter_name: idea.submitterName,
+      idea_title: idea.title,
+      decision: draft.status,
+      explanation: draft.explain || '',
+      meeting_proposed: draft.meeting ? 'yes' : 'no',
+      meeting_date: draft.meeting ? (draft.date || '') : '',
+      meeting_time: draft.meeting ? (draft.time || '') : ''
+    }).catch(function () {});
+  }
+};
+
+let started = false;
+window.startIdeasListener = function () {
+  if (started || !db) { if (!db && window.onIdeasFailed) window.onIdeasFailed(); return; }
+  started = true;
+  const q = query(collection(db, 'researchIdeas'), orderBy('createdAt', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onIdeasUpdated) window.onIdeasUpdated(data);
+    },
+    function () {
+      if (window.onIdeasFailed) window.onIdeasFailed();
+    }
+  );
+};
+
+window.setIdeaStatus = async function (id, status) {
+  if (!db) return;
+  await updateDoc(doc(db, 'researchIdeas', id), { status: status });
+};
+window.saveIdeaNote = async function (id, val) {
+  if (!db) return;
+  await updateDoc(doc(db, 'researchIdeas', id), { screeningNotes: val });
+};
+
+let eventsStarted = false;
+window.startEventsListener = function () {
+  if (eventsStarted || !db) { if (!db && window.onEventsFailed) window.onEventsFailed(); return; }
+  eventsStarted = true;
+  const q = query(collection(db, 'researchEvents'), orderBy('date', 'asc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onEventsUpdated) window.onEventsUpdated(data);
+    },
+    function () {
+      if (window.onEventsFailed) window.onEventsFailed();
+    }
+  );
+};
+
+window.saveEvent = async function (draft) {
+  if (!db) return;
+  const payload = { title: draft.title, type: draft.type, date: draft.date, time: draft.time || '', notes: draft.notes || '' };
+  if (draft.id) {
+    await updateDoc(doc(db, 'researchEvents', draft.id), payload);
+  } else {
+    await addDoc(collection(db, 'researchEvents'), payload);
+  }
+};
+window.deleteEvent = async function (id) {
+  if (!db) return;
+  await deleteDoc(doc(db, 'researchEvents', id));
+};
+
+let pdfRequestsStarted = false;
+window.startPdfRequestsListener = function () {
+  if (pdfRequestsStarted || !db) { if (!db && window.onPdfRequestsFailed) window.onPdfRequestsFailed(); return; }
+  pdfRequestsStarted = true;
+  const q = query(collection(db, 'paperRequests'), orderBy('createdAt', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onPdfRequestsUpdated) window.onPdfRequestsUpdated(data);
+    },
+    function () {
+      if (window.onPdfRequestsFailed) window.onPdfRequestsFailed();
+    }
+  );
+};
+window.setPdfRequestStatus = async function (id, status) {
+  if (!db) return;
+  await updateDoc(doc(db, 'paperRequests', id), { status: status });
+};
+</script>
+</body>
+</html>
