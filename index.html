@@ -225,6 +225,11 @@ const I18N = {
     rss:{ requestsTitle:'PDF requests received', noRequests:'No PDF requests yet', requester:'Requested by',
       article:'Article', note:'Note', markFulfilled:'Mark as fulfilled', markPending:'Reopen', fulfilled:'Fulfilled', pending:'Pending',
       infoTitle:'Article feed & ratings', infoSub:'Stakeholders see and rate the live article feed, and request PDFs, from the public overview page.' },
+    tip:{ newPost:'New post', editPost:'Edit post', postTitle:'Title', coverImage:'Cover image URL (optional)', coverImageHint:'Paste a link to an already-hosted image, or upload a file below',
+      uploadBtn:'Upload JPG/PNG', removeImg:'Remove image', compressing:'Processing image...',
+      body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
+      charts:'Charts (optional)', addChart:'Add chart', chartTitle:'Chart title', chartRows:'Data', addRow:'Add row', removeChart:'Remove chart',
+      label:'Label', value:'Value', save:'Publish', cancel:'Cancel', edit:'Edit', delete:'Delete', noPosts:'No posts yet', publishedOn:'Published' },
     locale:'en-GB'
   },
   it: {
@@ -252,6 +257,11 @@ const I18N = {
     rss:{ requestsTitle:'Richieste PDF ricevute', noRequests:'Nessuna richiesta PDF ancora', requester:'Richiesta da',
       article:'Articolo', note:'Nota', markFulfilled:'Segna come evasa', markPending:'Riapri', fulfilled:'Evasa', pending:'In attesa',
       infoTitle:'Feed articoli e valutazioni', infoSub:'Gli stakeholder vedono e votano il feed articoli in diretta, e richiedono i PDF, dalla pagina pubblica.' },
+    tip:{ newPost:'Nuovo post', editPost:'Modifica post', postTitle:'Titolo', coverImage:'URL immagine di copertina (opzionale)', coverImageHint:'Incolla il link a un\u2019immagine gi\u00e0 online, oppure caricane una qui sotto',
+      uploadBtn:'Carica JPG/PNG', removeImg:'Rimuovi immagine', compressing:'Elaborazione immagine...',
+      body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
+      charts:'Grafici (opzionale)', addChart:'Aggiungi grafico', chartTitle:'Titolo grafico', chartRows:'Dati', addRow:'Aggiungi riga', removeChart:'Rimuovi grafico',
+      label:'Etichetta', value:'Valore', save:'Pubblica', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noPosts:'Nessun post ancora', publishedOn:'Pubblicato' },
     locale:'it-IT'
   },
   fr: {
@@ -279,6 +289,11 @@ const I18N = {
     rss:{ requestsTitle:'Demandes de PDF re\u00e7ues', noRequests:'Aucune demande de PDF pour l\u2019instant', requester:'Demand\u00e9 par',
       article:'Article', note:'Note', markFulfilled:'Marquer comme trait\u00e9e', markPending:'Rouvrir', fulfilled:'Trait\u00e9e', pending:'En attente',
       infoTitle:'Flux d\u2019articles et \u00e9valuations', infoSub:'Les parties prenantes voient et notent le flux d\u2019articles en direct, et demandent des PDF, depuis la page publique.' },
+    tip:{ newPost:'Nouveau post', editPost:'Modifier le post', postTitle:'Titre', coverImage:'URL image de couverture (facultatif)', coverImageHint:'Collez le lien vers une image d\u00e9j\u00e0 en ligne, ou t\u00e9l\u00e9versez-en une ci-dessous',
+      uploadBtn:'T\u00e9l\u00e9verser JPG/PNG', removeImg:'Supprimer l\u2019image', compressing:'Traitement de l\u2019image...',
+      body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
+      charts:'Graphiques (facultatif)', addChart:'Ajouter un graphique', chartTitle:'Titre du graphique', chartRows:'Donn\u00e9es', addRow:'Ajouter une ligne', removeChart:'Supprimer le graphique',
+      label:'\u00c9tiquette', value:'Valeur', save:'Publier', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noPosts:'Aucun post pour l\u2019instant', publishedOn:'Publi\u00e9' },
     locale:'fr-FR'
   },
   es: {
@@ -306,6 +321,11 @@ const I18N = {
     rss:{ requestsTitle:'Solicitudes de PDF recibidas', noRequests:'A\u00fan no hay solicitudes de PDF', requester:'Solicitado por',
       article:'Art\u00edculo', note:'Nota', markFulfilled:'Marcar como resuelta', markPending:'Reabrir', fulfilled:'Resuelta', pending:'Pendiente',
       infoTitle:'Feed de art\u00edculos y valoraciones', infoSub:'Los interesados ven y punt\u00faan el feed de art\u00edculos en vivo, y solicitan PDF, desde la p\u00e1gina p\u00fablica.' },
+    tip:{ newPost:'Nueva publicaci\u00f3n', editPost:'Editar publicaci\u00f3n', postTitle:'T\u00edtulo', coverImage:'URL de imagen de portada (opcional)', coverImageHint:'Pega el enlace a una imagen ya alojada online, o sube un archivo abajo',
+      uploadBtn:'Subir JPG/PNG', removeImg:'Quitar imagen', compressing:'Procesando imagen...',
+      body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
+      charts:'Gr\u00e1ficos (opcional)', addChart:'A\u00f1adir gr\u00e1fico', chartTitle:'T\u00edtulo del gr\u00e1fico', chartRows:'Datos', addRow:'A\u00f1adir fila', removeChart:'Eliminar gr\u00e1fico',
+      label:'Etiqueta', value:'Valor', save:'Publicar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noPosts:'A\u00fan no hay publicaciones', publishedOn:'Publicado' },
     locale:'es-ES'
   }
 };
@@ -319,7 +339,7 @@ const AREAS = [
     subs:[
       {id:'ideas',    key:'ideas',    type:'ideas'},
       {id:'calendar', key:'calendar', type:'calendar'},
-      {id:'tip',      key:'tip',      type:'placeholder'},
+      {id:'tip',      key:'tip',      type:'tip'},
       {id:'rss',      key:'rss',      type:'rss'},
       {id:'phd',      key:'phd',      type:'placeholder'}
     ]},
@@ -349,6 +369,10 @@ const EVENT_TYPES = ['meeting','congress','deadline','other'];
 const EVENT_COLORS = { meeting:'blue', congress:'gold', deadline:'coral', other:'grey' };
 
 let pdfRequests = [], pdfRequestsReady = false, pdfRequestsFailed = false;
+
+let tipPosts = [], tipPostsReady = false, tipPostsFailed = false;
+let tipEditing = null; // { id?, title, coverImage, body, charts:[{title,rows:[{label,value}]}] }
+let tipListView = 'list';
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -429,6 +453,9 @@ function renderPanels(){
     } else if (s.type === 'rss') {
       renderRssPanel();
       if (window.startPdfRequestsListener) window.startPdfRequestsListener();
+    } else if (s.type === 'tip') {
+      renderTipPanel();
+      if (window.startTipPostsListener) window.startTipPostsListener();
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
@@ -727,6 +754,136 @@ function renderRssPanel(){
   el.innerHTML = info + body;
 }
 
+/* ---- Tip of the week (blog) ---- */
+function newChart(){ return { title:'', rows:[{label:'',value:''},{label:'',value:''}] }; }
+function newTipDraft(){ return { id:null, title:'', coverImage:'', body:'', charts:[] }; }
+
+function openNewPost(){ tipEditing = newTipDraft(); tipListView = 'edit'; renderTipPanel(); }
+function openEditPost(id){
+  const p = tipPosts.find(function(x){ return x.id === id; });
+  if (!p) return;
+  tipEditing = { id: p.id, title: p.title, coverImage: p.coverImage || '', body: p.body || '', charts: JSON.parse(JSON.stringify(p.charts || [])) };
+  tipListView = 'edit';
+  renderTipPanel();
+}
+function cancelEditPost(){ tipEditing = null; tipListView = 'list'; renderTipPanel(); }
+function updateTipField(field, val){ if (tipEditing) tipEditing[field] = val; }
+
+function handleTipImageFile(inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('tip-img-status');
+  if (statusEl) statusEl.textContent = t('tip').compressing;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      const maxW = 1000;
+      const scale = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      let quality = 0.75;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+      while (dataUrl.length > 650000 && quality > 0.25) { quality -= 0.1; dataUrl = canvas.toDataURL('image/jpeg', quality); }
+      if (tipEditing) tipEditing.coverImage = dataUrl;
+      renderTipPanel();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function addTipChart(){ if (tipEditing) tipEditing.charts.push(newChart()); renderTipPanel(); }
+function removeTipChart(idx){ if (tipEditing) tipEditing.charts.splice(idx,1); renderTipPanel(); }
+function updateChartTitle(idx, val){ if (tipEditing) tipEditing.charts[idx].title = val; }
+function addChartRow(idx){ if (tipEditing) tipEditing.charts[idx].rows.push({label:'',value:''}); renderTipPanel(); }
+function removeChartRow(idx, rowIdx){ if (tipEditing) { tipEditing.charts[idx].rows.splice(rowIdx,1); renderTipPanel(); } }
+function updateChartRow(idx, rowIdx, field, val){ if (tipEditing) tipEditing.charts[idx].rows[rowIdx][field] = val; }
+
+function confirmSavePost(){
+  if (!tipEditing || !tipEditing.title || !tipEditing.body) return;
+  const cleanCharts = tipEditing.charts
+    .map(function(c){ return { title: c.title, rows: c.rows.filter(function(r){ return r.label && r.value !== ''; }) }; })
+    .filter(function(c){ return c.rows.length > 0; });
+  const payload = { title: tipEditing.title, coverImage: tipEditing.coverImage, body: tipEditing.body, charts: cleanCharts };
+  if (window.saveTipPost) window.saveTipPost(tipEditing.id, payload);
+  tipEditing = null; tipListView = 'list';
+}
+function confirmDeletePost(id){
+  if (window.deleteTipPost) window.deleteTipPost(id);
+}
+
+function chartEditorMarkup(c, idx){
+  const tt = t('tip');
+  return '<div class="decision-form" style="margin-top:.9rem">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">'+
+    '<input type="text" value="'+esc(c.title)+'" placeholder="'+tt.chartTitle+'" oninput="updateChartTitle('+idx+',this.value)" style="max-width:60%">'+
+    '<button class="btn btn-sm btn-red" onclick="removeTipChart('+idx+')"><i class="ti ti-trash"></i> '+tt.removeChart+'</button>'+
+    '</div>'+
+    c.rows.map(function(r, ri){
+      return '<div class="field-row" style="margin-bottom:6px">'+
+        '<input type="text" value="'+esc(r.label)+'" placeholder="'+tt.label+'" oninput="updateChartRow('+idx+','+ri+',\'label\',this.value)">'+
+        '<input type="number" value="'+esc(r.value)+'" placeholder="'+tt.value+'" oninput="updateChartRow('+idx+','+ri+',\'value\',this.value)" style="max-width:110px">'+
+        '<button class="btn btn-sm" onclick="removeChartRow('+idx+','+ri+')"><i class="ti ti-x"></i></button>'+
+        '</div>';
+    }).join('')+
+    '<button class="btn btn-sm" onclick="addChartRow('+idx+')"><i class="ti ti-plus"></i> '+tt.addRow+'</button>'+
+    '</div>';
+}
+
+function tipEditorMarkup(){
+  const tt = t('tip');
+  const d = tipEditing;
+  return '<div class="card">'+
+    '<div class="field-block"><label>'+tt.postTitle+'</label><input type="text" value="'+esc(d.title)+'" oninput="updateTipField(\'title\',this.value)"></div>'+
+    '<div class="field-block"><label>'+tt.coverImage+'</label>'+
+    (d.coverImage ? ('<div style="margin-bottom:8px"><img src="'+d.coverImage+'" style="max-width:220px;max-height:120px;border-radius:8px;display:block;object-fit:cover" onerror="this.style.display=\'none\'">'+
+      '<button class="btn btn-sm btn-red" style="margin-top:6px" onclick="updateTipField(\'coverImage\',\'\');renderTipPanel()"><i class="ti ti-trash"></i> '+tt.removeImg+'</button></div>') :
+    ('<input type="text" value="'+esc(d.coverImage)+'" placeholder="https://..." oninput="updateTipField(\'coverImage\',this.value)">'+
+      '<div style="margin-top:6px"><label class="btn btn-sm" style="display:inline-flex;cursor:pointer"><i class="ti ti-upload"></i> '+tt.uploadBtn+
+      '<input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleTipImageFile(this)"></label>'+
+      '<span id="tip-img-status" style="font-size:12px;color:var(--text3);margin-left:8px"></span></div>'))+
+    '<div class="ts" style="font-size:11px;color:var(--text3);margin-top:3px">'+tt.coverImageHint+'</div></div>'+
+    '<div class="field-block"><label>'+tt.body+'</label><textarea rows="6" oninput="updateTipField(\'body\',this.value)">'+esc(d.body)+'</textarea>'+
+    '<div class="ts" style="font-size:11px;color:var(--text3);margin-top:3px">'+tt.bodyHint+'</div></div>'+
+    '<div class="field-block"><label>'+tt.charts+'</label>'+
+    d.charts.map(function(c, idx){ return chartEditorMarkup(c, idx); }).join('')+
+    '<button class="btn btn-sm" style="margin-top:.7rem" onclick="addTipChart()"><i class="ti ti-chart-bar"></i> '+tt.addChart+'</button>'+
+    '</div>'+
+    '<div class="idea-actions" style="margin-top:1.25rem">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmSavePost()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
+    '<button class="btn btn-sm" onclick="cancelEditPost()">'+tt.cancel+'</button>'+
+    '</div></div>';
+}
+
+function tipListMarkup(){
+  const tt = t('tip');
+  const header = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">'+
+    '<div></div><button class="btn btn-sm btn-primary" onclick="openNewPost()"><i class="ti ti-plus"></i> '+tt.newPost+'</button></div>';
+  if (!tipPosts.length) {
+    return header + '<div class="empty"><i class="ti ti-notes" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noPosts+'</div></div>';
+  }
+  return header + tipPosts.map(function(p){
+    const dLabel = p.createdAt && p.createdAt.toDate ? p.createdAt.toDate().toLocaleDateString(I18N[lang].locale,{day:'numeric',month:'short',year:'numeric'}) : '';
+    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
+      '<div class="idea-title">'+esc(p.title)+'</div>'+
+      '<div class="idea-meta">'+tt.publishedOn+' '+dLabel+'</div></div></div>'+
+      '<div style="padding:0 1.25rem 1.25rem" class="idea-actions">'+
+      '<button class="btn btn-sm" onclick="openEditPost(\''+p.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
+      '<button class="btn btn-sm btn-red" onclick="confirmDeletePost(\''+p.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+function renderTipPanel(){
+  const el = document.getElementById('panel-tip');
+  if (!el) return;
+  if (tipPostsFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
+  if (!tipPostsReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
+  el.innerHTML = tipListView === 'edit' ? tipEditorMarkup() : tipListMarkup();
+}
+
 window.setLang = setLang;
 window.selectArea = selectArea;
 window.checkPin = checkPin;
@@ -752,6 +909,21 @@ window.onEventsFailed = function(){ eventsFailed = true; renderCalendarPanel(); 
 window.toggleFulfilled = toggleFulfilled;
 window.onPdfRequestsUpdated = function(data){ pdfRequests = data; pdfRequestsReady = true; renderRssPanel(); };
 window.onPdfRequestsFailed = function(){ pdfRequestsFailed = true; renderRssPanel(); };
+window.openNewPost = openNewPost;
+window.openEditPost = openEditPost;
+window.cancelEditPost = cancelEditPost;
+window.updateTipField = updateTipField;
+window.handleTipImageFile = handleTipImageFile;
+window.addTipChart = addTipChart;
+window.removeTipChart = removeTipChart;
+window.updateChartTitle = updateChartTitle;
+window.addChartRow = addChartRow;
+window.removeChartRow = removeChartRow;
+window.updateChartRow = updateChartRow;
+window.confirmSavePost = confirmSavePost;
+window.confirmDeletePost = confirmDeletePost;
+window.onTipPostsUpdated = function(data){ tipPosts = data; tipPostsReady = true; renderTipPanel(); };
+window.onTipPostsFailed = function(){ tipPostsFailed = true; renderTipPanel(); };
 window.onIdeasUpdated = function(data){ ideas = data; firebaseReady = true; renderIdeasPanel(); };
 window.onIdeasFailed = function(){ firebaseFailed = true; renderIdeasPanel(); };
 
@@ -764,7 +936,7 @@ renderHome();
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
@@ -888,6 +1060,34 @@ window.startPdfRequestsListener = function () {
 window.setPdfRequestStatus = async function (id, status) {
   if (!db) return;
   await updateDoc(doc(db, 'paperRequests', id), { status: status });
+};
+
+let tipPostsStarted = false;
+window.startTipPostsListener = function () {
+  if (tipPostsStarted || !db) { if (!db && window.onTipPostsFailed) window.onTipPostsFailed(); return; }
+  tipPostsStarted = true;
+  const q = query(collection(db, 'tipPosts'), orderBy('createdAt', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onTipPostsUpdated) window.onTipPostsUpdated(data);
+    },
+    function () {
+      if (window.onTipPostsFailed) window.onTipPostsFailed();
+    }
+  );
+};
+window.saveTipPost = async function (id, payload) {
+  if (!db) return;
+  if (id) {
+    await updateDoc(doc(db, 'tipPosts', id), payload);
+  } else {
+    await addDoc(collection(db, 'tipPosts'), Object.assign({ createdAt: serverTimestamp() }, payload));
+  }
+};
+window.deleteTipPost = async function (id) {
+  if (!db) return;
+  await deleteDoc(doc(db, 'tipPosts', id));
 };
 </script>
 </body>

@@ -84,6 +84,20 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-hei
 .success-box{text-align:center;padding:2.5rem 1rem}
 .success-box i{font-size:40px;color:var(--green-tx)}
 
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.tip-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .1s}
+.tip-card:hover{transform:translateY(-2px)}
+.tip-card img{width:100%;height:120px;object-fit:cover;display:block;background:var(--surface2)}
+.tip-card .body{padding:.9rem 1rem}
+.tip-card .ttl{font-size:14px;font-weight:600;margin-bottom:3px}
+.tip-card .dt{font-size:11px;color:var(--text3)}
+.tip-detail{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.tip-detail img{width:100%;max-height:280px;object-fit:cover;border-radius:var(--radius-sm);margin-bottom:1.25rem}
+.tip-detail .ttl{font-family:var(--font-display);font-weight:700;font-size:24px;margin-bottom:.3rem}
+.tip-detail .body-text{font-size:14px;line-height:1.7;color:var(--text2);white-space:pre-wrap;margin-top:1rem}
+.tip-chart{margin-top:1.5rem}
+.tip-chart-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);margin-bottom:8px;font-family:var(--font-mono)}
+
 .section-title{font-size:15px;font-weight:600;margin:1.75rem 0 .9rem;display:flex;align-items:center;gap:8px}
 
 .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
@@ -153,6 +167,9 @@ input,textarea{width:100%;padding:8px 12px;border:0.5px solid var(--border2);bor
 <div class="section-title"><i class="ti ti-news"></i> <span data-t="rssTitle">Latest papers</span></div>
 <div id="rss-container"></div>
 
+<div class="section-title"><i class="ti ti-bulb"></i> <span data-t="tipSectionTitle">Tip of the week</span></div>
+<div id="tip-container"></div>
+
 </div>
 
 <script>
@@ -178,7 +195,8 @@ const I18N = {
     meeting:'Research meeting', congress:'Congress', deadline:'Abstract / deadline', other:'Other',
     rssTitle:'Latest papers', rssLoading:'Loading the latest papers...', rssEmpty:'No articles available right now.', rssFailed:'Could not load the article feed right now.',
     requestPdf:'Request PDF', yourEmail:'Your email', note:'Note (optional)', notePh:'Any detail that helps us find the right version...',
-    send:'Send request', cancel:'Cancel', requestSent:'Request sent \u2014 you\'ll be contacted once the PDF is available.', ratings:'ratings' },
+    send:'Send request', cancel:'Cancel', requestSent:'Request sent \u2014 you\'ll be contacted once the PDF is available.', ratings:'ratings',
+    tipSectionTitle:'Tip of the week', tipNoPosts:'No posts yet', tipBack:'Back to all tips', tipPublished:'Published' },
   it: { pageTitle:'Research \u2014 Panoramica', pageSub:'Informazioni pubbliche per gli stakeholder. Questa pagina si aggiorna automaticamente.',
     ideaSectionTitle:'Sottometti un\u2019idea di ricerca',
     idea:{ sub:'Condividi un\u2019idea di ricerca con il team. Ogni sottomissione viene revisionata \u2014 riceverai una notifica una volta valutata.',
@@ -200,7 +218,8 @@ const I18N = {
     meeting:'Research meeting', congress:'Congresso', deadline:'Abstract / scadenza', other:'Altro',
     rssTitle:'Ultimi articoli', rssLoading:'Caricamento degli ultimi articoli...', rssEmpty:'Nessun articolo disponibile al momento.', rssFailed:'Impossibile caricare il feed articoli in questo momento.',
     requestPdf:'Richiedi PDF', yourEmail:'La tua email', note:'Nota (opzionale)', notePh:'Qualsiasi dettaglio utile per trovare la versione giusta...',
-    send:'Invia richiesta', cancel:'Annulla', requestSent:'Richiesta inviata \u2014 sarai contattato non appena il PDF sar\u00e0 disponibile.', ratings:'voti' },
+    send:'Invia richiesta', cancel:'Annulla', requestSent:'Richiesta inviata \u2014 sarai contattato non appena il PDF sar\u00e0 disponibile.', ratings:'voti',
+    tipSectionTitle:'Tip of the week', tipNoPosts:'Nessun post ancora', tipBack:'Torna a tutti i tip', tipPublished:'Pubblicato' },
   fr: { pageTitle:'Research \u2014 Aper\u00e7u', pageSub:'Informations publiques pour les parties prenantes. Cette page se met \u00e0 jour automatiquement.',
     ideaSectionTitle:'Soumettre une id\u00e9e de recherche',
     idea:{ sub:"Partagez une id\u00e9e de recherche avec l'\u00e9quipe. Chaque soumission est examin\u00e9e \u2014 vous serez inform\u00e9 une fois l'\u00e9valuation termin\u00e9e.",
@@ -222,7 +241,8 @@ const I18N = {
     meeting:'R\u00e9union de recherche', congress:'Congr\u00e8s', deadline:'Abstract / \u00e9ch\u00e9ance', other:'Autre',
     rssTitle:'Derniers articles', rssLoading:'Chargement des derniers articles...', rssEmpty:'Aucun article disponible pour le moment.', rssFailed:'Impossible de charger le flux d\u2019articles pour le moment.',
     requestPdf:'Demander le PDF', yourEmail:'Votre email', note:'Note (facultatif)', notePh:'Tout d\u00e9tail utile pour trouver la bonne version...',
-    send:'Envoyer la demande', cancel:'Annuler', requestSent:'Demande envoy\u00e9e \u2014 vous serez contact\u00e9 d\u00e8s que le PDF sera disponible.', ratings:'votes' },
+    send:'Envoyer la demande', cancel:'Annuler', requestSent:'Demande envoy\u00e9e \u2014 vous serez contact\u00e9 d\u00e8s que le PDF sera disponible.', ratings:'votes',
+    tipSectionTitle:'Tip of the week', tipNoPosts:'Aucun post pour l\u2019instant', tipBack:'Retour \u00e0 tous les tips', tipPublished:'Publi\u00e9' },
   es: { pageTitle:'Research \u2014 Resumen', pageSub:'Informaci\u00f3n p\u00fablica para los interesados. Esta p\u00e1gina se actualiza autom\u00e1ticamente.',
     ideaSectionTitle:'Enviar una idea de investigaci\u00f3n',
     idea:{ sub:'Comparte una idea de investigaci\u00f3n con el equipo. Cada env\u00edo se revisa \u2014 te avisaremos cuando se haya evaluado.',
@@ -244,7 +264,8 @@ const I18N = {
     meeting:'Reuni\u00f3n de investigaci\u00f3n', congress:'Congreso', deadline:'Abstract / plazo', other:'Otro',
     rssTitle:'\u00daltimos art\u00edculos', rssLoading:'Cargando los \u00faltimos art\u00edculos...', rssEmpty:'No hay art\u00edculos disponibles en este momento.', rssFailed:'No se pudo cargar el feed de art\u00edculos en este momento.',
     requestPdf:'Solicitar PDF', yourEmail:'Tu email', note:'Nota (opcional)', notePh:'Cualquier detalle \u00fatil para encontrar la versi\u00f3n correcta...',
-    send:'Enviar solicitud', cancel:'Cancelar', requestSent:'Solicitud enviada \u2014 te contactaremos en cuanto el PDF est\u00e9 disponible.', ratings:'valoraciones' }
+    send:'Enviar solicitud', cancel:'Cancelar', requestSent:'Solicitud enviada \u2014 te contactaremos en cuanto el PDF est\u00e9 disponible.', ratings:'valoraciones',
+    tipSectionTitle:'Tip of the week', tipNoPosts:'A\u00fan no hay publicaciones', tipBack:'Volver a todos los tips', tipPublished:'Publicado' }
 };
 let lang = 'en';
 try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
@@ -510,13 +531,75 @@ function confirmSubmitIdea(){
   }
 }
 
+/* ---- Tip of the week (read-only blog) ---- */
+let tipPosts = [], tipPostsReady = false, tipPostsFailed = false;
+let tipOpenId = null;
+
+function fmtTipDate(ts){ if (!ts || !ts.toDate) return ''; return ts.toDate().toLocaleDateString(I18N[lang].locale, {day:'numeric',month:'short',year:'numeric'}); }
+
+function chartSvgMarkup(chart){
+  const rows = chart.rows || [];
+  if (!rows.length) return '';
+  const max = Math.max.apply(null, rows.map(function(r){ return Number(r.value) || 0; })) || 1;
+  const w = 560, barH = 26, gap = 12, leftPad = 110, rightPad = 50, topPad = 8;
+  const h = topPad*2 + rows.length * (barH + gap) - gap;
+  let bars = '';
+  rows.forEach(function(r, i){
+    const val = Number(r.value) || 0;
+    const barMaxW = w - leftPad - rightPad;
+    const bw = Math.max(2, (val / max) * barMaxW);
+    const y = topPad + i * (barH + gap);
+    bars += '<text x="'+(leftPad-8)+'" y="'+(y+barH/2)+'" text-anchor="end" dominant-baseline="central" font-size="11" font-family="var(--font-sans)" fill="var(--text2)">'+esc(r.label)+'</text>';
+    bars += '<rect x="'+leftPad+'" y="'+y+'" width="'+bw+'" height="'+barH+'" fill="#315FCA" rx="2"></rect>';
+    bars += '<text x="'+(leftPad+bw+8)+'" y="'+(y+barH/2)+'" dominant-baseline="central" font-size="11" font-family="var(--font-mono)" fill="var(--text)">'+esc(r.value)+'</text>';
+  });
+  return '<div class="tip-chart">'+
+    (chart.title ? '<div class="tip-chart-title">'+esc(chart.title)+'</div>' : '')+
+    '<svg viewBox="0 0 '+w+' '+h+'" width="100%" style="max-width:560px;display:block">'+bars+'</svg>'+
+    '</div>';
+}
+
+function tipCardMarkup(p){
+  return '<div class="tip-card" onclick="openTipPost(\''+p.id+'\')">'+
+    (p.coverImage ? '<img src="'+esc(p.coverImage)+'" alt="" onerror="this.style.display=\'none\'">' : '')+
+    '<div class="body"><div class="ttl">'+esc(p.title)+'</div><div class="dt">'+t('tipPublished')+' '+fmtTipDate(p.createdAt)+'</div></div>'+
+    '</div>';
+}
+
+function tipDetailMarkup(p){
+  return '<div class="tip-detail">'+
+    '<button class="btn btn-sm" onclick="closeTipPost()" style="margin-bottom:1.25rem"><i class="ti ti-arrow-left"></i> '+t('tipBack')+'</button>'+
+    (p.coverImage ? '<img src="'+esc(p.coverImage)+'" alt="" onerror="this.style.display=\'none\'">' : '')+
+    '<div class="ttl">'+esc(p.title)+'</div>'+
+    '<div class="dt" style="font-size:12px;color:var(--text3)">'+t('tipPublished')+' '+fmtTipDate(p.createdAt)+'</div>'+
+    '<div class="body-text">'+esc(p.body)+'</div>'+
+    (p.charts || []).map(chartSvgMarkup).join('')+
+    '</div>';
+}
+
+function renderTip(){
+  const el = document.getElementById('tip-container');
+  if (!el) return;
+  if (tipPostsFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
+  if (!tipPostsReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
+  if (tipOpenId) {
+    const p = tipPosts.find(function(x){ return x.id === tipOpenId; });
+    if (p) { el.innerHTML = tipDetailMarkup(p); return; }
+  }
+  if (!tipPosts.length) { el.innerHTML = '<div class="empty"><i class="ti ti-notes" style="font-size:24px"></i><div style="margin-top:8px">'+t('tipNoPosts')+'</div></div>'; return; }
+  el.innerHTML = '<div class="tip-grid">' + tipPosts.map(tipCardMarkup).join('') + '</div>';
+}
+
+function openTipPost(id){ tipOpenId = id; renderTip(); window.scrollTo({top: document.getElementById('tip-container').offsetTop - 20, behavior:'smooth'}); }
+function closeTipPost(){ tipOpenId = null; renderTip(); }
+
 function renderLangSwitch(){
   document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(function(l){
     return '<button class="lang-btn '+(l===lang?'active':'')+'" onclick="setLang(\''+l+'\')">'+l.toUpperCase()+'</button>';
   }).join('');
 }
 function applyStaticText(){ document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t); }); }
-function setLang(l){ lang = l; try { localStorage.setItem('hubLang', l); } catch(e) {} renderLangSwitch(); applyStaticText(); renderCalendar(); renderIdeaForm(); renderRss(); }
+function setLang(l){ lang = l; try { localStorage.setItem('hubLang', l); } catch(e) {} renderLangSwitch(); applyStaticText(); renderCalendar(); renderIdeaForm(); renderRss(); renderTip(); }
 
 window.changeMonth = changeMonth;
 window.goToday = goToday;
@@ -535,11 +618,16 @@ window.confirmSubmitIdea = confirmSubmitIdea;
 window.resetIdeaForm = resetIdeaForm;
 window.onIdeaSubmitted = function(){ ideaSubmitting = false; ideaSubmitted = true; renderIdeaForm(); };
 window.onIdeaSubmitFailed = function(){ ideaSubmitting = false; ideaErrorMsg = I18N[lang].idea.errMsg; renderIdeaForm(); };
+window.openTipPost = openTipPost;
+window.closeTipPost = closeTipPost;
+window.onTipPostsUpdated = function(data){ tipPosts = data; tipPostsReady = true; renderTip(); };
+window.onTipPostsFailed = function(){ tipPostsFailed = true; renderTip(); };
 
 renderLangSwitch();
 applyStaticText();
 renderIdeaForm();
 renderCalendar();
+renderTip();
 loadRssArticles();
 </script>
 
@@ -575,8 +663,19 @@ if (db) {
       if (window.onEventsFailed) window.onEventsFailed();
     }
   );
+  const tipQ = query(collection(db, 'tipPosts'), orderBy('createdAt', 'desc'));
+  onSnapshot(tipQ,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onTipPostsUpdated) window.onTipPostsUpdated(data);
+    },
+    function () {
+      if (window.onTipPostsFailed) window.onTipPostsFailed();
+    }
+  );
 } else {
   if (window.onEventsFailed) window.onEventsFailed();
+  if (window.onTipPostsFailed) window.onTipPostsFailed();
 }
 
 const watchedRatings = {};
