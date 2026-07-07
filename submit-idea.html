@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit your research idea</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root{
+  --bg:#f8f7f4;--surface:#fff;--surface2:#f1efe8;
+  --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+  --text:#1a1a18;--text2:#5f5e5a;--text3:#888780;
+  --radius:12px;--radius-sm:8px;
+  --blue-bg:#E6F1FB;--blue-tx:#0C447C;
+  --teal-bg:#E1F5EE;--teal-tx:#085041;
+  --green-bg:#EAF3DE;--green-tx:#27500A;
+  --red:#E24B4A;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--surface:#252523;--surface2:#2e2e2b;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+  --text:#f0ece4;--text2:#b4b2a9;--text3:#888780;
+  --blue-bg:#0C447C;--blue-tx:#B5D4F4;
+  --teal-bg:#085041;--teal-tx:#9FE1CB;
+  --green-bg:#27500A;--green-tx:#C0DD97;
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:640px;margin:0 auto;padding:2.5rem 1.25rem}
+.logo{font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px}
+.logo i{color:var(--teal-tx)}
+.sub{font-size:14px;color:var(--text2);margin-top:6px;line-height:1.5}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;margin-top:1.1rem}
+label:first-child{margin-top:0}
+label .req{color:var(--red)}
+label .hint{font-weight:400;color:var(--text3);display:block;margin-top:2px;font-size:12px}
+input,textarea{width:100%;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:inherit;font-size:14px;outline:none}
+input:focus,textarea:focus{border-color:var(--teal-tx);box-shadow:0 0 0 3px rgba(8,80,65,.12)}
+textarea{resize:vertical;min-height:80px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:transparent;font-size:14px;cursor:pointer;color:var(--text);font-family:inherit}
+.btn-primary{background:var(--text);color:var(--surface);border-color:var(--text);width:100%;justify-content:center;padding:12px;font-size:15px;margin-top:1.5rem}
+.btn-primary:hover{opacity:.88}
+.btn-primary[disabled]{opacity:.5;cursor:not-allowed}
+.alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-top:1rem;display:flex;align-items:center;gap:8px}
+.alert-ok{background:var(--green-bg);color:var(--green-tx)}
+.alert-err{background:rgba(226,75,74,.1);color:var(--red);border:0.5px solid rgba(226,75,74,.3)}
+.hidden{display:none!important}
+.success-screen{text-align:center;padding:3rem 1rem}
+.success-icon{font-size:44px;color:var(--green-tx);margin-bottom:1rem}
+.field-row{display:flex;gap:12px}
+.field-row>div{flex:1}
+.lang-switch{display:flex;gap:4px;justify-content:flex-end;margin-bottom:1rem}
+.lang-btn{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.lang-btn.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lang-switch" id="lang-switch"></div>
+
+  <div style="margin-bottom:1.75rem">
+    <div class="logo"><i class="ti ti-bulb" style="font-size:22px"></i> <span data-t="pageTitle">Submit your research idea</span></div>
+    <div class="sub" data-t="pageSub">Share a research idea with the team. Every submission is reviewed before moving forward — you'll be notified once it's screened.</div>
+  </div>
+
+  <div id="form-screen" class="card">
+    <form id="idea-form">
+      <label><span data-t="lName">Your name</span> <span class="req">*</span></label>
+      <input type="text" id="f-name" required data-tp="phName" placeholder="e.g. Jane Smith">
+
+      <label><span data-t="lEmail">Your email</span> <span class="req">*</span>
+        <span class="hint" data-t="hEmail">We'll only use this to update you on your submission</span>
+      </label>
+      <input type="email" id="f-email" required data-tp="phEmail" placeholder="you@example.com">
+
+      <label><span data-t="lTitle">Research idea title</span> <span class="req">*</span></label>
+      <input type="text" id="f-title" required data-tp="phTitle" placeholder="Short, descriptive title">
+
+      <label><span data-t="lObjective">Objective</span> <span class="req">*</span>
+        <span class="hint" data-t="hObjective">What question are you trying to answer?</span>
+      </label>
+      <textarea id="f-objective" required data-tp="phObjective" placeholder="Describe the main objective of the study..."></textarea>
+
+      <label><span data-t="lSample">Sample</span> <span class="req">*</span>
+        <span class="hint" data-t="hSample">Target population, setting, expected sample size</span>
+      </label>
+      <textarea id="f-sample" required data-tp="phSample" placeholder="Describe the population/sample..."></textarea>
+
+      <label><span data-t="lMethods">Methods</span> <span class="req">*</span>
+        <span class="hint" data-t="hMethods">Study design, data collection, analysis approach</span>
+      </label>
+      <textarea id="f-methods" required data-tp="phMethods" placeholder="Describe the proposed methodology..."></textarea>
+
+      <label><span data-t="lLinks">Related links</span>
+        <span class="hint" data-t="hLinks">Papers, datasets, or references (one per line, optional)</span>
+      </label>
+      <textarea id="f-links" data-tp="phLinks" placeholder="https://..."></textarea>
+
+      <label><span data-t="lNotes">Additional notes</span>
+        <span class="hint" data-t="hNotes">Anything else relevant (optional)</span>
+      </label>
+      <textarea id="f-notes" data-tp="phNotes" placeholder="Optional notes..."></textarea>
+
+      <button type="submit" class="btn btn-primary" id="submit-btn"><i class="ti ti-send"></i> <span data-t="submitBtn">Submit idea</span></button>
+      <div id="form-alert"></div>
+    </form>
+  </div>
+
+  <div id="success-screen" class="success-screen hidden">
+    <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:8px" data-t="successTitle">Idea submitted</div>
+    <div class="sub" style="margin-bottom:1.5rem" data-t="successSub">Thanks — your research idea has been received and will be reviewed shortly. You'll get an update by email once it's been screened.</div>
+    <button class="btn" onclick="resetForm()"><i class="ti ti-plus"></i> <span data-t="againBtn">Submit another idea</span></button>
+  </div>
+
+</div>
+
+<script>
+const I18N = {
+  en: { pageTitle:'Submit your research idea', pageSub:"Share a research idea with the team. Every submission is reviewed before moving forward \u2014 you'll be notified once it's screened.",
+    lName:'Your name', lEmail:'Your email', hEmail:"We'll only use this to update you on your submission",
+    lTitle:'Research idea title', lObjective:'Objective', hObjective:'What question are you trying to answer?',
+    lSample:'Sample', hSample:'Target population, setting, expected sample size',
+    lMethods:'Methods', hMethods:'Study design, data collection, analysis approach',
+    lLinks:'Related links', hLinks:'Papers, datasets, or references (one per line, optional)',
+    lNotes:'Additional notes', hNotes:'Anything else relevant (optional)',
+    phName:'e.g. Jane Smith', phEmail:'you@example.com', phTitle:'Short, descriptive title',
+    phObjective:'Describe the main objective of the study...', phSample:'Describe the population/sample...',
+    phMethods:'Describe the proposed methodology...', phLinks:'https://...', phNotes:'Optional notes...',
+    submitBtn:'Submit idea', submitting:'Submitting...', errMsg:'Something went wrong. Please try again.',
+    successTitle:'Idea submitted', successSub:"Thanks \u2014 your research idea has been received and will be reviewed shortly. You'll get an update by email once it's been screened.",
+    againBtn:'Submit another idea' },
+  it: { pageTitle:'Sottometti la tua idea di ricerca', pageSub:'Condividi un\u2019idea di ricerca con il team. Ogni sottomissione viene revisionata \u2014 riceverai una notifica una volta valutata.',
+    lName:'Il tuo nome', lEmail:'La tua email', hEmail:'La useremo solo per aggiornarti sulla tua sottomissione',
+    lTitle:'Titolo dell\u2019idea di ricerca', lObjective:'Obiettivo', hObjective:'A quale domanda vuoi rispondere?',
+    lSample:'Campione', hSample:'Popolazione target, contesto, dimensione campionaria prevista',
+    lMethods:'Metodi', hMethods:'Disegno dello studio, raccolta e analisi dei dati',
+    lLinks:'Link correlati', hLinks:'Paper, dataset o riferimenti (uno per riga, opzionale)',
+    lNotes:'Note aggiuntive', hNotes:'Altro di rilevante (opzionale)',
+    phName:'es. Jane Smith', phEmail:'tu@esempio.com', phTitle:'Titolo breve e descrittivo',
+    phObjective:"Descrivi l'obiettivo principale dello studio...", phSample:'Descrivi la popolazione/campione...',
+    phMethods:'Descrivi la metodologia proposta...', phLinks:'https://...', phNotes:'Note opzionali...',
+    submitBtn:"Sottometti l'idea", submitting:'Invio in corso...', errMsg:'Qualcosa \u00e8 andato storto. Riprova.',
+    successTitle:'Idea sottomessa', successSub:'Grazie \u2014 la tua idea di ricerca \u00e8 stata ricevuta e verr\u00e0 revisionata a breve. Riceverai un aggiornamento via email una volta valutata.',
+    againBtn:"Sottometti un'altra idea" },
+  fr: { pageTitle:'Soumettez votre id\u00e9e de recherche', pageSub:"Partagez une id\u00e9e de recherche avec l'\u00e9quipe. Chaque soumission est examin\u00e9e \u2014 vous serez inform\u00e9 une fois l'\u00e9valuation termin\u00e9e.",
+    lName:'Votre nom', lEmail:'Votre email', hEmail:'Nous l\u2019utiliserons uniquement pour vous informer de votre soumission',
+    lTitle:'Titre de l\u2019id\u00e9e de recherche', lObjective:'Objectif', hObjective:'\u00c0 quelle question essayez-vous de r\u00e9pondre ?',
+    lSample:'\u00c9chantillon', hSample:'Population cible, contexte, taille d\u2019\u00e9chantillon attendue',
+    lMethods:'M\u00e9thodes', hMethods:'Conception de l\u2019\u00e9tude, collecte et analyse des donn\u00e9es',
+    lLinks:'Liens associ\u00e9s', hLinks:'Articles, jeux de donn\u00e9es ou r\u00e9f\u00e9rences (un par ligne, facultatif)',
+    lNotes:'Notes suppl\u00e9mentaires', hNotes:'Toute autre information pertinente (facultatif)',
+    phName:'ex. Jane Smith', phEmail:'vous@exemple.com', phTitle:'Titre court et descriptif',
+    phObjective:"D\u00e9crivez l'objectif principal de l'\u00e9tude...", phSample:'D\u00e9crivez la population/l\u2019\u00e9chantillon...',
+    phMethods:'D\u00e9crivez la m\u00e9thodologie propos\u00e9e...', phLinks:'https://...', phNotes:'Notes facultatives...',
+    submitBtn:"Soumettre l'id\u00e9e", submitting:'Envoi en cours...', errMsg:"Une erreur s'est produite. Veuillez r\u00e9essayer.",
+    successTitle:'Id\u00e9e soumise', successSub:"Merci \u2014 votre id\u00e9e de recherche a \u00e9t\u00e9 re\u00e7ue et sera examin\u00e9e prochainement. Vous recevrez une mise \u00e0 jour par email une fois l'\u00e9valuation termin\u00e9e.",
+    againBtn:'Soumettre une autre id\u00e9e' },
+  es: { pageTitle:'Env\u00eda tu idea de investigaci\u00f3n', pageSub:'Comparte una idea de investigaci\u00f3n con el equipo. Cada env\u00edo se revisa \u2014 te avisaremos cuando se haya evaluado.',
+    lName:'Tu nombre', lEmail:'Tu email', hEmail:'Solo lo usaremos para informarte sobre tu env\u00edo',
+    lTitle:'T\u00edtulo de la idea de investigaci\u00f3n', lObjective:'Objetivo', hObjective:'\u00bfQu\u00e9 pregunta intentas responder?',
+    lSample:'Muestra', hSample:'Poblaci\u00f3n objetivo, contexto, tama\u00f1o de muestra previsto',
+    lMethods:'M\u00e9todos', hMethods:'Dise\u00f1o del estudio, recopilaci\u00f3n y an\u00e1lisis de datos',
+    lLinks:'Enlaces relacionados', hLinks:'Art\u00edculos, conjuntos de datos o referencias (uno por l\u00ednea, opcional)',
+    lNotes:'Notas adicionales', hNotes:'Cualquier otra informaci\u00f3n relevante (opcional)',
+    phName:'ej. Jane Smith', phEmail:'tu@ejemplo.com', phTitle:'T\u00edtulo breve y descriptivo',
+    phObjective:'Describe el objetivo principal del estudio...', phSample:'Describe la poblaci\u00f3n/muestra...',
+    phMethods:'Describe la metodolog\u00eda propuesta...', phLinks:'https://...', phNotes:'Notas opcionales...',
+    submitBtn:'Enviar idea', submitting:'Enviando...', errMsg:'Algo sali\u00f3 mal. Int\u00e9ntalo de nuevo.',
+    successTitle:'Idea enviada', successSub:'Gracias \u2014 tu idea de investigaci\u00f3n ha sido recibida y ser\u00e1 revisada en breve. Recibir\u00e1s una actualizaci\u00f3n por email una vez evaluada.',
+    againBtn:'Enviar otra idea' }
+};
+let lang = 'en';
+try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
+function t(key){ return (I18N[lang] && I18N[lang][key]) || I18N.en[key]; }
+function applyStaticText(){
+  document.querySelectorAll('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  document.querySelectorAll('[data-tp]').forEach(el => el.placeholder = t(el.dataset.tp));
+}
+function renderLangSwitch(){
+  document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(l =>
+    '<button class="lang-btn ' + (l===lang?'active':'') + '" onclick="setLang(\'' + l + '\')">' + l.toUpperCase() + '</button>').join('');
+}
+function setLang(l){
+  lang = l;
+  try { localStorage.setItem('hubLang', l); } catch(e) {}
+  renderLangSwitch();
+  applyStaticText();
+}
+renderLangSwitch();
+applyStaticText();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// TODO: reuse the same firebaseConfig as the PhD tracker project
+const firebaseConfig = {
+  apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
+  authDomain: "phd-tracker-22d93.firebaseapp.com",
+  projectId: "phd-tracker-22d93",
+  storageBucket: "phd-tracker-22d93.firebasestorage.app",
+  messagingSenderId: "252875836800",
+  appId: "1:252875836800:web:dc6575ffab316da3744565"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// TODO: replace with your own EmailJS credentials (emailjs.com — free tier, no backend needed)
+const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID_NEW_IDEA";
+if (window.emailjs) window.emailjs.init(EMAILJS_PUBLIC_KEY);
+
+const form = document.getElementById('idea-form');
+const btn = document.getElementById('submit-btn');
+const alertBox = document.getElementById('form-alert');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  btn.disabled = true;
+  btn.innerHTML = `<i class="ti ti-loader-2"></i> ${t('submitting')}`;
+  alertBox.innerHTML = '';
+
+  const data = {
+    submitterName: document.getElementById('f-name').value.trim(),
+    submitterEmail: document.getElementById('f-email').value.trim(),
+    title: document.getElementById('f-title').value.trim(),
+    objective: document.getElementById('f-objective').value.trim(),
+    sample: document.getElementById('f-sample').value.trim(),
+    methods: document.getElementById('f-methods').value.trim(),
+    links: document.getElementById('f-links').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    status: 'pending',
+    screeningNotes: '',
+    createdAt: serverTimestamp()
+  };
+
+  try {
+    await addDoc(collection(db, 'researchIdeas'), data);
+
+    // Fire-and-forget email notification to the owner. Safe to fail silently
+    // if EmailJS isn't configured yet — the submission itself still succeeds.
+    if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+      window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        submitter_name: data.submitterName,
+        submitter_email: data.submitterEmail,
+        idea_title: data.title,
+        objective: data.objective
+      }).catch(() => {});
+    }
+
+    document.getElementById('form-screen').classList.add('hidden');
+    document.getElementById('success-screen').classList.remove('hidden');
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert alert-err"><i class="ti ti-alert-circle"></i> ${t('errMsg')}</div>`;
+    btn.disabled = false;
+    btn.innerHTML = `<i class="ti ti-send"></i> ${t('submitBtn')}`;
+  }
+});
+
+window.resetForm = function () {
+  form.reset();
+  btn.disabled = false;
+  btn.innerHTML = `<i class="ti ti-send"></i> ${t('submitBtn')}`;
+  document.getElementById('success-screen').classList.add('hidden');
+  document.getElementById('form-screen').classList.remove('hidden');
+};
+</script>
+</body>
+</html>
