@@ -229,7 +229,9 @@ const I18N = {
       allTypes:'All' },
     rss:{ requestsTitle:'PDF requests received', noRequests:'No PDF requests yet', requester:'Requested by',
       article:'Article', note:'Note', markFulfilled:'Mark as fulfilled', markPending:'Reopen', fulfilled:'Fulfilled', pending:'Pending',
-      infoTitle:'Article feed & ratings', infoSub:'Stakeholders see and rate the live article feed, and request PDFs, from the public overview page.' },
+      infoTitle:'Article feed & ratings', infoSub:'Stakeholders see and rate the live article feed, and request PDFs, from the public overview page.',
+      pdfLinkLabel:'PDF link', pdfLinkHint:'Paste a shareable link (e.g. Google Drive) to the PDF', pdfLinkPh:'https://drive.google.com/...',
+      fulfillNote:'Note for the requester (optional)', sendFulfill:'Send link & mark fulfilled', cancelFulfill:'Cancel', pdfLinkOn:'PDF link' },
     tip:{ newPost:'New post', editPost:'Edit post', postTitle:'Title', coverImage:'Cover image URL (optional)', coverImageHint:'Paste a link to an already-hosted image, or upload a file below',
       uploadBtn:'Upload JPG/PNG', removeImg:'Remove image', compressing:'Processing image...',
       body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
@@ -263,7 +265,9 @@ const I18N = {
       allTypes:'Tutti' },
     rss:{ requestsTitle:'Richieste PDF ricevute', noRequests:'Nessuna richiesta PDF ancora', requester:'Richiesta da',
       article:'Articolo', note:'Nota', markFulfilled:'Segna come evasa', markPending:'Riapri', fulfilled:'Evasa', pending:'In attesa',
-      infoTitle:'Feed articoli e valutazioni', infoSub:'Gli stakeholder vedono e votano il feed articoli in diretta, e richiedono i PDF, dalla pagina pubblica.' },
+      infoTitle:'Feed articoli e valutazioni', infoSub:'Gli stakeholder vedono e votano il feed articoli in diretta, e richiedono i PDF, dalla pagina pubblica.',
+      pdfLinkLabel:'Link al PDF', pdfLinkHint:'Incolla un link condivisibile (es. Google Drive) al PDF', pdfLinkPh:'https://drive.google.com/...',
+      fulfillNote:'Nota per chi ha richiesto (opzionale)', sendFulfill:'Invia link e segna come evasa', cancelFulfill:'Annulla', pdfLinkOn:'Link al PDF' },
     tip:{ newPost:'Nuovo post', editPost:'Modifica post', postTitle:'Titolo', coverImage:'URL immagine di copertina (opzionale)', coverImageHint:'Incolla il link a un\u2019immagine gi\u00e0 online, oppure caricane una qui sotto',
       uploadBtn:'Carica JPG/PNG', removeImg:'Rimuovi immagine', compressing:'Elaborazione immagine...',
       body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
@@ -297,7 +301,9 @@ const I18N = {
       allTypes:'Tous' },
     rss:{ requestsTitle:'Demandes de PDF re\u00e7ues', noRequests:'Aucune demande de PDF pour l\u2019instant', requester:'Demand\u00e9 par',
       article:'Article', note:'Note', markFulfilled:'Marquer comme trait\u00e9e', markPending:'Rouvrir', fulfilled:'Trait\u00e9e', pending:'En attente',
-      infoTitle:'Flux d\u2019articles et \u00e9valuations', infoSub:'Les parties prenantes voient et notent le flux d\u2019articles en direct, et demandent des PDF, depuis la page publique.' },
+      infoTitle:'Flux d\u2019articles et \u00e9valuations', infoSub:'Les parties prenantes voient et notent le flux d\u2019articles en direct, et demandent des PDF, depuis la page publique.',
+      pdfLinkLabel:'Lien du PDF', pdfLinkHint:'Collez un lien partageable (ex. Google Drive) vers le PDF', pdfLinkPh:'https://drive.google.com/...',
+      fulfillNote:'Note pour le demandeur (facultatif)', sendFulfill:'Envoyer le lien et marquer comme trait\u00e9e', cancelFulfill:'Annuler', pdfLinkOn:'Lien du PDF' },
     tip:{ newPost:'Nouveau post', editPost:'Modifier le post', postTitle:'Titre', coverImage:'URL image de couverture (facultatif)', coverImageHint:'Collez le lien vers une image d\u00e9j\u00e0 en ligne, ou t\u00e9l\u00e9versez-en une ci-dessous',
       uploadBtn:'T\u00e9l\u00e9verser JPG/PNG', removeImg:'Supprimer l\u2019image', compressing:'Traitement de l\u2019image...',
       body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
@@ -331,7 +337,9 @@ const I18N = {
       allTypes:'Todos' },
     rss:{ requestsTitle:'Solicitudes de PDF recibidas', noRequests:'A\u00fan no hay solicitudes de PDF', requester:'Solicitado por',
       article:'Art\u00edculo', note:'Nota', markFulfilled:'Marcar como resuelta', markPending:'Reabrir', fulfilled:'Resuelta', pending:'Pendiente',
-      infoTitle:'Feed de art\u00edculos y valoraciones', infoSub:'Los interesados ven y punt\u00faan el feed de art\u00edculos en vivo, y solicitan PDF, desde la p\u00e1gina p\u00fablica.' },
+      infoTitle:'Feed de art\u00edculos y valoraciones', infoSub:'Los interesados ven y punt\u00faan el feed de art\u00edculos en vivo, y solicitan PDF, desde la p\u00e1gina p\u00fablica.',
+      pdfLinkLabel:'Enlace al PDF', pdfLinkHint:'Pega un enlace compartible (p.ej. Google Drive) al PDF', pdfLinkPh:'https://drive.google.com/...',
+      fulfillNote:'Nota para quien lo solicit\u00f3 (opcional)', sendFulfill:'Enviar enlace y marcar como resuelta', cancelFulfill:'Cancelar', pdfLinkOn:'Enlace al PDF' },
     tip:{ newPost:'Nueva publicaci\u00f3n', editPost:'Editar publicaci\u00f3n', postTitle:'T\u00edtulo', coverImage:'URL de imagen de portada (opcional)', coverImageHint:'Pega el enlace a una imagen ya alojada online, o sube un archivo abajo',
       uploadBtn:'Subir JPG/PNG', removeImg:'Quitar imagen', compressing:'Procesando imagen...',
       body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
@@ -382,6 +390,7 @@ const EVENT_TYPES = ['meeting','congress','deadline','other'];
 const EVENT_COLORS = { meeting:'blue', congress:'gold', deadline:'coral', other:'grey' };
 
 let pdfRequests = [], pdfRequestsReady = false, pdfRequestsFailed = false;
+let fulfillDraft = null; // { id, pdfLink, note }
 
 let tipPosts = [], tipPostsReady = false, tipPostsFailed = false;
 let tipEditing = null; // { id?, title, coverImage, body, charts:[{title,rows:[{label,value}]}] }
@@ -746,8 +755,31 @@ function renderCalendarPanel(){
 }
 
 /* ---- Papers RSS / PDF requests ---- */
-function toggleFulfilled(id, current){
-  if (window.setPdfRequestStatus) window.setPdfRequestStatus(id, current === 'fulfilled' ? 'pending' : 'fulfilled');
+function openFulfillForm(id){ fulfillDraft = { id: id, pdfLink: '', note: '' }; renderRssPanel(); }
+function cancelFulfillForm(){ fulfillDraft = null; renderRssPanel(); }
+function updateFulfillDraft(field, val){ if (fulfillDraft) fulfillDraft[field] = val; }
+function reopenRequest(id){ if (window.setPdfRequestStatus) window.setPdfRequestStatus(id, 'pending'); }
+function confirmFulfill(id){
+  if (!fulfillDraft || !fulfillDraft.pdfLink) return;
+  const req = pdfRequests.find(function(x){ return x.id === id; });
+  const draft = fulfillDraft;
+  fulfillDraft = null;
+  if (window.sendPdfToRequester) window.sendPdfToRequester(id, draft.pdfLink, draft.note, req);
+}
+
+function fulfillFormMarkup(r){
+  const tt = t('rss');
+  const d = fulfillDraft;
+  return '<div class="decision-form">'+
+    '<div class="field-block"><label>'+tt.pdfLinkLabel+'</label>'+
+    '<input type="text" value="'+esc(d.pdfLink)+'" placeholder="'+tt.pdfLinkPh+'" oninput="updateFulfillDraft(\'pdfLink\',this.value)">'+
+    '<div style="font-size:11px;color:var(--text3);margin-top:3px">'+tt.pdfLinkHint+'</div></div>'+
+    '<div class="field-block"><label>'+tt.fulfillNote+'</label>'+
+    '<textarea rows="2" oninput="updateFulfillDraft(\'note\',this.value)">'+esc(d.note)+'</textarea></div>'+
+    '<div class="idea-actions">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmFulfill(\''+r.id+'\')"><i class="ti ti-send"></i> '+tt.sendFulfill+'</button>'+
+    '<button class="btn btn-sm" onclick="cancelFulfillForm()">'+tt.cancelFulfill+'</button>'+
+    '</div></div>';
 }
 
 function renderRssPanel(){
@@ -776,7 +808,9 @@ function renderRssPanel(){
           '<div style="padding:0 1.25rem 1.25rem">'+
           (r.articleLink ? '<div class="field-block"><label>'+t('rss').article+'</label><div class="val"><a href="'+esc(r.articleLink)+'" target="_blank" rel="noopener">'+esc(r.articleLink)+'</a></div></div>' : '')+
           (r.notes ? '<div class="field-block"><label>'+t('rss').note+'</label><div class="val">'+esc(r.notes)+'</div></div>' : '')+
-          '<div class="idea-actions"><button class="btn btn-sm" onclick="toggleFulfilled(\''+r.id+'\',\''+r.status+'\')"><i class="ti ti-check"></i> '+(r.status==='fulfilled'?t('rss').markPending:t('rss').markFulfilled)+'</button></div>'+
+          (r.pdfLink ? '<div class="field-block"><label>'+t('rss').pdfLinkOn+'</label><div class="val"><a href="'+esc(r.pdfLink)+'" target="_blank" rel="noopener">'+esc(r.pdfLink)+'</a></div></div>' : '')+
+          (fulfillDraft && fulfillDraft.id === r.id ? fulfillFormMarkup(r) :
+            '<div class="idea-actions"><button class="btn btn-sm" onclick="'+(r.status==='fulfilled'?'reopenRequest(\''+r.id+'\')':'openFulfillForm(\''+r.id+'\')')+'"><i class="ti ti-check"></i> '+(r.status==='fulfilled'?t('rss').markPending:t('rss').markFulfilled)+'</button></div>')+
           '</div></div>';
       }).join('');
   }
@@ -1070,7 +1104,11 @@ window.confirmSaveEvent = confirmSaveEvent;
 window.confirmDeleteEvent = confirmDeleteEvent;
 window.onEventsUpdated = function(data){ events = data; eventsReady = true; renderCalendarPanel(); };
 window.onEventsFailed = function(){ eventsFailed = true; renderCalendarPanel(); };
-window.toggleFulfilled = toggleFulfilled;
+window.openFulfillForm = openFulfillForm;
+window.cancelFulfillForm = cancelFulfillForm;
+window.updateFulfillDraft = updateFulfillDraft;
+window.reopenRequest = reopenRequest;
+window.confirmFulfill = confirmFulfill;
 window.onPdfRequestsUpdated = function(data){ pdfRequests = data; pdfRequestsReady = true; renderRssPanel(); };
 window.onPdfRequestsFailed = function(){ pdfRequestsFailed = true; renderRssPanel(); };
 window.openNewPost = openNewPost;
@@ -1224,6 +1262,23 @@ window.startPdfRequestsListener = function () {
 window.setPdfRequestStatus = async function (id, status) {
   if (!db) return;
   await updateDoc(doc(db, 'paperRequests', id), { status: status });
+};
+
+// TODO: same EmailJS account/public key as the other templates.
+// Template D — "PDF ready" — variables: to_email, article_title, pdf_link, note
+const EMAILJS_TEMPLATE_ID_PDF_READY = "YOUR_EMAILJS_TEMPLATE_ID_PDF_READY";
+
+window.sendPdfToRequester = async function (id, pdfLink, note, req) {
+  if (!db) return;
+  await updateDoc(doc(db, 'paperRequests', id), { status: 'fulfilled', pdfLink: pdfLink });
+  if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY' && req) {
+    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_PDF_READY, {
+      to_email: req.requesterEmail,
+      article_title: req.articleTitle,
+      pdf_link: pdfLink,
+      note: note || ''
+    }).catch(function () {});
+  }
 };
 
 let tipPostsStarted = false;
