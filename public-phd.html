@@ -284,16 +284,17 @@ input[type=checkbox]{width:auto;cursor:pointer}
 let lang = 'en';
 try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
 const NAV_LABELS = {
-  en: { overview:'Overview', idea:'Submit idea', calendar:'Calendar', papers:'Papers', tip:'Tip of the week', phd:'PhD activities' },
-  it: { overview:'Panoramica', idea:'Sottometti idea', calendar:'Calendario', papers:'Articoli', tip:'Tip of the week', phd:'PhD activities' },
-  fr: { overview:'Aper\u00e7u', idea:'Soumettre une id\u00e9e', calendar:'Calendrier', papers:'Articles', tip:'Tip of the week', phd:'PhD activities' },
-  es: { overview:'Resumen', idea:'Enviar idea', calendar:'Calendario', papers:'Art\u00edculos', tip:'Tip of the week', phd:'PhD activities' }
+  en: { overview:'Overview', idea:'Submit idea', calendar:'Calendar', papers:'Papers', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  it: { overview:'Panoramica', idea:'Sottometti idea', calendar:'Calendario', papers:'Articoli', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  fr: { overview:'Aper\u00e7u', idea:'Soumettre une id\u00e9e', calendar:'Calendrier', papers:'Articles', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  es: { overview:'Resumen', idea:'Enviar idea', calendar:'Calendario', papers:'Art\u00edculos', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' }
 };
 const NAV_PAGES = [
   { key:'overview', href:'public.html' },
   { key:'idea', href:'public-idea.html' },
   { key:'calendar', href:'public-calendar.html' },
   { key:'papers', href:'public-papers.html' },
+  { key:'library', href:'public-library.html' },
   { key:'tip', href:'public-tip.html' },
   { key:'phd', href:'public-phd.html' }
 ];

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Library</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+@font-face { font-family:'Virage'; font-weight:600; font-style:normal; src:url('assets/fonts/Virage-Semibold.otf') format('opentype'); font-display:swap; }
+@font-face { font-family:'Virage'; font-weight:700; font-style:normal; src:url('assets/fonts/Virage-Bold.otf') format('opentype'); font-display:swap; }
+:root{
+  --font-sans:'Geist','Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Virage','Geist',system-ui,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --bg:#F6F8FA;--surface:#fff;--surface2:#EAEEF1;
+  --border:#E1E6F0;--border2:#a1a1a1;
+  --text:#171717;--text2:#4d4d4d;--text3:#888888;
+  --radius:0 12px 0 12px;--radius-sm:6px;
+  --accent:#141428;--accent-press:#0c0c18;--accent-contrast:#fff;
+  --blue-bg:#e2edfd;--blue-tx:#0a5bc4;
+  --red:#c0291f;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#171717;--surface:#212121;--surface2:#2a2a2a;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.22);
+  --text:#f2f2f2;--text2:#b4b4b4;--text3:#888888;
+  --accent:#7f8fdc;--accent-press:#a3b0e6;--accent-contrast:#141428;
+  --blue-bg:#0a5bc4;--blue-tx:#e2edfd;
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:820px;margin:0 auto;padding:2rem 1.25rem}
+.logo{font-family:var(--font-display);font-weight:700;font-size:21px;display:flex;align-items:center;gap:9px;color:var(--text)}
+.logo img{height:26px;width:auto}
+.sub{font-size:14px;color:var(--text2);margin-top:4px}
+.top-strip{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-link{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;border:1px solid transparent}
+.nav-link:hover{background:var(--surface2)}
+.nav-link.current{background:var(--accent);color:#fff}
+.lang-switch{display:flex;gap:4px}
+.lang-btn{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
+.lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hero{position:relative;overflow:hidden;background:#141428;border-radius:var(--radius);padding:1.75rem;margin-bottom:1.5rem}
+.hero .wm{position:absolute;right:-6%;bottom:-30%;width:55%;opacity:.10;filter:invert(1);pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.hero .logo{color:#fff}
+.hero .sub{color:rgba(255,255,255,.78)}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem}
+.instructions{background:var(--blue-bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;color:var(--blue-tx);font-size:13px;line-height:1.5}
+.entry-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.8rem}
+.entry-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.entry-meta{font-size:12px;color:var(--text2);line-height:1.5}
+.pmid-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12px;font-weight:600;background:var(--surface2);color:var(--text);padding:4px 10px;border-radius:8px;margin-top:8px;cursor:pointer;border:1px solid var(--border2)}
+.pmid-chip:hover{background:var(--blue-bg);color:var(--blue-tx)}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text3)}
+.alert{padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;margin-top:8px}
+.alert-err{background:rgba(192,41,31,.1);color:var(--red);border:0.5px solid rgba(192,41,31,.3)}
+.spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="top-strip">
+  <div class="nav-links" id="nav-links"></div>
+  <div class="lang-switch" id="lang-switch"></div>
+</div>
+
+<div class="hero">
+  <img class="wm" src="assets/logos/psg-watermark.svg" alt="" aria-hidden="true">
+  <div class="hero-content">
+    <div class="logo"><img src="assets/logos/psg-crest-white.svg" alt=""> <span data-t="pageTitle">PDF Library</span></div>
+    <div class="sub" data-t="pageSub">Papers already available on request.</div>
+  </div>
+</div>
+
+<div class="instructions" data-t="instructions">These papers are available as PDFs on our shared OneDrive folder. Search the PMID shown below in the folder to find the file.</div>
+
+<div id="lib-container"></div>
+
+</div>
+
+<script>
+let lang = 'en';
+try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
+const I18N = {
+  en: { pageTitle:'PDF Library', pageSub:'Papers already available on request.',
+    instructions:'These papers are available as PDFs on our shared OneDrive folder. Search the PMID shown below in the folder to find the file.',
+    connecting:'Connecting to the database...', offline:'Could not reach the database. Check your connection and reload.',
+    noEntries:'No papers in the library yet.', journal:'Journal', copied:'Copied!' },
+  it: { pageTitle:'PDF Library', pageSub:'Articoli gi\u00e0 disponibili su richiesta.',
+    instructions:'Questi articoli sono disponibili in PDF nella nostra cartella OneDrive condivisa. Cerca il PMID indicato qui sotto nella cartella per trovare il file.',
+    connecting:'Connessione al database...', offline:'Impossibile raggiungere il database. Controlla la connessione e ricarica.',
+    noEntries:'Nessun articolo ancora nella libreria.', journal:'Giornale', copied:'Copiato!' },
+  fr: { pageTitle:'PDF Library', pageSub:'Articles d\u00e9j\u00e0 disponibles sur demande.',
+    instructions:'Ces articles sont disponibles en PDF dans notre dossier OneDrive partag\u00e9. Recherchez le PMID indiqu\u00e9 ci-dessous dans le dossier pour trouver le fichier.',
+    connecting:'Connexion \u00e0 la base de donn\u00e9es...', offline:"Impossible d'acc\u00e9der \u00e0 la base de donn\u00e9es. V\u00e9rifiez votre connexion et rechargez.",
+    noEntries:'Aucun article dans la biblioth\u00e8que pour l\u2019instant.', journal:'Revue', copied:'Copi\u00e9 !' },
+  es: { pageTitle:'PDF Library', pageSub:'Art\u00edculos ya disponibles bajo solicitud.',
+    instructions:'Estos art\u00edculos est\u00e1n disponibles en PDF en nuestra carpeta compartida de OneDrive. Busca el PMID indicado abajo en la carpeta para encontrar el archivo.',
+    connecting:'Conectando a la base de datos...', offline:'No se pudo conectar a la base de datos. Comprueba tu conexi\u00f3n y recarga.',
+    noEntries:'A\u00fan no hay art\u00edculos en la biblioteca.', journal:'Revista', copied:'\u00a1Copiado!' }
+};
+function t(key){ return (I18N[lang] && I18N[lang][key]) || I18N.en[key]; }
+
+const NAV_LABELS = {
+  en: { overview:'Overview', idea:'Submit idea', calendar:'Calendar', papers:'Papers', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  it: { overview:'Panoramica', idea:'Sottometti idea', calendar:'Calendario', papers:'Articoli', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  fr: { overview:'Aper\u00e7u', idea:'Soumettre une id\u00e9e', calendar:'Calendrier', papers:'Articles', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' },
+  es: { overview:'Resumen', idea:'Enviar idea', calendar:'Calendario', papers:'Art\u00edculos', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities' }
+};
+const NAV_PAGES = [
+  { key:'overview', href:'public.html' },
+  { key:'idea', href:'public-idea.html' },
+  { key:'calendar', href:'public-calendar.html' },
+  { key:'papers', href:'public-papers.html' },
+  { key:'library', href:'public-library.html' },
+  { key:'tip', href:'public-tip.html' },
+  { key:'phd', href:'public-phd.html' }
+];
+function renderNav(){
+  document.getElementById('nav-links').innerHTML = NAV_PAGES.map(function(p){
+    const isCurrent = p.href === 'public-library.html';
+    return '<a class="nav-link '+(isCurrent?'current':'')+'" href="'+p.href+'">'+NAV_LABELS[lang][p.key]+'</a>';
+  }).join('');
+}
+function renderLangSwitch(){
+  document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(function(l){
+    return '<button class="lang-btn '+(l===lang?'active':'')+'" onclick="setLang(\''+l+'\')">'+l.toUpperCase()+'</button>';
+  }).join('');
+}
+function applyStaticText(){ document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t); }); }
+function setLang(l){ lang = l; try { localStorage.setItem('hubLang', l); } catch(e) {} renderLangSwitch(); renderNav(); applyStaticText(); renderLibrary(); }
+window.setLang = setLang;
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let libEntries = [], libReady = false, libFailed = false;
+
+function copyPmid(pmid, el){
+  navigator.clipboard.writeText(pmid).then(function(){
+    const original = el.innerHTML;
+    el.innerHTML = '<i class="ti ti-check"></i> ' + t('copied');
+    setTimeout(function(){ el.innerHTML = original; }, 1500);
+  }).catch(function(){});
+}
+
+function entryMarkup(e){
+  return '<div class="entry-card">'+
+    '<div class="entry-title">'+esc(e.title)+'</div>'+
+    '<div class="entry-meta">'+
+    (e.authors ? esc(e.authors)+'<br>' : '')+
+    (e.journal ? t('journal')+': '+esc(e.journal) : '')+(e.year ? ' \u00b7 '+esc(e.year) : '')+
+    '</div>'+
+    '<div class="pmid-chip" onclick="copyPmid(\''+esc(e.pmid)+'\', this)"><i class="ti ti-copy"></i> PMID: '+esc(e.pmid)+'</div>'+
+    '</div>';
+}
+
+function renderLibrary(){
+  const el = document.getElementById('lib-container');
+  if (!el) return;
+  if (libFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
+  if (!libReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
+  if (!libEntries.length) { el.innerHTML = '<div class="empty"><i class="ti ti-books" style="font-size:24px"></i><div style="margin-top:8px">'+t('noEntries')+'</div></div>'; return; }
+  el.innerHTML = libEntries.map(entryMarkup).join('');
+}
+
+window.copyPmid = copyPmid;
+window.onLibEntriesUpdated = function(data){ libEntries = data; libReady = true; renderLibrary(); };
+window.onLibEntriesFailed = function(){ libFailed = true; renderLibrary(); };
+
+renderNav();
+renderLangSwitch();
+applyStaticText();
+renderLibrary();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
+  authDomain: "phd-tracker-22d93.firebaseapp.com",
+  projectId: "phd-tracker-22d93",
+  storageBucket: "phd-tracker-22d93.firebasestorage.app",
+  messagingSenderId: "252875836800",
+  appId: "1:252875836800:web:dc6575ffab316da3744565"
+};
+
+let db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {
+  if (window.onLibEntriesFailed) window.onLibEntriesFailed();
+}
+
+if (db) {
+  const q = query(collection(db, 'paperLibrary'), orderBy('createdAt', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onLibEntriesUpdated) window.onLibEntriesUpdated(data);
+    },
+    function () {
+      if (window.onLibEntriesFailed) window.onLibEntriesFailed();
+    }
+  );
+} else {
+  if (window.onLibEntriesFailed) window.onLibEntriesFailed();
+}
+</script>
+</body>
+</html>

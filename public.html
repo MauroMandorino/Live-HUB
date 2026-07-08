@@ -73,25 +73,29 @@ const I18N = {
     calNm:'Research calendar', calDesc:'Meetings, congresses, and abstract deadlines.',
     papersNm:'Latest papers', papersDesc:'PubMed feed, rate articles, request PDFs.',
     tipNm:'Tip of the week', tipDesc:'Short posts with insights, charts, and images.',
-    phdNm:'PhD activities', phdDesc:'Personal tracker for each PhD student.' },
+    phdNm:'PhD activities', phdDesc:'Personal tracker for each PhD student.',
+    libraryNm:'PDF Library', libraryDesc:'Papers already available on request.' },
   it: { pageTitle:'Research Hub', pageSub:'Informazioni pubbliche per il team. Si aggiorna automaticamente.',
     ideaNm:'Sottometti un\u2019idea di ricerca', ideaDesc:'Condividi una proposta di ricerca per la revisione.',
     calNm:'Calendario ricerca', calDesc:'Meeting, congressi e scadenze abstract.',
     papersNm:'Ultimi articoli', papersDesc:'Feed PubMed, vota gli articoli, richiedi i PDF.',
     tipNm:'Tip of the week', tipDesc:'Post brevi con insight, grafici e immagini.',
-    phdNm:'PhD activities', phdDesc:'Tracker personale per ogni dottorando.' },
+    phdNm:'PhD activities', phdDesc:'Tracker personale per ogni dottorando.',
+    libraryNm:'PDF Library', libraryDesc:'Articoli gi\u00e0 disponibili su richiesta.' },
   fr: { pageTitle:'Research Hub', pageSub:'Informations publiques pour l\u2019\u00e9quipe. Mise \u00e0 jour automatique.',
     ideaNm:'Soumettre une id\u00e9e de recherche', ideaDesc:'Partagez une proposition de recherche pour \u00e9valuation.',
     calNm:'Calendrier recherche', calDesc:'R\u00e9unions, congr\u00e8s et \u00e9ch\u00e9ances d\u2019abstract.',
     papersNm:'Derniers articles', papersDesc:'Flux PubMed, notez les articles, demandez des PDF.',
     tipNm:'Tip of the week', tipDesc:'Posts courts avec insights, graphiques et images.',
-    phdNm:'PhD activities', phdDesc:'Suivi personnel pour chaque doctorant.' },
+    phdNm:'PhD activities', phdDesc:'Suivi personnel pour chaque doctorant.',
+    libraryNm:'PDF Library', libraryDesc:'Articles d\u00e9j\u00e0 disponibles sur demande.' },
   es: { pageTitle:'Research Hub', pageSub:'Informaci\u00f3n p\u00fablica para el equipo. Se actualiza autom\u00e1ticamente.',
     ideaNm:'Enviar una idea de investigaci\u00f3n', ideaDesc:'Comparte una propuesta de investigaci\u00f3n para su revisi\u00f3n.',
     calNm:'Calendario de investigaci\u00f3n', calDesc:'Reuniones, congresos y plazos de abstract.',
     papersNm:'\u00daltimos art\u00edculos', papersDesc:'Feed de PubMed, punt\u00faa art\u00edculos, solicita PDF.',
     tipNm:'Tip of the week', tipDesc:'Publicaciones breves con ideas, gr\u00e1ficos e im\u00e1genes.',
-    phdNm:'PhD activities', phdDesc:'Seguimiento personal para cada doctorando.' }
+    phdNm:'PhD activities', phdDesc:'Seguimiento personal para cada doctorando.',
+    libraryNm:'PDF Library', libraryDesc:'Art\u00edculos ya disponibles bajo solicitud.' }
 };
 let lang = 'en';
 try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
@@ -101,6 +105,7 @@ const MODULES = [
   { key:'idea', href:'public-idea.html', icon:'ti-bulb' },
   { key:'cal', href:'public-calendar.html', icon:'ti-calendar-stats' },
   { key:'papers', href:'public-papers.html', icon:'ti-news' },
+  { key:'library', href:'public-library.html', icon:'ti-books' },
   { key:'tip', href:'public-tip.html', icon:'ti-bulb' },
   { key:'phd', href:'public-phd.html', icon:'ti-school' }
 ];
