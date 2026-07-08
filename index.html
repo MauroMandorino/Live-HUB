@@ -154,6 +154,11 @@ input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);borde
 .empty{text-align:center;padding:3rem 1rem;color:var(--text3)}
 .spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--blue-tx);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
+.pres-type{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;display:inline-block}
+.pres-oral{background:var(--purple-bg);color:var(--purple-tx)}
+.pres-abstract{background:var(--teal-bg);color:var(--teal-tx)}
+.pres-poster{background:var(--amber-bg);color:var(--amber-tx)}
+.chip{font-size:11px;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -230,7 +235,8 @@ const I18N = {
       body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
       charts:'Charts (optional)', addChart:'Add chart', chartTitle:'Chart title', chartRows:'Data', addRow:'Add row', removeChart:'Remove chart',
       label:'Label', value:'Value', save:'Publish', cancel:'Cancel', edit:'Edit', delete:'Delete', noPosts:'No posts yet', publishedOn:'Published' },
-    phdT:{ studentsTitle:'PhD students', backToList:'Back to all students', studiesCount:'studies', noStudies:'No studies added yet' },
+    phdT:{ studentsTitle:'PhD students', backToList:'Back to all students', studiesCount:'studies', noStudies:'No studies added yet',
+      tabStudents:'Students', tabAbstracts:'Abstracts', noAbstracts:'No presentations tracked yet' },
     locale:'en-GB'
   },
   it: {
@@ -263,7 +269,8 @@ const I18N = {
       body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
       charts:'Grafici (opzionale)', addChart:'Aggiungi grafico', chartTitle:'Titolo grafico', chartRows:'Dati', addRow:'Aggiungi riga', removeChart:'Rimuovi grafico',
       label:'Etichetta', value:'Valore', save:'Pubblica', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noPosts:'Nessun post ancora', publishedOn:'Pubblicato' },
-    phdT:{ studentsTitle:'Dottorandi', backToList:'Torna a tutti i dottorandi', studiesCount:'studi', noStudies:'Nessuno studio ancora aggiunto' },
+    phdT:{ studentsTitle:'Dottorandi', backToList:'Torna a tutti i dottorandi', studiesCount:'studi', noStudies:'Nessuno studio ancora aggiunto',
+      tabStudents:'Dottorandi', tabAbstracts:'Abstract', noAbstracts:'Nessuna presentazione tracciata ancora' },
     locale:'it-IT'
   },
   fr: {
@@ -296,7 +303,8 @@ const I18N = {
       body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
       charts:'Graphiques (facultatif)', addChart:'Ajouter un graphique', chartTitle:'Titre du graphique', chartRows:'Donn\u00e9es', addRow:'Ajouter une ligne', removeChart:'Supprimer le graphique',
       label:'\u00c9tiquette', value:'Valeur', save:'Publier', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noPosts:'Aucun post pour l\u2019instant', publishedOn:'Publi\u00e9' },
-    phdT:{ studentsTitle:'Doctorants', backToList:'Retour \u00e0 tous les doctorants', studiesCount:'\u00e9tudes', noStudies:'Aucune \u00e9tude ajout\u00e9e pour l\u2019instant' },
+    phdT:{ studentsTitle:'Doctorants', backToList:'Retour \u00e0 tous les doctorants', studiesCount:'\u00e9tudes', noStudies:'Aucune \u00e9tude ajout\u00e9e pour l\u2019instant',
+      tabStudents:'Doctorants', tabAbstracts:'Abstracts', noAbstracts:'Aucune pr\u00e9sentation suivie pour l\u2019instant' },
     locale:'fr-FR'
   },
   es: {
@@ -329,7 +337,8 @@ const I18N = {
       body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
       charts:'Gr\u00e1ficos (opcional)', addChart:'A\u00f1adir gr\u00e1fico', chartTitle:'T\u00edtulo del gr\u00e1fico', chartRows:'Datos', addRow:'A\u00f1adir fila', removeChart:'Eliminar gr\u00e1fico',
       label:'Etiqueta', value:'Valor', save:'Publicar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noPosts:'A\u00fan no hay publicaciones', publishedOn:'Publicado' },
-    phdT:{ studentsTitle:'Doctorandos', backToList:'Volver a todos los doctorandos', studiesCount:'estudios', noStudies:'A\u00fan no hay estudios a\u00f1adidos' },
+    phdT:{ studentsTitle:'Doctorandos', backToList:'Volver a todos los doctorandos', studiesCount:'estudios', noStudies:'A\u00fan no hay estudios a\u00f1adidos',
+      tabStudents:'Doctorandos', tabAbstracts:'Abstracts', noAbstracts:'A\u00fan no hay presentaciones registradas' },
     locale:'es-ES'
   }
 };
@@ -388,6 +397,9 @@ const PHD_STUDENTS = [
 let phdSelected = null;
 let phdStudies = [];
 let phdReady = false, phdFailed = false;
+let phdView = 'students'; // 'students' | 'abstracts'
+let phdAllData = {}; // studentId -> studies[]
+let phdAllStarted = false;
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -473,6 +485,7 @@ function renderPanels(){
       if (window.startTipPostsListener) window.startTipPostsListener();
     } else if (s.type === 'phd') {
       renderPhdPanel();
+      if (window.startAllPhdListeners) window.startAllPhdListeners();
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
@@ -933,6 +946,39 @@ function selectPhdStudent(id){
 }
 function backToPhdList(){ phdSelected = null; renderPhdPanel(); }
 
+function setPhdView(v){ phdView = v; phdSelected = null; renderPhdPanel(); }
+
+function allAbstracts(){
+  const out = [];
+  PHD_STUDENTS.forEach(function(st){
+    const studies = phdAllData[st.id] || [];
+    studies.forEach(function(s){
+      (s.presentations || []).forEach(function(p){
+        out.push({ student: st.name, studyTitle: s.title, congress: p.congress, year: p.year, type: p.type, description: p.description });
+      });
+    });
+  });
+  out.sort(function(a,b){ return (b.year||'').localeCompare(a.year||''); });
+  return out;
+}
+
+function abstractsMarkup(){
+  const list = allAbstracts();
+  if (!list.length) return '<div class="empty"><i class="ti ti-microphone-off" style="font-size:26px"></i><div style="margin-top:8px">'+t('phdT').noAbstracts+'</div></div>';
+  return list.map(function(p){
+    return '<div class="pres-item" style="border-bottom:0.5px solid var(--border);padding:10px 0;display:flex;gap:10px;align-items:flex-start">'+
+      '<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx);flex-shrink:0">'+esc(p.year||'')+'</span>'+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:13px;font-weight:600">'+esc(p.congress)+'</div>'+
+      (p.description ? '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+esc(p.description)+'</div>' : '')+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center">'+
+      '<span class="pres-type pres-'+p.type+'">'+(p.type.charAt(0).toUpperCase()+p.type.slice(1))+'</span>'+
+      '<span class="chip" style="background:var(--surface2);color:var(--text2)"><i class="ti ti-user" style="font-size:10px"></i> '+esc(p.student)+'</span>'+
+      '<span class="chip" style="background:var(--surface2);color:var(--text2)"><i class="ti ti-book-2" style="font-size:10px"></i> '+esc(p.studyTitle)+'</span>'+
+      '</div></div></div>';
+  }).join('');
+}
+
 function phdStudyMarkup(s){
   const pp = phdPaperProgress(s.paperWriting || {});
   const ds = s.dataset || { name:'', link:'' };
@@ -956,8 +1002,18 @@ function renderPhdPanel(){
   const el = document.getElementById('panel-phd');
   if (!el) return;
 
+  const tabsHtml = '<div class="tabs" style="margin-bottom:1.25rem">'+
+    '<div class="tab '+(phdView==='students'?'active':'')+'" onclick="setPhdView(\'students\')">'+t('phdT').tabStudents+'</div>'+
+    '<div class="tab '+(phdView==='abstracts'?'active':'')+'" onclick="setPhdView(\'abstracts\')">'+t('phdT').tabAbstracts+'</div>'+
+    '</div>';
+
+  if (phdView === 'abstracts') {
+    el.innerHTML = tabsHtml + abstractsMarkup();
+    return;
+  }
+
   if (!phdSelected) {
-    el.innerHTML = '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+t('phdT').studentsTitle+'</div>'+
+    el.innerHTML = tabsHtml + '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+t('phdT').studentsTitle+'</div>'+
       '<div class="area-grid">'+PHD_STUDENTS.map(function(st){
         return '<div class="area-card" onclick="selectPhdStudent(\''+st.id+'\')">'+
           '<div class="area-icon" style="background:var(--blue-bg);color:var(--blue-tx)"><i class="ti ti-user"></i></div>'+
@@ -979,17 +1035,20 @@ function renderPhdPanel(){
     body = phdStudies.map(phdStudyMarkup).join('');
   }
 
-  el.innerHTML = '<div style="margin-bottom:1rem">'+
+  el.innerHTML = tabsHtml + '<div style="margin-bottom:1rem">'+
     '<button class="btn btn-sm" onclick="backToPhdList()"><i class="ti ti-arrow-left"></i> '+t('phdT').backToList+'</button>'+
     '</div>'+
     '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+esc(student ? student.name : '')+' \u2014 '+phdStudies.length+' '+t('phdT').studiesCount+'</div>'+
     body;
 }
 
+window.setPhdView = setPhdView;
+
 window.selectPhdStudent = selectPhdStudent;
 window.backToPhdList = backToPhdList;
 window.onPhdStudiesUpdated = function(data){ phdStudies = data; phdReady = true; renderPhdPanel(); };
 window.onPhdStudiesFailed = function(){ phdFailed = true; renderPhdPanel(); };
+window.onPhdAllDataUpdated = function(id, data){ phdAllData[id] = data; if (phdView === 'abstracts') renderPhdPanel(); };
 
 window.checkPin = checkPin;
 window.setSub = setSub;
@@ -1208,6 +1267,20 @@ window.startPhdListener = function (studentId) {
       if (window.onPhdStudiesFailed) window.onPhdStudiesFailed();
     }
   );
+};
+
+const PHD_STUDENT_IDS = ['parma','foro','valencia','verona','chieti'];
+let phdAllStartedIds = {};
+window.startAllPhdListeners = function () {
+  if (!db) return;
+  PHD_STUDENT_IDS.forEach(function (id) {
+    if (phdAllStartedIds[id]) return;
+    phdAllStartedIds[id] = true;
+    onSnapshot(doc(db, 'universities', id), function (snap) {
+      const data = snap.exists() ? (snap.data().studies || []) : [];
+      if (window.onPhdAllDataUpdated) window.onPhdAllDataUpdated(id, data);
+    }, function () {});
+  });
 };
 </script>
 </body>
