@@ -427,8 +427,14 @@ async function loadRssArticles(){
     }));
     let items = [];
     results.forEach(function(res){ if (res && res.status === 'ok' && res.items) items = items.concat(res.items); });
-    items.sort(function(a,b){ return new Date(b.pubDate) - new Date(a.pubDate); });
-    rssArticles = items.slice(0, 60);
+    const seen = {};
+    const deduped = [];
+    items.forEach(function(item){
+      const key = (item.link || item.guid || item.title || '').split('?')[0].trim().toLowerCase();
+      if (key && !seen[key]) { seen[key] = true; deduped.push(item); }
+    });
+    deduped.sort(function(a,b){ return new Date(b.pubDate) - new Date(a.pubDate); });
+    rssArticles = deduped.slice(0, 60);
     rssLoading = false;
   } catch (e) {
     rssFailed = true; rssLoading = false;
