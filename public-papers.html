@@ -193,6 +193,8 @@ const I18N = {
     meeting:'Research meeting', congress:'Congress', deadline:'Abstract / deadline', other:'Other',
     rssTitle:'Latest papers', rssLoading:'Loading the latest papers...', rssEmpty:'No articles available right now.', rssFailed:'Could not load the article feed right now.',
     sortNewest:'Newest', sortTopRated:'Top rated',
+    dateAll:'All time', dateWeek:'Last week', dateMonth:'Last month', dateYear:'Last year',
+    ratingLoadErr:'Could not load ratings \u2014 check Firestore permissions.', ratingSaveErr:'Could not save your rating \u2014 check Firestore permissions.',
     requestPdf:'Request PDF', yourEmail:'Your email', note:'Note (optional)', notePh:'Any detail that helps us find the right version...',
     send:'Send request', cancel:'Cancel', requestSent:'Request sent \u2014 you\'ll be contacted once the PDF is available.', ratings:'ratings',
     tipSectionTitle:'Tip of the week', tipNoPosts:'No posts yet', tipBack:'Back to all tips', tipPublished:'Published' },
@@ -217,6 +219,8 @@ const I18N = {
     meeting:'Research meeting', congress:'Congresso', deadline:'Abstract / scadenza', other:'Altro',
     rssTitle:'Ultimi articoli', rssLoading:'Caricamento degli ultimi articoli...', rssEmpty:'Nessun articolo disponibile al momento.', rssFailed:'Impossibile caricare il feed articoli in questo momento.',
     sortNewest:'Pi\u00f9 recenti', sortTopRated:'Pi\u00f9 votati',
+    dateAll:'Sempre', dateWeek:'Ultima settimana', dateMonth:'Ultimo mese', dateYear:'Ultimo anno',
+    ratingLoadErr:'Impossibile caricare i voti \u2014 controlla i permessi Firestore.', ratingSaveErr:'Impossibile salvare il voto \u2014 controlla i permessi Firestore.',
     requestPdf:'Richiedi PDF', yourEmail:'La tua email', note:'Nota (opzionale)', notePh:'Qualsiasi dettaglio utile per trovare la versione giusta...',
     send:'Invia richiesta', cancel:'Annulla', requestSent:'Richiesta inviata \u2014 sarai contattato non appena il PDF sar\u00e0 disponibile.', ratings:'voti',
     tipSectionTitle:'Tip of the week', tipNoPosts:'Nessun post ancora', tipBack:'Torna a tutti i tip', tipPublished:'Pubblicato' },
@@ -241,6 +245,8 @@ const I18N = {
     meeting:'R\u00e9union de recherche', congress:'Congr\u00e8s', deadline:'Abstract / \u00e9ch\u00e9ance', other:'Autre',
     rssTitle:'Derniers articles', rssLoading:'Chargement des derniers articles...', rssEmpty:'Aucun article disponible pour le moment.', rssFailed:'Impossible de charger le flux d\u2019articles pour le moment.',
     sortNewest:'Plus r\u00e9cents', sortTopRated:'Les mieux not\u00e9s',
+    dateAll:'Toutes les dates', dateWeek:'Derni\u00e8re semaine', dateMonth:'Dernier mois', dateYear:'Derni\u00e8re ann\u00e9e',
+    ratingLoadErr:'Impossible de charger les notes \u2014 v\u00e9rifiez les autorisations Firestore.', ratingSaveErr:'Impossible d\u2019enregistrer votre note \u2014 v\u00e9rifiez les autorisations Firestore.',
     requestPdf:'Demander le PDF', yourEmail:'Votre email', note:'Note (facultatif)', notePh:'Tout d\u00e9tail utile pour trouver la bonne version...',
     send:'Envoyer la demande', cancel:'Annuler', requestSent:'Demande envoy\u00e9e \u2014 vous serez contact\u00e9 d\u00e8s que le PDF sera disponible.', ratings:'votes',
     tipSectionTitle:'Tip of the week', tipNoPosts:'Aucun post pour l\u2019instant', tipBack:'Retour \u00e0 tous les tips', tipPublished:'Publi\u00e9' },
@@ -265,6 +271,8 @@ const I18N = {
     meeting:'Reuni\u00f3n de investigaci\u00f3n', congress:'Congreso', deadline:'Abstract / plazo', other:'Otro',
     rssTitle:'\u00daltimos art\u00edculos', rssLoading:'Cargando los \u00faltimos art\u00edculos...', rssEmpty:'No hay art\u00edculos disponibles en este momento.', rssFailed:'No se pudo cargar el feed de art\u00edculos en este momento.',
     sortNewest:'M\u00e1s recientes', sortTopRated:'Mejor valorados',
+    dateAll:'Todo', dateWeek:'\u00daltima semana', dateMonth:'\u00daltimo mes', dateYear:'\u00daltimo a\u00f1o',
+    ratingLoadErr:'No se pudieron cargar las valoraciones \u2014 revisa los permisos de Firestore.', ratingSaveErr:'No se pudo guardar tu valoraci\u00f3n \u2014 revisa los permisos de Firestore.',
     requestPdf:'Solicitar PDF', yourEmail:'Tu email', note:'Nota (opcional)', notePh:'Cualquier detalle \u00fatil para encontrar la versi\u00f3n correcta...',
     send:'Enviar solicitud', cancel:'Cancelar', requestSent:'Solicitud enviada \u2014 te contactaremos en cuanto el PDF est\u00e9 disponible.', ratings:'valoraciones',
     tipSectionTitle:'Tip of the week', tipNoPosts:'A\u00fan no hay publicaciones', tipBack:'Volver a todos los tips', tipPublished:'Publicado' }
@@ -392,6 +400,8 @@ const RSS_FEEDS = [
 
 let rssArticles = [], rssLoading = true, rssFailed = false;
 let rssSortMode = 'date'; // 'date' | 'rating'
+let rssDateFilter = 'all'; // 'all' | 'week' | 'month' | 'year'
+let ratingErrorMsg = '';
 let ratingsMap = {}; // articleId -> {sum, count}
 let myRatings = {};
 try { myRatings = JSON.parse(localStorage.getItem('myArticleRatings') || '{}'); } catch(e) { myRatings = {}; }
@@ -486,9 +496,21 @@ function articleMarkup(item){
 }
 
 function setSortMode(mode){ rssSortMode = mode; renderRss(); }
+function setDateFilter(f){ rssDateFilter = f; renderRss(); }
+
+function withinDateRange(item){
+  if (rssDateFilter === 'all') return true;
+  const d = new Date(item.pubDate);
+  if (isNaN(d)) return true;
+  const diffDays = (new Date() - d) / (1000*60*60*24);
+  if (rssDateFilter === 'week') return diffDays <= 7;
+  if (rssDateFilter === 'month') return diffDays <= 31;
+  if (rssDateFilter === 'year') return diffDays <= 366;
+  return true;
+}
 
 function sortedArticles(){
-  const list = rssArticles.slice();
+  const list = rssArticles.filter(withinDateRange);
   if (rssSortMode === 'rating') {
     list.sort(function(a, b){
       const ra = ratingsMap[articleId(a)] || { sum:0, count:0 };
@@ -509,12 +531,20 @@ function renderRss(){
   if (!el) return;
   if (rssFailed) { el.innerHTML = '<div class="alert alert-err">'+t('rssFailed')+'</div>'; return; }
   if (rssLoading) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('rssLoading')+'</div></div>'; return; }
-  const tabsHtml = '<div class="tabs" style="margin-bottom:1rem">'+
+  const errHtml = ratingErrorMsg ? '<div class="alert alert-err" style="margin-bottom:1rem"><i class="ti ti-alert-circle"></i> '+esc(ratingErrorMsg)+'</div>' : '';
+  const dateTabsHtml = '<div class="tabs" style="margin-bottom:8px">'+
+    '<div class="tab '+(rssDateFilter==='all'?'active':'')+'" onclick="setDateFilter(\'all\')">'+t('dateAll')+'</div>'+
+    '<div class="tab '+(rssDateFilter==='week'?'active':'')+'" onclick="setDateFilter(\'week\')">'+t('dateWeek')+'</div>'+
+    '<div class="tab '+(rssDateFilter==='month'?'active':'')+'" onclick="setDateFilter(\'month\')">'+t('dateMonth')+'</div>'+
+    '<div class="tab '+(rssDateFilter==='year'?'active':'')+'" onclick="setDateFilter(\'year\')">'+t('dateYear')+'</div>'+
+    '</div>';
+  const sortTabsHtml = '<div class="tabs" style="margin-bottom:1rem">'+
     '<div class="tab '+(rssSortMode==='date'?'active':'')+'" onclick="setSortMode(\'date\')">'+t('sortNewest')+'</div>'+
     '<div class="tab '+(rssSortMode==='rating'?'active':'')+'" onclick="setSortMode(\'rating\')">'+t('sortTopRated')+'</div>'+
     '</div>';
-  if (!rssArticles.length) { el.innerHTML = tabsHtml + '<div class="empty"><i class="ti ti-news-off" style="font-size:24px"></i><div style="margin-top:8px">'+t('rssEmpty')+'</div></div>'; return; }
-  el.innerHTML = tabsHtml + sortedArticles().map(articleMarkup).join('');
+  const list = sortedArticles();
+  if (!list.length) { el.innerHTML = errHtml + dateTabsHtml + sortTabsHtml + '<div class="empty"><i class="ti ti-news-off" style="font-size:24px"></i><div style="margin-top:8px">'+t('rssEmpty')+'</div></div>'; return; }
+  el.innerHTML = errHtml + dateTabsHtml + sortTabsHtml + list.map(articleMarkup).join('');
 }
 
 /* ---- Submit a research idea (embedded) ---- */
@@ -669,6 +699,8 @@ window.closeRequestForm = closeRequestForm;
 window.updateRequestDraft = updateRequestDraft;
 window.confirmSendRequest = confirmSendRequest;
 window.onArticleRatingUpdated = function(id, sum, count){ ratingsMap[id] = { sum: sum, count: count }; renderRss(); };
+window.onRatingLoadFailed = function(){ if (!ratingErrorMsg) { ratingErrorMsg = I18N[lang].ratingLoadErr; renderRss(); } };
+window.onRatingSaveFailed = function(){ ratingErrorMsg = I18N[lang].ratingSaveErr; renderRss(); };
 window.updateIdeaDraft = updateIdeaDraft;
 window.confirmSubmitIdea = confirmSubmitIdea;
 window.resetIdeaForm = resetIdeaForm;
@@ -742,11 +774,14 @@ window.watchArticleRatings = function (id) {
   onSnapshot(doc(db, 'articleRatings', id), function (snap) {
     const data = snap.exists() ? snap.data() : { sum: 0, count: 0 };
     if (window.onArticleRatingUpdated) window.onArticleRatingUpdated(id, data.sum || 0, data.count || 0);
-  }, function (err) { console.error('Rating read failed for', id, err); });
+  }, function (err) {
+    console.error('Rating read failed for', id, err);
+    if (window.onRatingLoadFailed) window.onRatingLoadFailed();
+  });
 };
 
 window.submitRating = async function (id, item, value, previousValue) {
-  if (!db) return;
+  if (!db) { if (window.onRatingSaveFailed) window.onRatingSaveFailed(); return; }
   const ref = doc(db, 'articleRatings', id);
   try {
     await runTransaction(db, async function (tx) {
@@ -761,7 +796,10 @@ window.submitRating = async function (id, item, value, previousValue) {
         tx.update(ref, { sum: newSum, count: newCount, title: item.title || '', link: item.link || '' });
       }
     });
-  } catch (e) { console.error('Rating write failed', e); }
+  } catch (e) {
+    console.error('Rating write failed', e);
+    if (window.onRatingSaveFailed) window.onRatingSaveFailed();
+  }
 };
 
 // TODO: configure EmailJS (same account as submit-idea.html) to notify the owner
