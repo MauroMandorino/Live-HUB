@@ -458,9 +458,19 @@ function rateArticle(id, value){
   const item = rssArticles.find(function(a){ return articleId(a) === id; });
   if (!item || !window.submitRating) return;
   const prev = myRatings[id] || 0;
-  window.submitRating(id, item, value, prev);
+
+  // Update the UI immediately, don't wait for the realtime listener round-trip
+  const cur = ratingsMap[id] || { sum:0, count:0 };
+  const hadPrevious = prev > 0;
+  ratingsMap[id] = {
+    sum: (cur.sum || 0) - (hadPrevious ? prev : 0) + value,
+    count: (cur.count || 0) + (hadPrevious ? 0 : 1)
+  };
   myRatings[id] = value;
   try { localStorage.setItem('myArticleRatings', JSON.stringify(myRatings)); } catch(e) {}
+  renderRss();
+
+  window.submitRating(id, item, value, prev);
 }
 
 function openRequestForm(id){ requestFormOpenId = id; requestDraft = { email:'', notes:'' }; renderRss(); }
