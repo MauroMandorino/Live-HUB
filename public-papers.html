@@ -441,8 +441,15 @@ async function loadRssArticles(){
     rssFailed = true; rssLoading = false;
   }
   renderRss();
-  if (window.watchArticleRatings) rssArticles.forEach(function(item){ window.watchArticleRatings(articleId(item)); });
+  watchAllRatingsIfReady();
 }
+
+function watchAllRatingsIfReady(){
+  if (window.watchArticleRatings && rssArticles.length) {
+    rssArticles.forEach(function(item){ window.watchArticleRatings(articleId(item)); });
+  }
+}
+window.watchAllRatingsIfReady = watchAllRatingsIfReady;
 
 function starsMarkup(id, avg, count){
   const rounded = Math.round(avg);
@@ -796,6 +803,10 @@ window.watchArticleRatings = function (id) {
     if (window.onRatingLoadFailed) window.onRatingLoadFailed();
   });
 };
+// The plain script may have already loaded the articles before this module
+// finished initializing (module scripts execute after normal scripts) —
+// trigger the watchers now in case that happened.
+if (window.watchAllRatingsIfReady) window.watchAllRatingsIfReady();
 
 window.submitRating = async function (id, item, value, previousValue) {
   if (!db) { if (window.onRatingSaveFailed) window.onRatingSaveFailed(); return; }
