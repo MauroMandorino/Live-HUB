@@ -75,7 +75,8 @@ const I18N = {
     tipNm:'Tip of the week', tipDesc:'Short posts with insights, charts, and images.',
     phdNm:'PhD activities', phdDesc:'Personal tracker for each PhD student.',
     libraryNm:'PDF Library', libraryDesc:'Papers already available on request.',
-    quizNm:'Quiz Challenge', quizDesc:'Weekly quiz with leaderboard.' },
+    quizNm:'Quiz Challenge', quizDesc:'Weekly quiz with leaderboard.',
+    techNm:'Tech Stack', techDesc:'Browse and book performance equipment.' },
   it: { pageTitle:'Research Hub', pageSub:'Informazioni pubbliche per il team. Si aggiorna automaticamente.',
     ideaNm:'Sottometti un\u2019idea di ricerca', ideaDesc:'Condividi una proposta di ricerca per la revisione.',
     calNm:'Calendario ricerca', calDesc:'Meeting, congressi e scadenze abstract.',
@@ -83,7 +84,8 @@ const I18N = {
     tipNm:'Tip of the week', tipDesc:'Post brevi con insight, grafici e immagini.',
     phdNm:'PhD activities', phdDesc:'Tracker personale per ogni dottorando.',
     libraryNm:'PDF Library', libraryDesc:'Articoli gi\u00e0 disponibili su richiesta.',
-    quizNm:'Quiz Challenge', quizDesc:'Quiz settimanale con classifica.' },
+    quizNm:'Quiz Challenge', quizDesc:'Quiz settimanale con classifica.',
+    techNm:'Tech Stack', techDesc:'Esplora e prenota le attrezzature.' },
   fr: { pageTitle:'Research Hub', pageSub:'Informations publiques pour l\u2019\u00e9quipe. Mise \u00e0 jour automatique.',
     ideaNm:'Soumettre une id\u00e9e de recherche', ideaDesc:'Partagez une proposition de recherche pour \u00e9valuation.',
     calNm:'Calendrier recherche', calDesc:'R\u00e9unions, congr\u00e8s et \u00e9ch\u00e9ances d\u2019abstract.',
@@ -91,7 +93,8 @@ const I18N = {
     tipNm:'Tip of the week', tipDesc:'Posts courts avec insights, graphiques et images.',
     phdNm:'PhD activities', phdDesc:'Suivi personnel pour chaque doctorant.',
     libraryNm:'PDF Library', libraryDesc:'Articles d\u00e9j\u00e0 disponibles sur demande.',
-    quizNm:'Quiz Challenge', quizDesc:'Quiz hebdomadaire avec classement.' },
+    quizNm:'Quiz Challenge', quizDesc:'Quiz hebdomadaire avec classement.',
+    techNm:'Tech Stack', techDesc:'Explorez et r\u00e9servez le mat\u00e9riel.' },
   es: { pageTitle:'Research Hub', pageSub:'Informaci\u00f3n p\u00fablica para el equipo. Se actualiza autom\u00e1ticamente.',
     ideaNm:'Enviar una idea de investigaci\u00f3n', ideaDesc:'Comparte una propuesta de investigaci\u00f3n para su revisi\u00f3n.',
     calNm:'Calendario de investigaci\u00f3n', calDesc:'Reuniones, congresos y plazos de abstract.',
@@ -99,7 +102,8 @@ const I18N = {
     tipNm:'Tip of the week', tipDesc:'Publicaciones breves con ideas, gr\u00e1ficos e im\u00e1genes.',
     phdNm:'PhD activities', phdDesc:'Seguimiento personal para cada doctorando.',
     libraryNm:'PDF Library', libraryDesc:'Art\u00edculos ya disponibles bajo solicitud.',
-    quizNm:'Quiz Challenge', quizDesc:'Quiz semanal con ranking.' }
+    quizNm:'Quiz Challenge', quizDesc:'Quiz semanal con ranking.',
+    techNm:'Tech Stack', techDesc:'Explora y reserva el equipamiento.' }
 };
 let lang = 'en';
 try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
@@ -112,7 +116,8 @@ const MODULES = [
   { key:'library', href:'public-library.html', icon:'ti-books' },
   { key:'tip', href:'public-tip.html', icon:'ti-bulb' },
   { key:'phd', href:'public-phd.html', icon:'ti-school' },
-  { key:'quiz', href:'public-quiz.html', icon:'ti-trophy' }
+  { key:'quiz', href:'public-quiz.html', icon:'ti-trophy' },
+  { key:'tech', href:'public-techstack.html', icon:'ti-device-desktop-analytics' }
 ];
 
 function renderModules(){

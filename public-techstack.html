@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSG Performance — Tech Stack 2025/26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #001B48;
+  --red: #C8102E;
+  --gold: #C8A84B;
+  --white: #FFFFFF;
+  --off-white: #F8F9FA;
+  --text: #1A1D23;
+  --muted: #6B7280;
+  --border: rgba(0,27,72,0.10);
+  --shadow-sm: 0 1px 3px rgba(0,0,72,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,72,0.12);
+  --shadow-lg: 0 12px 40px rgba(0,0,72,0.16);
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.psg-badge {
+  width: 44px;
+  height: 44px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  color: white;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(200,16,46,0.4);
+}
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--white);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.header-subtitle {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.header-stats {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.stat-pill {
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+}
+
+/* CONTROLS */
+.controls {
+  max-width: 1400px;
+  margin: 28px auto 20px;
+  padding: 0 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 380px;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+#search {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search:focus { border-color: var(--navy); }
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.filter-btn {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text);
+  white-space: nowrap;
+}
+.filter-btn:hover { border-color: var(--navy); background: var(--off-white); }
+.filter-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: white;
+}
+
+.view-toggle {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: auto;
+}
+.view-btn {
+  padding: 8px 14px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.view-btn.active { background: var(--navy); color: white; }
+.view-btn + .view-btn { border-left: 1.5px solid var(--border); }
+
+/* RESULTS COUNT */
+.results-bar {
+  max-width: 1400px;
+  margin: 0 auto 16px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.results-count {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* DOMAIN LEGEND */
+.domain-legend {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  padding: 0 32px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* GRID VIEW */
+#grid-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: fadeIn 0.3s ease forwards;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card-accent {
+  height: 4px;
+  width: 100%;
+}
+.card-body {
+  padding: 18px 20px 16px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  flex: 1;
+}
+.card-brand {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--navy);
+  background: rgba(0,27,72,0.07);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.card-domain-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.domain-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.meta-chip {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: var(--off-white);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.meta-chip .icon { font-size: 10px; }
+
+.card-footer {
+  padding: 10px 20px;
+  background: var(--off-white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-location {
+  font-size: 10px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.card-owner {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* TABLE VIEW */
+#table-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 60px;
+  display: none;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+.data-table thead tr {
+  background: var(--navy);
+  color: white;
+}
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: rgba(0,27,72,0.03); }
+.tbl-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: rgba(0,27,72,0.07);
+  color: var(--navy);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tbl-domain { white-space: nowrap; font-size: 11px; }
+.tbl-freq { font-size: 11px; color: var(--muted); }
+.country-flag { font-size: 14px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.24);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+  from { opacity:0; transform: scale(0.95) translateY(20px); }
+  to { opacity:1; transform: scale(1) translateY(0); }
+}
+.modal-top { height: 6px; border-radius: 20px 20px 0 0; }
+.modal-content { padding: 28px 32px 32px; }
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--off-white); }
+.modal-equipment-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.modal-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.modal-brand-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--navy);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+.modal-country {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-section {
+  margin-bottom: 20px;
+}
+.modal-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.modal-field {
+  background: var(--off-white);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.modal-field-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.modal-field-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.modal-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.modal-tag {
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+}
+.modal-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 14px;
+  border: 1.5px solid var(--navy);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.modal-website:hover { background: var(--navy); color: white; }
+
+.no-results {
+  max-width: 1400px;
+  margin: 60px auto;
+  padding: 0 32px;
+  text-align: center;
+  color: var(--muted);
+}
+.no-results-icon { font-size: 48px; margin-bottom: 16px; }
+.no-results-text { font-size: 18px; font-weight: 500; color: var(--text); }
+.no-results-sub { font-size: 14px; margin-top: 8px; }
+
+.dt-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; letter-spacing:0.06em; }
+.dt-a { background:#E5F4EC; color:#1B7A3E; }
+.dt-b { background:#FFF4E0; color:#A0620A; }
+.dt-c { background:#F1EFE8; color:#5F5E5A; }
+
+/* Shared site nav strip (consistent with the rest of the hub) */
+.site-nav-strip{background:#0B0B14;padding:8px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.site-nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.site-nav-link{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);text-decoration:none;font-family:'DM Sans',sans-serif}
+.site-nav-link:hover{background:rgba(255,255,255,0.08);color:#fff}
+.site-nav-link.current{background:var(--red);color:#fff}
+.site-lang-switch{display:flex;gap:4px}
+.site-lang-btn{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);cursor:pointer;font-family:'DM Sans',sans-serif}
+.site-lang-btn.active{background:var(--gold);color:#001B48;border-color:var(--gold)}
+
+/* Booking */
+.book-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.book-btn:hover{opacity:0.88}
+.booking-form{background:var(--off-white);border-radius:12px;padding:16px;margin-top:8px}
+.booking-form label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+.booking-form label:first-child{margin-top:0}
+.booking-form input,.booking-form textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.booking-form input:focus,.booking-form textarea:focus{border-color:var(--navy)}
+.booking-row{display:flex;gap:10px}
+.booking-row>div{flex:1}
+.booking-submit{margin-top:14px;background:var(--navy);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.booking-submit:hover{opacity:0.9}
+.booking-confirm{background:#E5F4EC;color:#1B7A3E;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px}
+.upcoming-bookings{margin-top:14px}
+.booking-item{background:var(--off-white);border-radius:8px;padding:10px 12px;margin-bottom:6px;font-size:12px}
+.booking-item .bk-dates{font-weight:600;color:var(--navy);font-family:'JetBrains Mono',monospace;font-size:11px}
+.booking-item .bk-meta{color:var(--muted);margin-top:2px}
+.no-bookings{font-size:12px;color:var(--muted);padding:8px 0}
+</style>
+</head>
+<body>
+
+<div class="site-nav-strip">
+  <div class="site-nav-links" id="nav-links"></div>
+  <div class="site-lang-switch" id="lang-switch"></div>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="psg-badge">PSG</div>
+      <div>
+        <div class="header-title">Performance Tech Stack</div>
+        <div class="header-subtitle">Paris Saint-Germain · Season 2025/26</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Equipment Items</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-brands">0</div>
+        <div class="stat-label">Brands</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-countries">0</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-domains">0</div>
+        <div class="stat-label">Domains</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Search equipment, brand, purpose...">
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Domain</span>
+    <button class="filter-btn active" data-filter="domain" data-value="all">All</button>
+    <button class="filter-btn" data-filter="domain" data-value="Load Monitoring">Load Monitoring</button>
+    <button class="filter-btn" data-filter="domain" data-value="Neuromuscular">Neuromuscular</button>
+    <button class="filter-btn" data-filter="domain" data-value="Rehabilitation">Rehabilitation</button>
+    <button class="filter-btn" data-filter="domain" data-value="Rehab & Injury Risk">Rehab & Injury Risk</button>
+    <button class="filter-btn" data-filter="domain" data-value="Physiology">Physiology</button>
+    <button class="filter-btn" data-filter="domain" data-value="Recovery">Recovery</button>
+    <button class="filter-btn" data-filter="domain" data-value="Biomechanics">Biomechanics</button>
+    <button class="filter-btn" data-filter="domain" data-value="Tissue & Structure">Tissue & Structure</button>
+    <button class="filter-btn" data-filter="domain" data-value="Testing & Monitoring">Testing & Monitoring</button>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Owner</span>
+    <button class="filter-btn active" data-filter="owner" data-value="all">All</button>
+    <button class="filter-btn" data-filter="owner" data-value="Performance">Performance</button>
+    <button class="filter-btn" data-filter="owner" data-value="Medical">Medical</button>
+  </div>
+          <div class="filter-group">
+            <span class="filter-label">Data type</span>
+            <button class="filter-btn active" data-filter="datatype" data-value="all">All</button>
+            <button class="filter-btn" data-filter="datatype" data-value="A" style="color:#1B7A3E">Type A</button>
+            <button class="filter-btn" data-filter="datatype" data-value="B" style="color:#A0620A">Type B</button>
+            <button class="filter-btn" data-filter="datatype" data-value="C" style="color:#5F5E5A">Type C</button>
+          </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" id="grid-btn">⊞ Grid</button>
+    <button class="view-btn" id="table-btn">☰ Table</button>
+  </div>
+</div>
+
+<div class="results-bar">
+  <span class="results-count" id="results-count">71 items</span>
+</div>
+
+<div class="domain-legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#0066CC"></span>Load Monitoring</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#E07000"></span>Neuromuscular</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#7B3FA0"></span>Rehabilitation</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#C8102E"></span>Rehab & Injury Risk</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#1E8A4A"></span>Physiology</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#0099AA"></span>Recovery</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#B5960A"></span>Biomechanics</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#4CAF50"></span>Tissue & Structure</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#5C6BC0"></span>Testing & Monitoring</span>
+</div>
+
+<div id="grid-container"></div>
+
+<div id="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Equipment</th>
+        <th>Brand</th>
+        <th>Category</th>
+        <th>Domain</th>
+        <th>Location</th>
+        <th>Purpose</th>
+        <th>Variables</th>
+        <th>Frequency</th>
+        <th>Owner</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" role="dialog">
+  <div class="modal" style="position:relative">
+    <div class="modal-top" id="modal-top"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-equipment-name" id="modal-name"></div>
+      <div class="modal-brand-row">
+        <span class="modal-brand-badge" id="modal-brand"></span>
+        <span class="modal-country" id="modal-country"></span>
+        <span id="modal-founded" style="font-size:12px;color:#6B7280"></span>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Brand Overview</div>
+        <div class="modal-desc" id="modal-desc"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Usage at PSG</div>
+        <div class="modal-grid">
+          <div class="modal-field">
+            <div class="modal-field-label">Primary Domain</div>
+            <div class="modal-field-value" id="modal-domain"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Location</div>
+            <div class="modal-field-value" id="modal-loc"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Primary Purpose</div>
+            <div class="modal-field-value" id="modal-purpose"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Frequency</div>
+            <div class="modal-field-value" id="modal-freq"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Variables Measured</div>
+            <div class="modal-field-value" id="modal-vars"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Owner / Dept</div>
+            <div class="modal-field-value" id="modal-owner"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section" id="modal-key-section">
+        <div class="modal-section-title">Key Products</div>
+        <div class="modal-desc" id="modal-key"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">📅 Book this equipment</div>
+        <button class="book-btn" id="modal-book-toggle" onclick="openBookingForm()">Book on the calendar</button>
+        <div id="modal-booking-form-wrap"></div>
+        <div class="upcoming-bookings" id="modal-upcoming-bookings"></div>
+      </div>
+
+      <div id="modal-web-wrap" style="margin-top:8px;display:none">
+        <a href="#" class="modal-website" id="modal-web" target="_blank">↗ Visit Website</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DOMAIN_COLORS = {"Load Monitoring": "#0066CC", "Neuromuscular": "#E07000", "Rehabilitation": "#7B3FA0", "Rehab & Injury Risk": "#C8102E", "Physiology": "#1E8A4A", "Recovery": "#0099AA", "Biomechanics": "#B5960A", "Tissue & Structure": "#4CAF50", "Testing & Monitoring": "#5C6BC0", "Cognitive Training": "#E91E63", "Other": "#78909C"};
+const COUNTRY_FLAGS = {
+  "Australia":"🇦🇺","France":"🇫🇷","USA":"🇺🇸","Italy":"🇮🇹","Ireland":"🇮🇪",
+  "Spain":"🇪🇸","Sweden":"🇸🇪","Switzerland":"🇨🇭","Finland":"🇫🇮",
+  "Israel":"🇮🇱","International":"🌍","N/A":"—"
+};
+
+let ALL_ITEMS = [];
+let ALL_BOOKINGS = [];
+
+/* ---- Nav bar + language (matches the rest of the site) ---- */
+let lang = 'en';
+try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
+const NAV_LABELS = {
+  en: { overview:'Overview', idea:'Submit idea', calendar:'Calendar', papers:'Papers', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities', quiz:'Quiz', tech:'Tech Stack' },
+  it: { overview:'Panoramica', idea:'Sottometti idea', calendar:'Calendario', papers:'Articoli', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities', quiz:'Quiz', tech:'Tech Stack' },
+  fr: { overview:'Aperçu', idea:'Soumettre une idée', calendar:'Calendrier', papers:'Articles', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities', quiz:'Quiz', tech:'Tech Stack' },
+  es: { overview:'Resumen', idea:'Enviar idea', calendar:'Calendario', papers:'Artículos', library:'PDF Library', tip:'Tip of the week', phd:'PhD activities', quiz:'Quiz', tech:'Tech Stack' }
+};
+const NAV_PAGES = [
+  { key:'overview', href:'public.html' },
+  { key:'idea', href:'public-idea.html' },
+  { key:'calendar', href:'public-calendar.html' },
+  { key:'papers', href:'public-papers.html' },
+  { key:'library', href:'public-library.html' },
+  { key:'tip', href:'public-tip.html' },
+  { key:'phd', href:'public-phd.html' },
+  { key:'quiz', href:'public-quiz.html' },
+  { key:'tech', href:'public-techstack.html' }
+];
+function renderNav(){
+  document.getElementById('nav-links').innerHTML = NAV_PAGES.map(function(p){
+    const isCurrent = p.href === 'public-techstack.html';
+    return '<a class="site-nav-link '+(isCurrent?'current':'')+'" href="'+p.href+'">'+NAV_LABELS[lang][p.key]+'</a>';
+  }).join('');
+}
+function renderLangSwitch(){
+  document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(function(l){
+    return '<button class="site-lang-btn '+(l===lang?'active':'')+'" onclick="setSiteLang(\''+l+'\')">'+l.toUpperCase()+'</button>';
+  }).join('');
+}
+function setSiteLang(l){ lang = l; try { localStorage.setItem('hubLang', l); } catch(e) {} renderLangSwitch(); renderNav(); }
+window.setSiteLang = setSiteLang;
+renderNav();
+renderLangSwitch();
+
+
+let currentDomain = 'all';
+let currentDataType = 'all';
+let currentOwner = 'all';
+let currentSearch = '';
+
+function getDomainColor(domain) {
+  return DOMAIN_COLORS[domain] || '#78909C';
+}
+
+function renderGrid(items) {
+  const container = document.getElementById('grid-container');
+  if (!items.length) {
+    container.innerHTML = '<div class="no-results"><div class="no-results-icon">🔍</div><div class="no-results-text">No equipment found</div><div class="no-results-sub">Try adjusting your search or filters</div></div>';
+    return;
+  }
+  container.innerHTML = items.map((item, idx) => {
+    const dc = getDomainColor(item.domain_norm);
+    const flag = COUNTRY_FLAGS[item.country] || '🌍';
+    const locIcon = item.location === 'Field' ? '🏟️' : item.location === 'Lab' ? '🔬' : item.location === 'Gym' ? '💪' : '🏥';
+    return `
+    <div class="card" data-idx="${idx}" style="animation-delay: ${idx * 0.02}s">
+      <div class="card-accent" style="background:${dc}"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-name">${item.equipment}</div>
+          ${item.brand ? `<div class="card-brand">${item.brand}</div>` : ''}
+        </div>
+        <div class="card-domain-tag" style="color:${dc}">
+          <span class="domain-dot" style="background:${dc}"></span>
+          ${item.domain_norm}
+        </div>
+        <div class="card-desc">${item.description !== 'N/A' && item.description ? item.description : item.purpose || '—'}</div>
+        <div class="card-meta">
+          ${item.country && item.country !== 'N/A' ? `<span class="meta-chip"><span class="icon">${flag}</span>${item.country}</span>` : ''}
+          ${item.frequency ? `<span class="meta-chip"><span class="icon">⏱</span>${item.frequency}</span>` : ''}
+          ${item.variables && item.variables !== 'none' && item.variables !== 'N/A' ? `<span class="meta-chip"><span class="icon">📊</span>${item.variables.substring(0,30)}${item.variables.length > 30 ? '…' : ''}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-location">${locIcon} ${item.location || '—'}</span>
+        ${item.data_type ? `<span class="dt-badge dt-${item.data_type.toLowerCase()}">Type ${item.data_type}</span>` : ''}
+        <button class="book-btn" onclick="event.stopPropagation();openModal(items[${idx}]);openBookingForm();">📅 Book</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openModal(items[+card.dataset.idx]));
+  });
+}
+
+function renderTable(items) {
+  const tbody = document.getElementById('table-body');
+  if (!items.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#6B7280;padding:40px">No equipment found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map((item, idx) => {
+    const dc = getDomainColor(item.domain_norm);
+    const flag = COUNTRY_FLAGS[item.country] || '';
+    return `<tr data-idx="${idx}" style="cursor:pointer">
+      <td><strong>${item.equipment}</strong></td>
+      <td><span class="tbl-brand">${item.brand || '—'}</span></td>
+      <td style="font-size:12px">${item.category !== 'N/A' ? item.category : '—'}</td>
+      <td class="tbl-domain" style="color:${dc};font-weight:600">${item.domain_norm}</td>
+      <td style="font-size:12px">${item.location || '—'}</td>
+      <td style="font-size:12px">${item.purpose || '—'}</td>
+      <td style="font-size:12px;max-width:160px">${item.variables || '—'}</td>
+      <td class="tbl-freq">${item.frequency || '—'}</td>
+      <td style="font-size:12px">${item.owner || '—'}</td>
+      <td class="country-flag">${flag} ${item.country !== 'N/A' ? item.country : '—'}</td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('tr[data-idx]').forEach(row => {
+    row.addEventListener('click', () => openModal(items[+row.dataset.idx]));
+  });
+}
+
+function getFiltered() {
+  return ALL_ITEMS.filter(item => {
+    const matchDomain = currentDomain === 'all' || item.domain_norm === currentDomain;
+    const matchOwner = currentOwner === 'all' || (item.owner || '').toLowerCase().includes(currentOwner.toLowerCase());
+    const matchDataType = currentDataType === 'all' || item.data_type === currentDataType;
+    const q = currentSearch.toLowerCase();
+    const matchSearch = !q || 
+      (item.equipment || '').toLowerCase().includes(q) ||
+      (item.brand || '').toLowerCase().includes(q) ||
+      (item.purpose || '').toLowerCase().includes(q) ||
+      (item.description || '').toLowerCase().includes(q) ||
+      (item.category || '').toLowerCase().includes(q) ||
+      (item.variables || '').toLowerCase().includes(q);
+    return matchDomain && matchOwner && matchSearch && matchDataType;
+  });
+}
+
+function update() {
+  const items = getFiltered();
+  document.getElementById('results-count').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+  document.getElementById('stat-total').textContent = ALL_ITEMS.length;
+  document.getElementById('stat-brands').textContent = new Set(ALL_ITEMS.map(i => i.brand).filter(Boolean)).size;
+  document.getElementById('stat-countries').textContent = new Set(ALL_ITEMS.map(i => i.country).filter(c => c && c !== 'N/A')).size;
+  document.getElementById('stat-domains').textContent = new Set(ALL_ITEMS.map(i => i.domain_norm).filter(Boolean)).size;
+  const isGrid = document.getElementById('grid-container').style.display !== 'none';
+  if (isGrid) renderGrid(items); else renderTable(items);
+}
+
+// Filters
+document.querySelectorAll('[data-filter="domain"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="domain"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDomain = btn.dataset.value;
+    update();
+  });
+});
+
+document.querySelectorAll('[data-filter="owner"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="owner"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentOwner = btn.dataset.value;
+    update();
+  });
+});
+
+document.querySelectorAll('[data-filter="datatype"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="datatype"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDataType = btn.dataset.value;
+    update();
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  update();
+});
+
+// View toggle
+document.getElementById('grid-btn').addEventListener('click', () => {
+  document.getElementById('grid-container').style.display = '';
+  document.getElementById('table-container').style.display = 'none';
+  document.getElementById('grid-btn').classList.add('active');
+  document.getElementById('table-btn').classList.remove('active');
+  update();
+});
+document.getElementById('table-btn').addEventListener('click', () => {
+  document.getElementById('grid-container').style.display = 'none';
+  document.getElementById('table-container').style.display = '';
+  document.getElementById('table-btn').classList.add('active');
+  document.getElementById('grid-btn').classList.remove('active');
+  update();
+});
+
+// Modal
+function openModal(item) {
+  currentModalItem = item;
+  bookingFormOpen = false;
+  bookingSubmittedMsg = false;
+  const dc = getDomainColor(item.domain_norm);
+  const flag = COUNTRY_FLAGS[item.country] || '';
+  document.getElementById('modal-top').style.background = dc;
+  document.getElementById('modal-name').textContent = item.equipment;
+  document.getElementById('modal-brand').textContent = item.brand || 'Unknown brand';
+  document.getElementById('modal-country').innerHTML = `${flag} ${item.country && item.country !== 'N/A' ? item.country : ''}`;
+  document.getElementById('modal-founded').textContent = item.founded && item.founded !== 'N/A' ? `Est. ${item.founded}` : '';
+  document.getElementById('modal-desc').textContent = item.description !== 'N/A' && item.description ? item.description : '—';
+  document.getElementById('modal-domain').textContent = item.primary_domain || item.domain_norm || '—';
+  document.getElementById('modal-loc').textContent = item.location || '—';
+  document.getElementById('modal-purpose').textContent = item.purpose || '—';
+  document.getElementById('modal-freq').textContent = item.frequency || '—';
+  document.getElementById('modal-vars').textContent = item.variables || '—';
+  document.getElementById('modal-owner').textContent = item.owner || '—';
+  // Data type
+  const dtLabels = {A:'Connected — cloud/API → AMS', B:'Local only — data stays on-site', C:'No data generated'};
+  const dtEl = document.getElementById('modal-datatype');
+  if (dtEl && item.data_type) {
+    dtEl.textContent = `Type ${item.data_type} — ${dtLabels[item.data_type] || ''}`;
+    dtEl.className = 'dt-badge dt-' + item.data_type.toLowerCase();
+  }
+  const dfEl = document.getElementById('modal-dataflow');
+  if (dfEl) dfEl.textContent = item.data_flow || '—';
+  document.getElementById('modal-key').textContent = item.key_products && item.key_products !== 'N/A' ? item.key_products : '—';
+  const webEl = document.getElementById('modal-web');
+  const webWrap = document.getElementById('modal-web-wrap');
+  if (item.website && item.website !== 'N/A') {
+    webEl.href = `https://${item.website.replace('https://','')}`;
+    webEl.textContent = `↗ ${item.website}`;
+    webWrap.style.display = '';
+  } else {
+    webWrap.style.display = 'none';
+  }
+  document.getElementById('modal').classList.add('open');
+  renderBookingArea();
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('open');
+});
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('modal').classList.remove('open');
+});
+
+/* ---- Booking ---- */
+let currentModalItem = null;
+let bookingFormOpen = false;
+let bookingSubmittedMsg = false;
+
+function itemKey(item) { return (item.equipment || '') + '|' + (item.brand || ''); }
+
+function openBookingForm() {
+  bookingFormOpen = true;
+  bookingSubmittedMsg = false;
+  renderBookingArea();
+}
+
+function renderBookingArea() {
+  const wrap = document.getElementById('modal-booking-form-wrap');
+  const toggle = document.getElementById('modal-book-toggle');
+  if (!wrap || !currentModalItem) return;
+  toggle.style.display = bookingFormOpen ? 'none' : '';
+  if (!bookingFormOpen) { wrap.innerHTML = ''; renderUpcomingBookings(); return; }
+
+  if (bookingSubmittedMsg) {
+    wrap.innerHTML = '<div class="booking-confirm">✓ Booking confirmed — it now appears in the schedule below.</div>';
+    renderUpcomingBookings();
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="booking-form">
+      <label>Your name</label>
+      <input type="text" id="bk-name" placeholder="e.g. Marco Rossi">
+      <div class="booking-row">
+        <div><label>Start date</label><input type="date" id="bk-start"></div>
+        <div><label>End date</label><input type="date" id="bk-end"></div>
+      </div>
+      <label>Where</label>
+      <input type="text" id="bk-location" placeholder="e.g. D1 Gym, D3 Physio Room...">
+      <label>What for</label>
+      <textarea id="bk-purpose" rows="2" placeholder="e.g. Force-velocity profiling session for U19 squad"></textarea>
+      <button class="booking-submit" onclick="submitBooking()">Confirm booking</button>
+    </div>`;
+  renderUpcomingBookings();
+}
+
+function renderUpcomingBookings() {
+  const el = document.getElementById('modal-upcoming-bookings');
+  if (!el || !currentModalItem) return;
+  const key = itemKey(currentModalItem);
+  const today = new Date().toISOString().slice(0, 10);
+  const list = ALL_BOOKINGS
+    .filter(b => b.itemKey === key && b.endDate >= today)
+    .sort((a, b) => a.startDate < b.startDate ? -1 : 1);
+  if (!list.length) {
+    el.innerHTML = '<div class="no-bookings">No upcoming bookings for this equipment.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:8px">Upcoming bookings</div>' +
+    list.map(b => `
+      <div class="booking-item">
+        <div class="bk-dates">${b.startDate} → ${b.endDate}</div>
+        <div class="bk-meta">${b.requesterName || '—'} · ${b.location || '—'}</div>
+        <div class="bk-meta">${b.purpose || ''}</div>
+      </div>`).join('');
+}
+
+function submitBooking() {
+  const name = document.getElementById('bk-name').value.trim();
+  const start = document.getElementById('bk-start').value;
+  const end = document.getElementById('bk-end').value;
+  const location = document.getElementById('bk-location').value.trim();
+  const purpose = document.getElementById('bk-purpose').value.trim();
+  if (!name || !start || !end) { alert('Please fill in your name, start date, and end date.'); return; }
+  if (window.saveTechBooking) {
+    window.saveTechBooking({
+      itemKey: itemKey(currentModalItem),
+      equipmentName: currentModalItem.equipment,
+      brand: currentModalItem.brand,
+      requesterName: name,
+      startDate: start,
+      endDate: end,
+      location: location,
+      purpose: purpose
+    });
+  }
+  bookingSubmittedMsg = true;
+  bookingFormOpen = true;
+  renderBookingArea();
+}
+window.openBookingForm = openBookingForm;
+window.submitBooking = submitBooking;
+
+window.onTechStackUpdated = function (items) { ALL_ITEMS = items; update(); };
+window.onTechBookingsUpdated = function (bookings) { ALL_BOOKINGS = bookings; renderUpcomingBookings(); };
+
+// Init
+update();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
+  authDomain: "phd-tracker-22d93.firebaseapp.com",
+  projectId: "phd-tracker-22d93",
+  storageBucket: "phd-tracker-22d93.firebasestorage.app",
+  messagingSenderId: "252875836800",
+  appId: "1:252875836800:web:dc6575ffab316da3744565"
+};
+
+let db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {}
+
+if (db) {
+  onSnapshot(collection(db, 'techStack'), function (snap) {
+    const items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    if (window.onTechStackUpdated) window.onTechStackUpdated(items);
+  }, function () {});
+
+  const bq = query(collection(db, 'techBookings'), orderBy('startDate', 'asc'));
+  onSnapshot(bq, function (snap) {
+    const bookings = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    if (window.onTechBookingsUpdated) window.onTechBookingsUpdated(bookings);
+  }, function () {});
+
+  window.saveTechBooking = async function (booking) {
+    await addDoc(collection(db, 'techBookings'), Object.assign({ createdAt: serverTimestamp() }, booking));
+  };
+}
+</script>
+</body>
+</html>

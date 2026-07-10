@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSG Performance — Tech Stack 2025/26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #001B48;
+  --red: #C8102E;
+  --gold: #C8A84B;
+  --white: #FFFFFF;
+  --off-white: #F8F9FA;
+  --text: #1A1D23;
+  --muted: #6B7280;
+  --border: rgba(0,27,72,0.10);
+  --shadow-sm: 0 1px 3px rgba(0,0,72,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,72,0.12);
+  --shadow-lg: 0 12px 40px rgba(0,0,72,0.16);
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.psg-badge {
+  width: 44px;
+  height: 44px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  color: white;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(200,16,46,0.4);
+}
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--white);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.header-subtitle {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.header-stats {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.stat-pill {
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+}
+
+/* CONTROLS */
+.controls {
+  max-width: 1400px;
+  margin: 28px auto 20px;
+  padding: 0 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 380px;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+#search {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#search:focus { border-color: var(--navy); }
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.filter-btn {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text);
+  white-space: nowrap;
+}
+.filter-btn:hover { border-color: var(--navy); background: var(--off-white); }
+.filter-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: white;
+}
+
+.view-toggle {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: auto;
+}
+.view-btn {
+  padding: 8px 14px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.view-btn.active { background: var(--navy); color: white; }
+.view-btn + .view-btn { border-left: 1.5px solid var(--border); }
+
+/* RESULTS COUNT */
+.results-bar {
+  max-width: 1400px;
+  margin: 0 auto 16px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.results-count {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* DOMAIN LEGEND */
+.domain-legend {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  padding: 0 32px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* GRID VIEW */
+#grid-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: fadeIn 0.3s ease forwards;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card-accent {
+  height: 4px;
+  width: 100%;
+}
+.card-body {
+  padding: 18px 20px 16px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  flex: 1;
+}
+.card-brand {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--navy);
+  background: rgba(0,27,72,0.07);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.card-domain-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.domain-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.meta-chip {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: var(--off-white);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.meta-chip .icon { font-size: 10px; }
+
+.card-footer {
+  padding: 10px 20px;
+  background: var(--off-white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-location {
+  font-size: 10px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.card-owner {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* TABLE VIEW */
+#table-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px 60px;
+  display: none;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+.data-table thead tr {
+  background: var(--navy);
+  color: white;
+}
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: rgba(0,27,72,0.03); }
+.tbl-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: rgba(0,27,72,0.07);
+  color: var(--navy);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tbl-domain { white-space: nowrap; font-size: 11px; }
+.tbl-freq { font-size: 11px; color: var(--muted); }
+.country-flag { font-size: 14px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.24);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+  from { opacity:0; transform: scale(0.95) translateY(20px); }
+  to { opacity:1; transform: scale(1) translateY(0); }
+}
+.modal-top { height: 6px; border-radius: 20px 20px 0 0; }
+.modal-content { padding: 28px 32px 32px; }
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--off-white); }
+.modal-equipment-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.modal-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.modal-brand-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--navy);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+.modal-country {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-section {
+  margin-bottom: 20px;
+}
+.modal-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.modal-field {
+  background: var(--off-white);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.modal-field-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.modal-field-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+.modal-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.modal-tag {
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+}
+.modal-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 14px;
+  border: 1.5px solid var(--navy);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.modal-website:hover { background: var(--navy); color: white; }
+
+.no-results {
+  max-width: 1400px;
+  margin: 60px auto;
+  padding: 0 32px;
+  text-align: center;
+  color: var(--muted);
+}
+.no-results-icon { font-size: 48px; margin-bottom: 16px; }
+.no-results-text { font-size: 18px; font-weight: 500; color: var(--text); }
+.no-results-sub { font-size: 14px; margin-top: 8px; }
+
+.dt-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; letter-spacing:0.06em; }
+.dt-a { background:#E5F4EC; color:#1B7A3E; }
+.dt-b { background:#FFF4E0; color:#A0620A; }
+.dt-c { background:#F1EFE8; color:#5F5E5A; }
+
+/* Shared site nav strip (consistent with the rest of the hub) */
+.site-nav-strip{background:#0B0B14;padding:8px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.site-nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.site-nav-link{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);text-decoration:none;font-family:'DM Sans',sans-serif}
+.site-nav-link:hover{background:rgba(255,255,255,0.08);color:#fff}
+.site-nav-link.current{background:var(--red);color:#fff}
+.site-lang-switch{display:flex;gap:4px}
+.site-lang-btn{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);cursor:pointer;font-family:'DM Sans',sans-serif}
+.site-lang-btn.active{background:var(--gold);color:#001B48;border-color:var(--gold)}
+
+/* Add / Edit form */
+.add-btn{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:auto}
+.add-btn:hover{opacity:0.9}
+.form-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;display:none;align-items:center;justify-content:center;padding:24px}
+.form-overlay.open{display:flex}
+.form-modal{background:#fff;border-radius:16px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:28px 32px}
+.form-modal h3{font-size:18px;margin-bottom:18px;color:var(--navy)}
+.form-row2{display:flex;gap:12px}
+.form-row2>div{flex:1}
+.form-field{margin-bottom:14px}
+.form-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+.form-field input,.form-field textarea,.form-field select{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:var(--navy)}
+.form-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.form-cancel{background:var(--off-white);border:1.5px solid var(--border);padding:10px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.form-save{background:var(--navy);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.modal-admin-actions{display:flex;gap:10px;margin-top:16px}
+.modal-edit-btn{background:var(--navy);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.modal-delete-btn{background:#fff;color:var(--red);border:1.5px solid var(--red);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="psg-badge">PSG</div>
+      <div>
+        <div class="header-title">Performance Tech Stack</div>
+        <div class="header-subtitle">Paris Saint-Germain · Season 2025/26</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Equipment Items</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-brands">0</div>
+        <div class="stat-label">Brands</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-countries">0</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num" id="stat-domains">0</div>
+        <div class="stat-label">Domains</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Search equipment, brand, purpose...">
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Domain</span>
+    <button class="filter-btn active" data-filter="domain" data-value="all">All</button>
+    <button class="filter-btn" data-filter="domain" data-value="Load Monitoring">Load Monitoring</button>
+    <button class="filter-btn" data-filter="domain" data-value="Neuromuscular">Neuromuscular</button>
+    <button class="filter-btn" data-filter="domain" data-value="Rehabilitation">Rehabilitation</button>
+    <button class="filter-btn" data-filter="domain" data-value="Rehab & Injury Risk">Rehab & Injury Risk</button>
+    <button class="filter-btn" data-filter="domain" data-value="Physiology">Physiology</button>
+    <button class="filter-btn" data-filter="domain" data-value="Recovery">Recovery</button>
+    <button class="filter-btn" data-filter="domain" data-value="Biomechanics">Biomechanics</button>
+    <button class="filter-btn" data-filter="domain" data-value="Tissue & Structure">Tissue & Structure</button>
+    <button class="filter-btn" data-filter="domain" data-value="Testing & Monitoring">Testing & Monitoring</button>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Owner</span>
+    <button class="filter-btn active" data-filter="owner" data-value="all">All</button>
+    <button class="filter-btn" data-filter="owner" data-value="Performance">Performance</button>
+    <button class="filter-btn" data-filter="owner" data-value="Medical">Medical</button>
+  </div>
+          <div class="filter-group">
+            <span class="filter-label">Data type</span>
+            <button class="filter-btn active" data-filter="datatype" data-value="all">All</button>
+            <button class="filter-btn" data-filter="datatype" data-value="A" style="color:#1B7A3E">Type A</button>
+            <button class="filter-btn" data-filter="datatype" data-value="B" style="color:#A0620A">Type B</button>
+            <button class="filter-btn" data-filter="datatype" data-value="C" style="color:#5F5E5A">Type C</button>
+          </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" id="grid-btn">⊞ Grid</button>
+    <button class="view-btn" id="table-btn">☰ Table</button>
+  </div>
+
+  <button class="add-btn" onclick="openAddForm()">+ Add New Tech Stack</button>
+  <button class="add-btn" style="background:var(--navy);margin-left:8px" onclick="importSeedBank()">⬇ Import Initial Set</button>
+</div>
+
+<!-- Add / Edit form overlay -->
+<div class="form-overlay" id="form-overlay">
+  <div class="form-modal">
+    <h3 id="form-title">Add New Tech Stack</h3>
+    <div class="form-row2">
+      <div class="form-field"><label>Equipment *</label><input type="text" id="f-equipment"></div>
+      <div class="form-field"><label>Brand</label><input type="text" id="f-brand"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Category</label><input type="text" id="f-category"></div>
+      <div class="form-field"><label>Domain</label>
+        <select id="f-domain">
+          <option>Load Monitoring</option><option>Neuromuscular</option><option>Rehabilitation</option>
+          <option>Rehab & Injury Risk</option><option>Physiology</option><option>Recovery</option>
+          <option>Biomechanics</option><option>Tissue & Structure</option><option>Testing & Monitoring</option>
+          <option>Cognitive Training</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Location</label><input type="text" id="f-location" placeholder="e.g. Gym, Lab, Physio..."></div>
+      <div class="form-field"><label>Site</label><input type="text" id="f-site" placeholder="e.g. D1, D3"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Purpose</label><input type="text" id="f-purpose"></div>
+      <div class="form-field"><label>Frequency</label><input type="text" id="f-frequency"></div>
+    </div>
+    <div class="form-field"><label>Variables measured</label><input type="text" id="f-variables"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Owner</label><input type="text" id="f-owner" placeholder="Performance / Medical..."></div>
+      <div class="form-field"><label>Data type</label>
+        <select id="f-datatype"><option value="A">A — Connected (cloud/API)</option><option value="B">B — Local only</option><option value="C">C — No data</option></select>
+      </div>
+    </div>
+    <div class="form-field"><label>Data flow</label><input type="text" id="f-dataflow"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Reported by</label><input type="text" id="f-who"></div>
+      <div class="form-field"><label>Status</label>
+        <select id="f-status"><option>Active</option><option>Discontinued</option><option>Planned</option></select>
+      </div>
+    </div>
+    <div class="form-field"><label>Notes / Comments</label><textarea id="f-comments" rows="2"></textarea></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Country</label><input type="text" id="f-country"></div>
+      <div class="form-field"><label>Founded</label><input type="text" id="f-founded"></div>
+    </div>
+    <div class="form-field"><label>Brand description</label><textarea id="f-description" rows="3"></textarea></div>
+    <div class="form-field"><label>Key products</label><input type="text" id="f-key_products"></div>
+    <div class="form-field"><label>Website</label><input type="text" id="f-website" placeholder="example.com"></div>
+    <div class="form-actions">
+      <button class="form-cancel" onclick="closeForm()">Cancel</button>
+      <button class="form-save" onclick="saveForm()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="results-bar">
+  <span class="results-count" id="results-count">71 items</span>
+</div>
+
+<div class="domain-legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#0066CC"></span>Load Monitoring</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#E07000"></span>Neuromuscular</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#7B3FA0"></span>Rehabilitation</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#C8102E"></span>Rehab & Injury Risk</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#1E8A4A"></span>Physiology</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#0099AA"></span>Recovery</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#B5960A"></span>Biomechanics</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#4CAF50"></span>Tissue & Structure</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#5C6BC0"></span>Testing & Monitoring</span>
+</div>
+
+<div id="grid-container"></div>
+
+<div id="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Equipment</th>
+        <th>Brand</th>
+        <th>Category</th>
+        <th>Domain</th>
+        <th>Location</th>
+        <th>Purpose</th>
+        <th>Variables</th>
+        <th>Frequency</th>
+        <th>Owner</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" role="dialog">
+  <div class="modal" style="position:relative">
+    <div class="modal-top" id="modal-top"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div class="modal-equipment-name" id="modal-name"></div>
+      <div class="modal-brand-row">
+        <span class="modal-brand-badge" id="modal-brand"></span>
+        <span class="modal-country" id="modal-country"></span>
+        <span id="modal-founded" style="font-size:12px;color:#6B7280"></span>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Brand Overview</div>
+        <div class="modal-desc" id="modal-desc"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Usage at PSG</div>
+        <div class="modal-grid">
+          <div class="modal-field">
+            <div class="modal-field-label">Primary Domain</div>
+            <div class="modal-field-value" id="modal-domain"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Location</div>
+            <div class="modal-field-value" id="modal-loc"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Primary Purpose</div>
+            <div class="modal-field-value" id="modal-purpose"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Frequency</div>
+            <div class="modal-field-value" id="modal-freq"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Variables Measured</div>
+            <div class="modal-field-value" id="modal-vars"></div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-field-label">Owner / Dept</div>
+            <div class="modal-field-value" id="modal-owner"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section" id="modal-key-section">
+        <div class="modal-section-title">Key Products</div>
+        <div class="modal-desc" id="modal-key"></div>
+      </div>
+
+      <div class="modal-admin-actions">
+        <button class="modal-edit-btn" onclick="openEditForm()">✎ Edit</button>
+        <button class="modal-delete-btn" onclick="deleteCurrentItem()">🗑 Delete</button>
+      </div>
+
+      <div id="modal-web-wrap" style="margin-top:8px;display:none">
+        <a href="#" class="modal-website" id="modal-web" target="_blank">↗ Visit Website</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DOMAIN_COLORS = {"Load Monitoring": "#0066CC", "Neuromuscular": "#E07000", "Rehabilitation": "#7B3FA0", "Rehab & Injury Risk": "#C8102E", "Physiology": "#1E8A4A", "Recovery": "#0099AA", "Biomechanics": "#B5960A", "Tissue & Structure": "#4CAF50", "Testing & Monitoring": "#5C6BC0", "Cognitive Training": "#E91E63", "Other": "#78909C"};
+const COUNTRY_FLAGS = {
+  "Australia":"🇦🇺","France":"🇫🇷","USA":"🇺🇸","Italy":"🇮🇹","Ireland":"🇮🇪",
+  "Spain":"🇪🇸","Sweden":"🇸🇪","Switzerland":"🇨🇭","Finland":"🇫🇮",
+  "Israel":"🇮🇱","International":"🌍","N/A":"—"
+};
+
+let ALL_ITEMS = [];
+
+
+let currentDomain = 'all';
+let currentDataType = 'all';
+let currentOwner = 'all';
+let currentSearch = '';
+
+function getDomainColor(domain) {
+  return DOMAIN_COLORS[domain] || '#78909C';
+}
+
+function renderGrid(items) {
+  const container = document.getElementById('grid-container');
+  if (!items.length) {
+    container.innerHTML = '<div class="no-results"><div class="no-results-icon">🔍</div><div class="no-results-text">No equipment found</div><div class="no-results-sub">Try adjusting your search or filters</div></div>';
+    return;
+  }
+  container.innerHTML = items.map((item, idx) => {
+    const dc = getDomainColor(item.domain_norm);
+    const flag = COUNTRY_FLAGS[item.country] || '🌍';
+    const locIcon = item.location === 'Field' ? '🏟️' : item.location === 'Lab' ? '🔬' : item.location === 'Gym' ? '💪' : '🏥';
+    return `
+    <div class="card" data-idx="${idx}" style="animation-delay: ${idx * 0.02}s">
+      <div class="card-accent" style="background:${dc}"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-name">${item.equipment}</div>
+          ${item.brand ? `<div class="card-brand">${item.brand}</div>` : ''}
+        </div>
+        <div class="card-domain-tag" style="color:${dc}">
+          <span class="domain-dot" style="background:${dc}"></span>
+          ${item.domain_norm}
+        </div>
+        <div class="card-desc">${item.description !== 'N/A' && item.description ? item.description : item.purpose || '—'}</div>
+        <div class="card-meta">
+          ${item.country && item.country !== 'N/A' ? `<span class="meta-chip"><span class="icon">${flag}</span>${item.country}</span>` : ''}
+          ${item.frequency ? `<span class="meta-chip"><span class="icon">⏱</span>${item.frequency}</span>` : ''}
+          ${item.variables && item.variables !== 'none' && item.variables !== 'N/A' ? `<span class="meta-chip"><span class="icon">📊</span>${item.variables.substring(0,30)}${item.variables.length > 30 ? '…' : ''}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-location">${locIcon} ${item.location || '—'}</span>
+        ${item.data_type ? `<span class="dt-badge dt-${item.data_type.toLowerCase()}">Type ${item.data_type}</span>` : ''}
+        <span class="card-owner">${item.owner || '—'}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openModal(items[+card.dataset.idx]));
+  });
+}
+
+function renderTable(items) {
+  const tbody = document.getElementById('table-body');
+  if (!items.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#6B7280;padding:40px">No equipment found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map((item, idx) => {
+    const dc = getDomainColor(item.domain_norm);
+    const flag = COUNTRY_FLAGS[item.country] || '';
+    return `<tr data-idx="${idx}" style="cursor:pointer">
+      <td><strong>${item.equipment}</strong></td>
+      <td><span class="tbl-brand">${item.brand || '—'}</span></td>
+      <td style="font-size:12px">${item.category !== 'N/A' ? item.category : '—'}</td>
+      <td class="tbl-domain" style="color:${dc};font-weight:600">${item.domain_norm}</td>
+      <td style="font-size:12px">${item.location || '—'}</td>
+      <td style="font-size:12px">${item.purpose || '—'}</td>
+      <td style="font-size:12px;max-width:160px">${item.variables || '—'}</td>
+      <td class="tbl-freq">${item.frequency || '—'}</td>
+      <td style="font-size:12px">${item.owner || '—'}</td>
+      <td class="country-flag">${flag} ${item.country !== 'N/A' ? item.country : '—'}</td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('tr[data-idx]').forEach(row => {
+    row.addEventListener('click', () => openModal(items[+row.dataset.idx]));
+  });
+}
+
+function getFiltered() {
+  return ALL_ITEMS.filter(item => {
+    const matchDomain = currentDomain === 'all' || item.domain_norm === currentDomain;
+    const matchOwner = currentOwner === 'all' || (item.owner || '').toLowerCase().includes(currentOwner.toLowerCase());
+    const matchDataType = currentDataType === 'all' || item.data_type === currentDataType;
+    const q = currentSearch.toLowerCase();
+    const matchSearch = !q || 
+      (item.equipment || '').toLowerCase().includes(q) ||
+      (item.brand || '').toLowerCase().includes(q) ||
+      (item.purpose || '').toLowerCase().includes(q) ||
+      (item.description || '').toLowerCase().includes(q) ||
+      (item.category || '').toLowerCase().includes(q) ||
+      (item.variables || '').toLowerCase().includes(q);
+    return matchDomain && matchOwner && matchSearch && matchDataType;
+  });
+}
+
+function update() {
+  const items = getFiltered();
+  document.getElementById('results-count').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+  document.getElementById('stat-total').textContent = ALL_ITEMS.length;
+  document.getElementById('stat-brands').textContent = new Set(ALL_ITEMS.map(i => i.brand).filter(Boolean)).size;
+  document.getElementById('stat-countries').textContent = new Set(ALL_ITEMS.map(i => i.country).filter(c => c && c !== 'N/A')).size;
+  document.getElementById('stat-domains').textContent = new Set(ALL_ITEMS.map(i => i.domain_norm).filter(Boolean)).size;
+  const isGrid = document.getElementById('grid-container').style.display !== 'none';
+  if (isGrid) renderGrid(items); else renderTable(items);
+}
+
+// Filters
+document.querySelectorAll('[data-filter="domain"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="domain"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDomain = btn.dataset.value;
+    update();
+  });
+});
+
+document.querySelectorAll('[data-filter="owner"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="owner"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentOwner = btn.dataset.value;
+    update();
+  });
+});
+
+document.querySelectorAll('[data-filter="datatype"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter="datatype"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDataType = btn.dataset.value;
+    update();
+  });
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  update();
+});
+
+// View toggle
+document.getElementById('grid-btn').addEventListener('click', () => {
+  document.getElementById('grid-container').style.display = '';
+  document.getElementById('table-container').style.display = 'none';
+  document.getElementById('grid-btn').classList.add('active');
+  document.getElementById('table-btn').classList.remove('active');
+  update();
+});
+document.getElementById('table-btn').addEventListener('click', () => {
+  document.getElementById('grid-container').style.display = 'none';
+  document.getElementById('table-container').style.display = '';
+  document.getElementById('table-btn').classList.add('active');
+  document.getElementById('grid-btn').classList.remove('active');
+  update();
+});
+
+// Modal
+function openModal(item) {
+  currentModalItem = item;
+  const dc = getDomainColor(item.domain_norm);
+  const flag = COUNTRY_FLAGS[item.country] || '';
+  document.getElementById('modal-top').style.background = dc;
+  document.getElementById('modal-name').textContent = item.equipment;
+  document.getElementById('modal-brand').textContent = item.brand || 'Unknown brand';
+  document.getElementById('modal-country').innerHTML = `${flag} ${item.country && item.country !== 'N/A' ? item.country : ''}`;
+  document.getElementById('modal-founded').textContent = item.founded && item.founded !== 'N/A' ? `Est. ${item.founded}` : '';
+  document.getElementById('modal-desc').textContent = item.description !== 'N/A' && item.description ? item.description : '—';
+  document.getElementById('modal-domain').textContent = item.primary_domain || item.domain_norm || '—';
+  document.getElementById('modal-loc').textContent = item.location || '—';
+  document.getElementById('modal-purpose').textContent = item.purpose || '—';
+  document.getElementById('modal-freq').textContent = item.frequency || '—';
+  document.getElementById('modal-vars').textContent = item.variables || '—';
+  document.getElementById('modal-owner').textContent = item.owner || '—';
+  // Data type
+  const dtLabels = {A:'Connected — cloud/API → AMS', B:'Local only — data stays on-site', C:'No data generated'};
+  const dtEl = document.getElementById('modal-datatype');
+  if (dtEl && item.data_type) {
+    dtEl.textContent = `Type ${item.data_type} — ${dtLabels[item.data_type] || ''}`;
+    dtEl.className = 'dt-badge dt-' + item.data_type.toLowerCase();
+  }
+  const dfEl = document.getElementById('modal-dataflow');
+  if (dfEl) dfEl.textContent = item.data_flow || '—';
+  document.getElementById('modal-key').textContent = item.key_products && item.key_products !== 'N/A' ? item.key_products : '—';
+  const webEl = document.getElementById('modal-web');
+  const webWrap = document.getElementById('modal-web-wrap');
+  if (item.website && item.website !== 'N/A') {
+    webEl.href = `https://${item.website.replace('https://','')}`;
+    webEl.textContent = `↗ ${item.website}`;
+    webWrap.style.display = '';
+  } else {
+    webWrap.style.display = 'none';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('open');
+});
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('modal').classList.remove('open');
+});
+
+const TECHSTACK_SEED = [
+  { equipment:'1080 Motion Sprint', brand:'1080 Motion', category:'Resistance Training Technology', domain_norm:'Neuromuscular', location:'Gym / Field', site:'D1, D3', purpose:'Sprint profiling', variables:'Force / velocity', frequency:'Several times a week', owner:'Performance', data_type:'B', data_flow:'1080 app — force/velocity data stored locally', who:'Gwen / Ken', status:'Active', contract:'', comments:'Sprint profiling and neuromuscular rehab.', country:'Sweden', founded:'2009', description:'Swedish pioneer in robotic resistance training. The 1080 Sprint/Quantum systems use servo-controlled resistance to profile force-velocity characteristics in concentric and eccentric phases, widely used for sprint profiling and neuromuscular rehabilitation.', key_products:'1080 Sprint, 1080 Quantum', website:'1080motion.com' },
+  { equipment:'3D Foot Scanner', brand:'Tiger', category:'3D Foot Scanning', domain_norm:'Tissue & Structure', location:'Lab', site:'D1', purpose:'Foot morphology', variables:'Foot shape', frequency:'Monthly', owner:'Performance', data_type:'B', data_flow:'Tiger software — scan data stored locally', who:'Ken', status:'Active', contract:'', comments:'', country:'N/A', founded:'N/A', description:'3D foot morphology scanning system for podiatric assessment and custom insole/orthotic fabrication. Provides high-resolution foot shape data to support biomechanical profiling and injury prevention.', key_products:'3D Foot Scanner', website:'N/A' },
+  { equipment:'Alter-G Treadmill', brand:'AlterG', category:'Rehabilitation Technology', domain_norm:'Rehabilitation', location:'Rehab', site:'D1', purpose:'Rehab', variables:'Treatment use', frequency:'Rarely / as needed', owner:'Medical', data_type:'C', data_flow:'Unweighting treadmill — no digital output in standard config', who:'Ken', status:'Active', contract:'', comments:'', country:'USA', founded:'2005', description:'US company using NASA-derived anti-gravity treadmill technology (differential air pressure). Enables partial body-weight running for gait rehabilitation, return-to-play protocols, and biomechanical gait analysis with reduced joint loading.', key_products:'Anti-Gravity Treadmill', website:'alterg.com' },
+  { equipment:'BFR', brand:'Mad Up', category:'Blood Flow Restriction (BFR)', domain_norm:'Rehab & Injury Risk', location:'Gym', site:'D3', purpose:'Rehab', variables:'Strength, LOP', frequency:'Daily', owner:'Medical', data_type:'C', data_flow:'Passive BFR cuffs — no digital output', who:'Tanu', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'French BFR (Blood Flow Restriction) device manufacturer. Mad Up cuffs enable low-load resistance training with partial vascular occlusion to stimulate muscle hypertrophy and strength gains during rehabilitation, reducing mechanical stress on healing tissue.', key_products:'Mad Up BFR cuffs', website:'mad-up.com' },
+  { equipment:'Blazepod', brand:'BlazePod', category:'Reaction Time / Cognitive Training', domain_norm:'Cognitive Training', location:'Gym / Field', site:'', purpose:'Responsiveness training', variables:'Time', frequency:'Rarely / as needed', owner:'Performance', data_type:'B', data_flow:'BlazePod app — reaction data in vendor cloud, manual export', who:'Denis', status:'Active', contract:'', comments:'', country:'Israel', founded:'2017', description:'Israeli smart LED pod system for reaction time training, cognitive-motor skill development, and responsiveness testing. Used in elite sport for return-to-sport cognitive rehabilitation and speed/agility training.', key_products:'BlazePod Kit Pro', website:'blazepod.com' },
+  { equipment:'Blueback', brand:'Blueback', category:'Electrostimulation / Rehab', domain_norm:'Rehabilitation', location:'Gym', site:'', purpose:'Rehab', variables:'Strength', frequency:'', owner:'', data_type:'B', data_flow:'Rehab platform — session data in vendor portal, manual export', who:'Tanu', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'French electrostimulation device for muscle activation, neuromuscular re-education, and rehabilitation. Targets specific muscle recruitment patterns during early phases of injury rehabilitation.', key_products:'Blueback', website:'N/A' },
+  { equipment:'Cellule Dash', brand:'Dash Silver', category:'Speed Timing', domain_norm:'Neuromuscular', location:'Field', site:'', purpose:'Speed testing', variables:'Time', frequency:'', owner:'Performance', data_type:'B', data_flow:'Dash software — sprint timing data stored locally', who:'Denis', status:'Active', contract:'', comments:'', country:'N/A', founded:'N/A', description:'Electronic sprint timing gate system for accurate field-based speed testing and athletic performance measurement.', key_products:'Dash timing gates', website:'N/A' },
+  { equipment:'Cellule Witty', brand:'Microgate', category:'Timing & Testing Systems', domain_norm:'Neuromuscular', location:'Field', site:'', purpose:'Speed testing', variables:'Time', frequency:'Monthly', owner:'Performance', data_type:'B', data_flow:'Witty Manager software — timing data stored locally', who:'Denis', status:'Active', contract:'', comments:'', country:'Italy', founded:'1992', description:'Italian manufacturer of precision electronic timing and measurement systems. Products include photoelectric timing gates (Witty), jump testing platforms (Optojump), and performance tracking software used across elite sport.', key_products:'Witty, Optojump, Racezeit', website:'microgate.it' },
+  { equipment:'CNC', brand:'Pluto (CNC)', category:'CNC / Custom Fabrication', domain_norm:'Rehabilitation', location:'Rehab', site:'D1', purpose:'Rehab', variables:'Treatment use', frequency:'Several times a week', owner:'Medical', data_type:'B', data_flow:'Pluto platform — cognitive data in vendor portal', who:'Ken', status:'Active', contract:'', comments:'', country:'N/A', founded:'N/A', description:'CNC routing and fabrication system used in rehabilitation contexts for manufacturing custom orthotics, prosthetics, training aids, or equipment modifications in an elite sports medical environment.', key_products:'PLR6090 CNC router', website:'N/A' },
+  { equipment:'Compex (NMES / Electrostimulation)', brand:'Compex', category:'Electrostimulation (NMES)', domain_norm:'Physiology', location:'Physio', site:'D3', purpose:'Muscle / tendon', variables:'', frequency:'Several times a week', owner:'Medical', data_type:'C', data_flow:'Electrostim — no digital output', who:'Tanu / Gwen', status:'Active', contract:'', comments:'10 machines total at D3.', country:'Switzerland', founded:'1987', description:'Swiss leader in neuromuscular electrical stimulation (NMES/EMS). Compex devices are used in elite sport for muscle recovery, pain relief, active warm-up, and injury rehabilitation. Standard equipment in professional sports medical departments.', key_products:'Compex SP 8.0, Compex Fit 5.0', website:'compex.com' },
+  { equipment:'Cryochamber', brand:'Cryochamber', category:'Whole-Body Cryotherapy', domain_norm:'Physiology', location:'Lab', site:'D1', purpose:'Recovery', variables:'Treatment use', frequency:'Daily', owner:'Performance', data_type:'C', data_flow:'Passive cold exposure — no digital output', who:'Ken', status:'Active', contract:'', comments:'', country:'International', founded:'N/A', description:'Whole-body cryotherapy chamber for systemic cold exposure therapy. Used daily in elite sports environments to reduce systemic inflammation, accelerate muscle recovery, and support sleep quality and wellbeing.', key_products:'Cryotherapy chamber', website:'N/A' },
+  { equipment:'Cube (Blood Analyser + Laser Therapy)', brand:'Cube', category:'Point-of-Care Diagnostics / Laser Therapy', domain_norm:'Physiology', location:'Lab', site:'D1', purpose:'Inflammatory monitoring (CRP) + tissue healing laser', variables:'CRP, laser treatment', frequency:'Several times a week', owner:'Medical', data_type:'B', data_flow:'Blood analyser: CRP data local. Laser unit: no data (Type C)', who:'Tanu / Ken', status:'Active', contract:'', comments:'2 laser machines at D3 (Tanu). Blood analyser at D1 (Ken).', country:'France', founded:'N/A', description:'French medical device company producing the CUBE-S high-sensitivity CRP analyser for bedside inflammatory monitoring, and therapeutic laser devices for tissue healing and pain management in elite sports physiotherapy.', key_products:'CUBE-S (hsCRP), Therapeutic Laser', website:'cube-biotech.com' },
+  { equipment:'DEXA', brand:'DEXA', category:'Body Composition Imaging (DXA)', domain_norm:'Tissue & Structure', location:'Lab', site:'D1', purpose:'Body composition', variables:'Lean mass, bone, bodycomposition', frequency:'Rarely / as needed', owner:'Performance', data_type:'B', data_flow:'DEXA system — body composition data stored locally', who:'Ken', status:'Active', contract:'', comments:'', country:'International', founded:'N/A', description:'Dual-Energy X-ray Absorptiometry is the clinical gold standard for body composition analysis — lean mass, fat mass, bone mineral density. Used for longitudinal monitoring in elite athletes and return-to-play assessment.', key_products:'DXA Scan', website:'N/A' },
+  { equipment:'Flywheel Systems', brand:'Flywheel', category:'Flywheel / Eccentric Training', domain_norm:'Neuromuscular', location:'Gym', site:'D1', purpose:'Eccentric training', variables:'Force / velocity', frequency:'Several times a week', owner:'Performance', data_type:'C', data_flow:'Resistance device — no data unless encoder attached', who:'Ken', status:'Active', contract:'', comments:'', country:'International', founded:'N/A', description:'Inertial flywheel resistance devices enabling eccentric overload training — a key modality for hamstring injury prevention and neuromuscular rehabilitation. Quantify force and velocity during both concentric and eccentric phases.', key_products:'Flywheel device', website:'N/A' },
+  { equipment:'Game ready', brand:'Game Ready', category:'Cryotherapy / Compression', domain_norm:'Recovery', location:'Physio', site:'D3', purpose:'Rehab', variables:'', frequency:'Daily', owner:'Medical', data_type:'C', data_flow:'Compression/cooling therapy — no digital output', who:'Gwen', status:'Active', contract:'', comments:'', country:'USA', founded:'1996', description:'US leader in active compression and cold therapy systems for acute injury management and post-training recovery. The Game Ready system combines circumferential pneumatic compression with cold water circulation, standard in professional sports medical rooms.', key_products:'GRPro 2.1', website:'gameready.com' },
+  { equipment:'Goniometer Electronic', brand:'EasyAngle', category:'Digital Goniometry', domain_norm:'Rehabilitation', location:'Physio', site:'D3', purpose:'Rehab', variables:'Range of Movement', frequency:'Several times a week', owner:'Medical', data_type:'B', data_flow:'EasyAngle app — ROM data stored locally, manual export', who:'Tanu', status:'Active', contract:'', comments:'', country:'Sweden', founded:'N/A', description:'Swedish digital goniometer for objective, reliable joint range-of-motion measurement. EasyAngle provides clinician-grade ROM assessment with electronic readout, used by physiotherapists for injury assessment and rehabilitation progression.', key_products:'EasyAngle digital goniometer', website:'meloq.com' },
+  { equipment:'GPS', brand:'GPexe', category:'GPS / Player Tracking', domain_norm:'Load Monitoring', location:'Field', site:'', purpose:'External load tracking - GK', variables:'External load', frequency:'Daily', owner:'Performance', data_type:'A', data_flow:'GPexe → cloud → API to AMS', who:'Denis', status:'Active', contract:'', comments:'', country:'Italy', founded:'2013', description:'Italian GPS and inertial player tracking platform developed for football performance analysis. Provides granular external load metrics — metabolic power, accelerations, mechanical work — and team-level dashboards.', key_products:'GPexe Pro2, GPexe Cloud', website:'gpexe.com' },
+  { equipment:'GPS', brand:'STATSports', category:'GPS / Player Tracking', domain_norm:'Load Monitoring', location:'Field', site:'D3', purpose:'External load tracking - field players', variables:'External load', frequency:'Daily', owner:'Performance', data_type:'A', data_flow:'STATSports → cloud → API to AMS', who:'Gwen / Denis', status:'Active', contract:'', comments:'Primary GPS system. Used daily across training and rehab.', country:'Ireland', founded:'2007', description:'Irish global leader in GPS-based player tracking for elite football and rugby. STATSports APEX systems provide 10 Hz GPS with accelerometry for comprehensive external load monitoring, used by hundreds of professional clubs worldwide.', key_products:'APEX Pro, Sonra software', website:'statsports.com' },
+  { equipment:'GymAware (VBT)', brand:'GymAware', category:'Velocity-Based Training (VBT)', domain_norm:'Neuromuscular', location:'Gym', site:'D1, D3', purpose:'Performance', variables:'Velocity', frequency:'Several times a week', owner:'Performance', data_type:'B', data_flow:'', who:'Gwen / Ken', status:'Active', contract:'', comments:'Used for VBT in gym and rehab contexts.', country:'Australia', founded:'2002', description:'Australian gold standard in velocity-based training. The GymAware linear position transducer and Powertool software provide real-time bar velocity, power, and displacement data for load management and neuromuscular performance monitoring.', key_products:'GymAware RS, Powertool app', website:'gymaware.com' },
+  { equipment:'Heat Pan', brand:'Mano Splint', category:'Thermoplastic Splinting', domain_norm:'Tissue & Structure', location:'Physio Room', site:'D3', purpose:'Muscle / tendon', variables:'', frequency:'Monthly', owner:'Medical', data_type:'C', data_flow:'Passive thermal device — no data', who:'Tanu', status:'Active', contract:'', comments:'', country:'N/A', founded:'N/A', description:'Thermoplastic moulding system used in physiotherapy for custom orthosis and splint fabrication. Heat pan technology allows clinicians to create bespoke protective devices and immobilisation supports for athletes.', key_products:'Heat pan / thermoplastic', website:'N/A' },
+  { equipment:'Indiba TECAR', brand:'Indiba', category:'Radiofrequency Therapy (TECAR)', domain_norm:'Physiology', location:'Physio', site:'D3', purpose:'Recovery', variables:'', frequency:'Daily', owner:'Medical', data_type:'C', data_flow:'TECAR therapy — no digital output', who:'Tanu / Gwen', status:'Active', contract:'', comments:'Espoirs physio room + D3 physio.', country:'Spain', founded:'1982', description:'Spanish pioneer in radiofrequency (TECAR) therapy at 448 kHz. Indiba devices promote deep tissue regeneration, reduce pain and inflammation, and accelerate musculoskeletal repair — widely adopted in elite football physiotherapy.', key_products:'Indiba Activ, Indiba Sport', website:'indiba.com' },
+  { equipment:'Instrumented Treadmill', brand:'Gaitway3D', category:'Instrumented Treadmill / Biomechanics', domain_norm:'Biomechanics', location:'Lab', site:'D1', purpose:'Gait analysis', variables:'3DGRF, pressure, spatiotemporal', frequency:'Several times a week', owner:'Performance', data_type:'B', data_flow:'Gaitway3D software — gait data stored locally', who:'Ken', status:'Active', contract:'', comments:'', country:'International', founded:'N/A', description:'Instrumented treadmill integrating 3D ground reaction force plates with pressure mapping and spatiotemporal gait analysis. Enables comprehensive biomechanical assessment of running mechanics, asymmetries, and loading patterns.', key_products:'Gaitway 3D treadmill', website:'N/A' },
+  { equipment:'Isokinetic Dynamometer (Biodex / Cybex)', brand:'Biodex / Cybex', category:'Isokinetic Dynamometry', domain_norm:'Neuromuscular', location:'Lab / Rehab', site:'D1, D3', purpose:'Strength testing', variables:'Peak torque, H:Q ratio, concentric/eccentric strength', frequency:'Daily', owner:'Medical', data_type:'B', data_flow:'Biodex/Cybex software — torque data stored locally', who:'Tanu / Gwen / Ken', status:'Active', contract:'', comments:'D1 (Ken) and D3 (Tanu, Gwen). Used daily.', country:'USA', founded:'1960s', description:'US isokinetic dynamometry gold standard. Systems provide controlled-speed strength testing (concentric/eccentric) and measure peak torque, H:Q ratios, and limb symmetry indices — essential for RTP decisions and injury risk profiling.', key_products:'System 4 Pro, CSMI Humac Norm', website:'biodex.com' },
+  { equipment:'Keiser Squat', brand:'Keiser', category:'Pneumatic Resistance Training', domain_norm:'Rehab & Injury Risk', location:'Gym', site:'D3', purpose:'Rehab', variables:'Strength, Peak Force, Power', frequency:'Several times a week', owner:'Performance', data_type:'C', data_flow:'Pneumatic resistance — no digital output', who:'Tanu', status:'Active', contract:'', comments:'', country:'USA', founded:'1978', description:'US manufacturer of pneumatic (air-resistance) strength training equipment. Keiser machines provide accommodating resistance ideal for power development and rehabilitation, with real-time power output display for VBT applications.', key_products:'Keiser M3i, Leg Press, Squat', website:'keiser.com' },
+  { equipment:'Kinvent Handheld Dynamometer', brand:'Kinvent', category:'Digital Force & Motion Measurement', domain_norm:'Neuromuscular', location:'Lab / Rehab', site:'D1, D3', purpose:'Strength testing', variables:'Force', frequency:'Weekly', owner:'Medical', data_type:'B', data_flow:'Kinvent app — force data stored locally', who:'Ken', status:'Discontinued', contract:'', comments:'Kinvent dynamometer and force plates discontinued. Handheld unit still active at D1/D3.', country:'France', founded:'2017', description:'French startup producing Bluetooth-connected dynamometers and force plates for handheld and platform strength testing. Widely adopted for Limb Symmetry Index (LSI) assessment in rehabilitation and return-to-play contexts.', key_products:'K-Grip, K-Force, K-Plates', website:'k-invent.com' },
+  { equipment:'Leg extension REV', brand:'Technogym', category:'Smart Gym Equipment', domain_norm:'Rehab & Injury Risk', location:'Gym', site:'D3', purpose:'Rehab', variables:'Peak force, LSI, RFD', frequency:'Daily', owner:'Performance', data_type:'B', data_flow:'', who:'Tanu', status:'Active', contract:'', comments:'', country:'Italy', founded:'1983', description:'Italian world leader in wellness equipment and connected fitness technology. Technogym REV machines feature integrated load cells and velocity measurement, enabling real-time VBT and force-velocity profiling directly within exercise machines.', key_products:'Skillrun, Leg Press REV, Leg Extension REV', website:'technogym.com' },
+  { equipment:'Leg press REV', brand:'Technogym', category:'Smart Gym Equipment', domain_norm:'Rehab & Injury Risk', location:'Gym', site:'D3', purpose:'Rehab', variables:'Peak force, LSI, RFD', frequency:'Weekly', owner:'Performance', data_type:'B', data_flow:'', who:'Tanu', status:'Active', contract:'', comments:'', country:'Italy', founded:'1983', description:'Italian world leader in wellness equipment and connected fitness technology. Technogym REV machines feature integrated load cells and velocity measurement, enabling real-time VBT and force-velocity profiling directly within exercise machines.', key_products:'Skillrun, Leg Press REV, Leg Extension REV', website:'technogym.com' },
+  { equipment:'Ligthback', brand:'Lightback', category:'Photobiomodulation / Prevention', domain_norm:'Tissue & Structure', location:'Physio', site:'D3', purpose:'Prevention', variables:'', frequency:'Rarely / as needed', owner:'Medical', data_type:'C', data_flow:'Passive device — no digital output', who:'Gwen', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'Light therapy device used for injury prevention and tissue recovery. Applies photobiomodulation principles to support soft tissue health and reduce inflammation in professional athlete physiotherapy settings.', key_products:'Lightback device', website:'N/A' },
+  { equipment:'Myocene', brand:'Myocene', category:'Muscle Oxygenation / Fatigue Monitoring', domain_norm:'Physiology', location:'Gym / Lab', site:'D1', purpose:'Fatigue status', variables:'Oxygenation / stiffness', frequency:'Several times a week', owner:'Performance', data_type:'B', data_flow:'Myocene software — EMG data stored locally', who:'Ken', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'French startup producing NIRS and muscle stiffness monitoring devices for low-frequency fatigue detection. Enables non-invasive assessment of peripheral muscle oxygenation and recovery status — aligned with invisible monitoring frameworks in elite sport.', key_products:'Myocene fatigue monitor', website:'myocene.fr' },
+  { equipment:'ODC', brand:'Storz Medical', category:'Shockwave Therapy (ESWT)', domain_norm:'Physiology', location:'Physio', site:'D3', purpose:'Muscle / tendon', variables:'', frequency:'Rarely / as needed', owner:'Medical', data_type:'C', data_flow:'Shockwave therapy — no digital output', who:'Gwen', status:'Active', contract:'', comments:'', country:'Switzerland', founded:'1987', description:'Swiss manufacturer of extracorporeal shockwave therapy (ESWT) devices for treatment of chronic tendinopathies, calcifications, and musculoskeletal pain. Clinical-grade ESWT tools standard in elite sport medical departments.', key_products:'MASTERPULS, Modulith', website:'storz-medical.com' },
+  { equipment:'Optojump', brand:'Microgate', category:'Timing & Testing Systems', domain_norm:'Neuromuscular', location:'Gym', site:'', purpose:'Jump testing', variables:'Explosivity, strength', frequency:'', owner:'Performance', data_type:'B', data_flow:'Optojump software — jump data stored locally', who:'Denis', status:'Active', contract:'', comments:'', country:'Italy', founded:'1992', description:'Italian manufacturer of precision electronic timing and measurement systems. Products include photoelectric timing gates (Witty), jump testing platforms (Optojump), and performance tracking software used across elite sport.', key_products:'Witty, Optojump, Racezeit', website:'microgate.it' },
+  { equipment:'Photobiomodulation', brand:'Life Plus', category:'Photobiomodulation Therapy (PBM)', domain_norm:'Tissue & Structure', location:'Physio Room', site:'', purpose:'W', variables:'', frequency:'', owner:'Medical', data_type:'C', data_flow:'Light therapy lamp — no digital output', who:'Tanu', status:'Active', contract:'', comments:'', country:'N/A', founded:'N/A', description:'Photobiomodulation device using low-level laser or LED therapy to stimulate cellular repair, reduce inflammation, and accelerate soft tissue healing. Used in professional sports physiotherapy for muscle and tendon recovery.', key_products:'PBM therapy system', website:'N/A' },
+  { equipment:'Playermaker', brand:'Playermaker', category:'Football-Specific Wearable / IMU', domain_norm:'Load Monitoring', location:'Field', site:'D3', purpose:'Rehab', variables:'Number of ball touches, Maximum foot speed during a shot, Balance between both feet', frequency:'Daily', owner:'Medical', data_type:'A', data_flow:'IMU insoles → Playermaker app → cloud → API to AMS', who:'Tanu', status:'Active', contract:'', comments:'', country:'Israel', founded:'2015', description:'Israeli company producing shoe-mounted IMU sensors for football-specific biomechanical analysis. Playermaker devices quantify ball touches, foot speed, kick biomechanics, and bilateral load distribution — uniquely relevant for technical and rehabilitation monitoring in football.', key_products:'Playermaker device', website:'playermaker.com' },
+  { equipment:'Plyomat System 27x36', brand:'Plyomat', category:'Plyometric / Jump Training', domain_norm:'Neuromuscular', location:'Gym', site:'', purpose:'Power training', variables:'Reactivity', frequency:'Several times a week', owner:'Performance', data_type:'C', data_flow:'Plyometric mat — no digital output in standard config', who:'Denis', status:'Active', contract:'', comments:'', country:'USA', founded:'N/A', description:'US modular plyometric contact mat system for reactive jump training and ground contact time measurement. Used in athletic development and return-to-sport contexts to quantify reactivity and neuromuscular readiness.', key_products:'Plyomat 27x36', website:'plyomat.net' },
+  { equipment:'Polar OH1+', brand:'Polar', category:'Heart Rate Monitoring', domain_norm:'Load Monitoring', location:'Field', site:'', purpose:'Internal load tracking', variables:'Internal load', frequency:'Daily', owner:'Performance', data_type:'B', data_flow:'Polar Flow — HR data in Polar ecosystem, manual export', who:'Denis', status:'Active', contract:'', comments:'', country:'Finland', founded:'1977', description:'Finnish pioneer in wearable heart rate monitoring. Polar optical HR sensors provide continuous internal load tracking during training and competition, integrated with team management platforms for RPE and physiological load monitoring.', key_products:'Polar OH1+, Polar Vantage, Team Pro', website:'polar.com' },
+  { equipment:'Poulie Voltra', brand:'Beyond Power', category:'Resistance Training Technology', domain_norm:'Neuromuscular', location:'Gym / Field', site:'', purpose:'Power training', variables:'Power, strength, speed', frequency:'Several times a week', owner:'Performance', data_type:'C', data_flow:'Cable/pulley machine — no digital output', who:'Denis', status:'Active', contract:'', comments:'', country:'Australia', founded:'N/A', description:'Australian manufacturer of the Voltra cable-based resistance training system, offering multi-directional resistance for functional strength, power, and velocity-based training in athletic and rehabilitation settings.', key_products:'Voltra', website:'beyondpower.com.au' },
+  { equipment:'Rebalance', brand:'Rebalance', category:'HRV / Mental Recovery Monitoring', domain_norm:'Recovery', location:'Lab', site:'D1', purpose:'Mental recovery', variables:'HRV', frequency:'Rarely / as needed', owner:'Performance', data_type:'B', data_flow:'Rebalance platform — balance data in vendor portal', who:'Ken', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'French wearable and platform for HRV-based mental and autonomic recovery monitoring. Provides objective readiness data for performance staff managing athlete wellbeing and psychophysiological stress.', key_products:'Rebalance HRV', website:'N/A' },
+  { equipment:'RunScribe IMUs', brand:'RunScribe', category:'Running Biomechanics / IMU', domain_norm:'Biomechanics', location:'Lab / Gym / Field', site:'D1', purpose:'Gait analysis', variables:'Spatiotemporal, impactG', frequency:'Weekly', owner:'Performance', data_type:'B', data_flow:'RunScribe app — biomechanical data, local/cloud silo', who:'Ken', status:'Active', contract:'', comments:'', country:'USA', founded:'2013', description:'US-based wearable IMU system for running gait analysis. Measures foot strike pattern, pronation, shock absorption, and spatiotemporal metrics in-field, providing biomechanical insights without laboratory constraints.', key_products:'RunScribe Pod', website:'runscribe.com' },
+  { equipment:'Sonic Bone', brand:'Bausport', category:'Bone Maturity Assessment', domain_norm:'Testing & Monitoring', location:'Autre', site:'', purpose:'Assessing bone density', variables:'Maturity', frequency:'Once every 2-3 months', owner:'Performance', data_type:'B', data_flow:'Local software — bone monitoring data stored locally', who:'Denis', status:'Active', contract:'', comments:'', country:'France', founded:'N/A', description:'French manufacturer of the Sonic Bone ultrasound device for non-invasive bone density and skeletal maturity assessment. Used in youth academy settings to evaluate biological maturity without radiation exposure.', key_products:'Sonic Bone', website:'bausport.fr' },
+  { equipment:'Therabody Pressotherapy Boots', brand:'Therabody', category:'Recovery Technology', domain_norm:'Recovery', location:'Physio Room', site:'D3', purpose:'Muscle / tendon recovery', variables:'', frequency:'Several times a week', owner:'Medical', data_type:'C', data_flow:'Compression boots — no digital output', who:'Tanu / Gwen', status:'Active', contract:'', comments:'10 machines', country:'USA', founded:'2016', description:'US percussive therapy and recovery technology pioneer. Theragun devices and RecoveryAir compression boots are standard in elite sport for soft tissue treatment, lymphatic drainage, and post-training recovery.', key_products:'Theragun PRO, RecoveryAir, PowerDot', website:'therabody.com' },
+  { equipment:'Theragun Mini', brand:'Therabody', category:'Recovery Technology', domain_norm:'Recovery', location:'Physio Room', site:'D3', purpose:'Muscle / tendon recovery', variables:'', frequency:'Several times a week', owner:'Medical', data_type:'C', data_flow:'Percussive device — no digital output', who:'Tanu', status:'Active', contract:'', comments:'', country:'USA', founded:'2016', description:'US percussive therapy and recovery technology pioneer. Theragun devices and RecoveryAir compression boots are standard in elite sport for soft tissue treatment, lymphatic drainage, and post-training recovery.', key_products:'Theragun PRO, RecoveryAir, PowerDot', website:'therabody.com' },
+  { equipment:'Theragun PRO', brand:'Therabody', category:'Recovery Technology', domain_norm:'Recovery', location:'Physio Room', site:'D3', purpose:'Muscle / tendon recovery', variables:'', frequency:'Several times a week', owner:'Medical', data_type:'C', data_flow:'Percussive device — no digital output', who:'Tanu', status:'Active', contract:'', comments:'', country:'USA', founded:'2016', description:'US percussive therapy and recovery technology pioneer. Theragun devices and RecoveryAir compression boots are standard in elite sport for soft tissue treatment, lymphatic drainage, and post-training recovery.', key_products:'Theragun PRO, RecoveryAir, PowerDot', website:'therabody.com' },
+  { equipment:'Ultrasound', brand:'Ultrasound', category:'Diagnostic Ultrasound Imaging', domain_norm:'Tissue & Structure', location:'Lab', site:'D1, D3', purpose:'Muscle / tendon', variables:'Anatomy', frequency:'Several times a week', owner:'Medical', data_type:'B', data_flow:'Imaging stored on device locally', who:'Ken', status:'Active', contract:'', comments:'', country:'International', founded:'N/A', description:'Portable medical ultrasound devices for real-time imaging of muscles, tendons, and soft tissue structures. Used in elite sport for injury diagnosis, tissue monitoring, and guiding rehabilitation decisions.', key_products:'Portable ultrasound', website:'N/A' },
+  { equipment:'VALD DynaMo', brand:'VALD', category:'Sports Science & Performance Testing', domain_norm:'Rehab & Injury Risk', location:'Gym / Physio', site:'D1, D3', purpose:'Handheld dynamometry, LSI, strength testing', variables:'LSI, baseline strength', frequency:'Daily', owner:'Medical & Performance', data_type:'B', data_flow:'Handheld app — data stored locally, manual export', who:'Tanu / Gwen', status:'Active', contract:'', comments:'We perhaps need two units', country:'Australia', founded:'2015', description:'Australian sports technology leader in force measurement and athlete monitoring. VALD\'s platform (ForceDecks, ForceFrame, NordBord, DynaMo) is the most widely adopted strength and biomechanical testing ecosystem in professional sport globally.', key_products:'ForceDecks, ForceFrame, NordBord, DynaMo, HumanTrak', website:'vald.com' },
+  { equipment:'VALD ForceDecks', brand:'VALD', category:'Sports Science & Performance Testing', domain_norm:'Neuromuscular', location:'Gym / Lab', site:'D1, D3', purpose:'Jump testing, force-velocity profiling', variables:'Force, impulse, asymmetry, RFD, peak force', frequency:'Several times a week', owner:'Performance', data_type:'A', data_flow:'VALD Hub → VALD cloud → API to AMS', who:'Tanu / Ken / Denis', status:'Active', contract:'', comments:'', country:'Australia', founded:'2015', description:'Australian sports technology leader in force measurement and athlete monitoring. VALD\'s platform (ForceDecks, ForceFrame, NordBord, DynaMo) is the most widely adopted strength and biomechanical testing ecosystem in professional sport globally.', key_products:'ForceDecks, ForceFrame, NordBord, DynaMo, HumanTrak', website:'vald.com' },
+  { equipment:'VALD ForceFrame', brand:'VALD', category:'Sports Science & Performance Testing', domain_norm:'Neuromuscular', location:'Gym / Lab', site:'D1, D3', purpose:'Isometric strength testing, ABD/ADD profiling', variables:'Isometric force, peak force, RFD', frequency:'Several times a week', owner:'Performance', data_type:'A', data_flow:'VALD Hub → VALD cloud → API to AMS', who:'Tanu / Gwen / Ken / Denis', status:'Active', contract:'', comments:'', country:'Australia', founded:'2015', description:'Australian sports technology leader in force measurement and athlete monitoring. VALD\'s platform (ForceDecks, ForceFrame, NordBord, DynaMo) is the most widely adopted strength and biomechanical testing ecosystem in professional sport globally.', key_products:'ForceDecks, ForceFrame, NordBord, DynaMo, HumanTrak', website:'vald.com' },
+  { equipment:'VALD NordBord', brand:'VALD', category:'Sports Science & Performance Testing', domain_norm:'Rehab & Injury Risk', location:'Gym', site:'D1, D3', purpose:'Eccentric hamstring strength testing', variables:'Hamstring strength (ecc, iso)', frequency:'Daily', owner:'Medical & Performance', data_type:'A', data_flow:'VALD Hub → VALD cloud → API to AMS', who:'Tanu / Gwen', status:'Active', contract:'', comments:'', country:'Australia', founded:'2015', description:'Australian sports technology leader in force measurement and athlete monitoring. VALD\'s platform (ForceDecks, ForceFrame, NordBord, DynaMo) is the most widely adopted strength and biomechanical testing ecosystem in professional sport globally.', key_products:'ForceDecks, ForceFrame, NordBord, DynaMo, HumanTrak', website:'vald.com' },
+  { equipment:'Winback TECAR', brand:'Winback', category:'TECAR / Radiofrequency Therapy', domain_norm:'Tissue & Structure', location:'Physio Room', site:'D3', purpose:'Muscle / tendon', variables:'', frequency:'Daily', owner:'Medical', data_type:'C', data_flow:'TECAR therapy — no digital output', who:'Tanu / Gwen', status:'Active', contract:'', comments:'Winback 1 and Winback 4 units at D3 physio.', country:'France', founded:'1999', description:'French TECAR therapy brand operating at 300–500 kHz. Winback devices are used by physiotherapists in elite sport for deep tissue treatment, pain relief, and accelerated musculoskeletal recovery.', key_products:'Winback 4, Winback Tecar', website:'winback.com' },
+];
+
+/* ---- Add / Edit / Delete ---- */
+let currentModalItem = null;
+const FORM_FIELDS = ['equipment','brand','category','domain_norm','location','site','purpose','variables','frequency','owner','data_type','data_flow','who','status','contract','comments','country','founded','description','key_products','website'];
+const FIELD_TO_INPUT = {
+  equipment:'f-equipment', brand:'f-brand', category:'f-category', domain_norm:'f-domain', location:'f-location',
+  site:'f-site', purpose:'f-purpose', frequency:'f-frequency', variables:'f-variables', owner:'f-owner',
+  data_type:'f-datatype', data_flow:'f-dataflow', who:'f-who', status:'f-status', comments:'f-comments',
+  country:'f-country', founded:'f-founded', description:'f-description', key_products:'f-key_products', website:'f-website'
+};
+let editingId = null;
+
+function clearForm() {
+  Object.values(FIELD_TO_INPUT).forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('f-domain').value = 'Neuromuscular';
+  document.getElementById('f-datatype').value = 'C';
+  document.getElementById('f-status').value = 'Active';
+}
+function openAddForm() {
+  editingId = null;
+  clearForm();
+  document.getElementById('form-title').textContent = 'Add New Tech Stack';
+  document.getElementById('form-overlay').classList.add('open');
+}
+function openEditForm() {
+  if (!currentModalItem) return;
+  editingId = currentModalItem.id;
+  clearForm();
+  Object.keys(FIELD_TO_INPUT).forEach(key => {
+    const el = document.getElementById(FIELD_TO_INPUT[key]);
+    if (el && currentModalItem[key] !== undefined) el.value = currentModalItem[key];
+  });
+  document.getElementById('form-title').textContent = 'Edit Tech Stack';
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('form-overlay').classList.add('open');
+}
+function closeForm() { document.getElementById('form-overlay').classList.remove('open'); }
+function saveForm() {
+  const equipment = document.getElementById('f-equipment').value.trim();
+  if (!equipment) { alert('Equipment name is required.'); return; }
+  const payload = {};
+  Object.keys(FIELD_TO_INPUT).forEach(key => { payload[key] = document.getElementById(FIELD_TO_INPUT[key]).value.trim(); });
+  if (window.saveTechItem) window.saveTechItem(editingId, payload);
+  closeForm();
+}
+function deleteCurrentItem() {
+  if (!currentModalItem) return;
+  if (!confirm('Delete "' + currentModalItem.equipment + '" from the tech stack?')) return;
+  if (window.deleteTechItem) window.deleteTechItem(currentModalItem.id);
+  document.getElementById('modal').classList.remove('open');
+}
+function importSeedBank() {
+  if (!window.bulkImportTechStack) return;
+  if (ALL_ITEMS.length > 0 && !confirm('This will add the initial 48-item set on top of what is already here. Continue?')) return;
+  window.bulkImportTechStack(TECHSTACK_SEED);
+}
+window.openAddForm = openAddForm;
+window.openEditForm = openEditForm;
+window.closeForm = closeForm;
+window.saveForm = saveForm;
+window.deleteCurrentItem = deleteCurrentItem;
+window.importSeedBank = importSeedBank;
+
+window.onTechStackUpdated = function (items) { ALL_ITEMS = items; update(); };
+
+// Init
+update();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdKgOZILgA_r6axtQKWWLqVaDBUkp6OKE",
+  authDomain: "phd-tracker-22d93.firebaseapp.com",
+  projectId: "phd-tracker-22d93",
+  storageBucket: "phd-tracker-22d93.firebasestorage.app",
+  messagingSenderId: "252875836800",
+  appId: "1:252875836800:web:dc6575ffab316da3744565"
+};
+
+let db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {}
+
+if (db) {
+  onSnapshot(collection(db, 'techStack'), function (snap) {
+    const items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+    if (window.onTechStackUpdated) window.onTechStackUpdated(items);
+  }, function () {});
+
+  window.saveTechItem = async function (id, payload) {
+    if (id) { await updateDoc(doc(db, 'techStack', id), payload); }
+    else { await addDoc(collection(db, 'techStack'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
+  };
+  window.deleteTechItem = async function (id) {
+    await deleteDoc(doc(db, 'techStack', id));
+  };
+  window.bulkImportTechStack = async function (bank) {
+    for (const item of bank) {
+      await addDoc(collection(db, 'techStack'), Object.assign({ createdAt: serverTimestamp() }, item));
+    }
+  };
+}
+</script>
+</body>
+</html>

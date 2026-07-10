@@ -210,7 +210,7 @@ const I18N = {
     pinLabel:'Enter your area access code', accessBtn:'Access', pinError:'Incorrect code. Please try again.',
     logout:'Log out', subsections:'subsections', subsection:'subsection',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Quiz Questions'},
+    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Quiz Questions', browse:'Browse & Manage'},
     comingTitle:'coming soon', comingSub:'This module will be built next inside the same hub.',
     extIdeaTitle:'Submit a new research idea', extIdeaSub:'Share this public link with stakeholders to collect new proposals.', extIdeaBtn:'Open form',
     tPending:'Pending', tAccepted:'Accepted', tDeclined:'Declined', tAll:'All',
@@ -255,7 +255,7 @@ const I18N = {
     pinLabel:'Inserisci il codice di accesso dell\u2019area', accessBtn:'Accedi', pinError:'Codice errato. Riprova.',
     logout:'Esci', subsections:'sottosezioni', subsection:'sottosezione',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Domande Quiz'},
+    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Domande Quiz', browse:'Sfoglia e gestisci'},
     comingTitle:'in arrivo', comingSub:'Questo modulo verr\u00e0 costruito nei prossimi passaggi, dentro lo stesso hub.',
     extIdeaTitle:'Sottometti una nuova idea di ricerca', extIdeaSub:'Condividi questo link pubblico con gli stakeholder per raccogliere nuove proposte.', extIdeaBtn:'Apri il form',
     tPending:'In attesa', tAccepted:'Accettate', tDeclined:'Rifiutate', tAll:'Tutte',
@@ -301,7 +301,7 @@ const I18N = {
     pinLabel:'Saisissez le code d\u2019acc\u00e8s du domaine', accessBtn:'Acc\u00e9der', pinError:'Code incorrect. Veuillez r\u00e9essayer.',
     logout:'D\u00e9connexion', subsections:'sous-sections', subsection:'sous-section',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Questions Quiz'},
+    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Questions Quiz', browse:'Parcourir et g\u00e9rer'},
     comingTitle:'bient\u00f4t disponible', comingSub:'Ce module sera d\u00e9velopp\u00e9 prochainement, au sein du m\u00eame hub.',
     extIdeaTitle:'Soumettre une nouvelle id\u00e9e de recherche', extIdeaSub:'Partagez ce lien public avec les parties prenantes pour recueillir de nouvelles propositions.', extIdeaBtn:'Ouvrir le formulaire',
     tPending:'En attente', tAccepted:'Accept\u00e9es', tDeclined:'Refus\u00e9es', tAll:'Toutes',
@@ -347,7 +347,7 @@ const I18N = {
     pinLabel:'Introduce el c\u00f3digo de acceso del \u00e1rea', accessBtn:'Acceder', pinError:'C\u00f3digo incorrecto. Int\u00e9ntalo de nuevo.',
     logout:'Cerrar sesi\u00f3n', subsections:'subsecciones', subsection:'subsecci\u00f3n',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Preguntas Quiz'},
+    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Preguntas Quiz', browse:'Explorar y gestionar'},
     comingTitle:'pr\u00f3ximamente', comingSub:'Este m\u00f3dulo se construir\u00e1 a continuaci\u00f3n, dentro del mismo hub.',
     extIdeaTitle:'Enviar una nueva idea de investigaci\u00f3n', extIdeaSub:'Comparte este enlace p\u00fablico con los interesados para recopilar nuevas propuestas.', extIdeaBtn:'Abrir formulario',
     tPending:'Pendientes', tAccepted:'Aceptadas', tDeclined:'Rechazadas', tAll:'Todas',
@@ -407,7 +407,7 @@ const AREAS = [
       {id:'quiz',     key:'quiz',     type:'quiz'}
     ]},
   { id:'techstack', key:'techstack', owner:'Area owner', pin:'TECH-2026', icon:'ti-code',        bg:'rgba(20,20,40,.08)', tx:'#141428',
-    subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
+    subs:[ {id:'browse', key:'browse', type:'techstack'} ]},
   { id:'designviz', key:'designviz', owner:'Area owner', pin:'DSGN-2026', icon:'ti-chart-dots',  bg:'#f6edd4', tx:'#856316',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
   { id:'quarterly', key:'quarterly', owner:'Area owner', pin:'QTR-2026',  icon:'ti-calendar-stats', bg:'#fdf0d6', tx:'#92580a',
@@ -558,6 +558,9 @@ function renderPanels(){
     } else if (s.type === 'quiz') {
       renderQuizPanel();
       if (window.startQuizListener) window.startQuizListener();
+    } else if (s.type === 'techstack') {
+      const tsEl = document.getElementById('panel-' + s.id);
+      if (tsEl) tsEl.innerHTML = '<iframe src="techstack-admin.html" style="width:100%;height:85vh;border:0.5px solid var(--border);border-radius:var(--radius-sm);display:block;background:#fff"></iframe>';
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
