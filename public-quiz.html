@@ -104,7 +104,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--blue-bg)}
   <img class="wm" src="assets/logos/psg-watermark.svg" alt="" aria-hidden="true">
   <div class="hero-content">
     <div class="logo"><img src="assets/logos/psg-crest-white.svg" alt=""> <span data-t="pageTitle">Quiz Challenge</span></div>
-    <div class="sub" data-t="pageSub">Answer fast — you have 5 seconds per question. Weekly leaderboard, reset every week.</div>
+    <div class="sub" data-t="pageSub">Answer fast — you have 10 seconds per question. Weekly leaderboard, reset every week.</div>
   </div>
 </div>
 
@@ -116,7 +116,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--blue-bg)}
 let lang = 'en';
 try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
 const I18N = {
-  en: { pageTitle:'Quiz Challenge', pageSub:'Answer fast \u2014 you have 5 seconds per question. Winners announced every Monday.',
+  en: { pageTitle:'Quiz Challenge', pageSub:'Answer fast \u2014 you have 10 seconds per question. Winners announced every Monday.',
     username:'Full name', usernamePh:'e.g. Marco Rossi',
     startBtn:'Continue', invalidPin:'Please enter your name.',
     welcome:'Welcome', playQuiz:'Play this week\u2019s quiz', viewLeaderboard:'Last week\u2019s winners', logout:'Log out',
@@ -127,7 +127,7 @@ const I18N = {
     playAgain:'Back to menu', tabPlay:'Play', tabLeaderboard:'Leaderboard',
     thisWeek:'Last week\u2019s winners', noScores:'No one played last week.', points:'pts',
     gold:'1st place', silver:'2nd place', bronze:'3rd place' },
-  it: { pageTitle:'Quiz Challenge', pageSub:'Rispondi veloce \u2014 hai 5 secondi a domanda. I vincitori vengono annunciati ogni luned\u00ec.',
+  it: { pageTitle:'Quiz Challenge', pageSub:'Rispondi veloce \u2014 hai 10 secondi a domanda. I vincitori vengono annunciati ogni luned\u00ec.',
     username:'Nome e cognome', usernamePh:'es. Marco Rossi',
     startBtn:'Continua', invalidPin:'Inserisci il tuo nome.',
     welcome:'Benvenuto', playQuiz:'Gioca il quiz di questa settimana', viewLeaderboard:'Vincitori della scorsa settimana', logout:'Esci',
@@ -138,7 +138,7 @@ const I18N = {
     playAgain:'Torna al menu', tabPlay:'Gioca', tabLeaderboard:'Classifica',
     thisWeek:'Vincitori della scorsa settimana', noScores:'Nessuno ha giocato la scorsa settimana.', points:'pt',
     gold:'1\u00b0 posto', silver:'2\u00b0 posto', bronze:'3\u00b0 posto' },
-  fr: { pageTitle:'Quiz Challenge', pageSub:'R\u00e9pondez vite \u2014 vous avez 5 secondes par question. Les gagnants sont annonc\u00e9s chaque lundi.',
+  fr: { pageTitle:'Quiz Challenge', pageSub:'R\u00e9pondez vite \u2014 vous avez 10 secondes par question. Les gagnants sont annonc\u00e9s chaque lundi.',
     username:'Nom complet', usernamePh:'ex. Marco Rossi',
     startBtn:'Continuer', invalidPin:'Veuillez entrer votre nom.',
     welcome:'Bienvenue', playQuiz:'Jouer au quiz de cette semaine', viewLeaderboard:'Gagnants de la semaine derni\u00e8re', logout:'D\u00e9connexion',
@@ -149,7 +149,7 @@ const I18N = {
     playAgain:'Retour au menu', tabPlay:'Jouer', tabLeaderboard:'Classement',
     thisWeek:'Gagnants de la semaine derni\u00e8re', noScores:'Personne n\u2019a jou\u00e9 la semaine derni\u00e8re.', points:'pts',
     gold:'1\u00e8re place', silver:'2\u00e8me place', bronze:'3\u00e8me place' },
-  es: { pageTitle:'Quiz Challenge', pageSub:'Responde r\u00e1pido \u2014 tienes 5 segundos por pregunta. Los ganadores se anuncian cada lunes.',
+  es: { pageTitle:'Quiz Challenge', pageSub:'Responde r\u00e1pido \u2014 tienes 10 segundos por pregunta. Los ganadores se anuncian cada lunes.',
     username:'Nombre completo', usernamePh:'ej. Marco Rossi',
     startBtn:'Continuar', invalidPin:'Por favor introduce tu nombre.',
     welcome:'Bienvenido', playQuiz:'Jugar el quiz de esta semana', viewLeaderboard:'Ganadores de la semana pasada', logout:'Cerrar sesi\u00f3n',
@@ -238,7 +238,7 @@ let activeQuestions = [];
 let qIndex = 0;
 let correctCount = 0;
 let totalPoints = 0;
-let timeLeft = 5;
+let timeLeft = 10;
 let timerInterval = null;
 let answered = false;
 
@@ -275,9 +275,14 @@ window.submitLogin = submitLogin;
 let alreadyPlayedThisWeek = false;
 
 function menuMarkup(){
-  const playBtn = alreadyPlayedThisWeek
-    ? '<div class="alert" style="background:var(--blue-bg);color:var(--blue-tx);text-align:center">'+t('alreadyPlayed')+'</div>'
-    : '<button class="btn btn-primary" onclick="startQuiz()"><i class="ti ti-player-play"></i> '+t('playQuiz')+'</button>';
+  let playBtn;
+  if (!quizQuestions.length) {
+    playBtn = '<div class="alert alert-err">'+t('noQuestions')+'</div>';
+  } else if (alreadyPlayedThisWeek) {
+    playBtn = '<div class="alert" style="background:var(--blue-bg);color:var(--blue-tx);text-align:center">'+t('alreadyPlayed')+'</div>';
+  } else {
+    playBtn = '<button class="btn btn-primary" onclick="startQuiz()"><i class="ti ti-player-play"></i> '+t('playQuiz')+'</button>';
+  }
   return '<div class="card center-box">'+
     '<div class="welcome-user">'+t('welcome')+', <strong>'+esc(currentUser.username)+'</strong></div>'+
     playBtn+
@@ -306,7 +311,7 @@ function startQuiz(){
 
 function beginQuestionTimer(){
   answered = false;
-  timeLeft = 5;
+  timeLeft = 10;
   updateTimerUI();
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(function(){
@@ -320,7 +325,7 @@ function updateTimerUI(){
   const num = document.getElementById('timer-num');
   if (!circle || !num) return;
   const circumference = 2 * Math.PI * 28;
-  circle.style.strokeDashoffset = circumference * (1 - timeLeft / 5);
+  circle.style.strokeDashoffset = circumference * (1 - timeLeft / 10);
   num.textContent = Math.max(0, Math.ceil(timeLeft));
 }
 
@@ -329,7 +334,7 @@ function quizMarkup(){
   return '<div class="card">'+
     '<div class="timer-ring"><svg width="64" height="64"><circle class="bg" cx="32" cy="32" r="28"></circle>'+
     '<circle class="fg" id="timer-fg" cx="32" cy="32" r="28" stroke-dasharray="'+(2*Math.PI*28)+'" stroke-dashoffset="0"></circle></svg>'+
-    '<div class="timer-num" id="timer-num">5</div></div>'+
+    '<div class="timer-num" id="timer-num">10</div></div>'+
     '<div class="progress-label">'+t('question')+' '+(qIndex+1)+' '+t('of')+' '+activeQuestions.length+'</div>'+
     '<div class="q-text">'+esc(q.question)+'</div>'+
     '<div id="opts">'+q.options.map(function(o, i){ return '<button class="opt-btn" onclick="selectAnswer('+i+')">'+esc(o)+'</button>'; }).join('')+'</div>'+
@@ -350,7 +355,7 @@ function selectAnswer(idx){
   if (idx === q.correctIndex) {
     correctCount++;
     // Speed + correctness scoring: faster correct answers earn more points (20-100 per question)
-    const points = Math.round(20 + 80 * Math.max(0, Math.min(1, timeLeft / 5)));
+    const points = Math.round(20 + 80 * Math.max(0, Math.min(1, timeLeft / 10)));
     totalPoints += points;
   }
   setTimeout(function(){
@@ -407,7 +412,7 @@ function leaderboardMarkup(){
     '</div>';
 }
 
-window.onQuizQuestionsUpdated = function(data){ quizQuestions = data; quizReady = true; };
+window.onQuizQuestionsUpdated = function(data){ quizQuestions = data; quizReady = true; if (view === 'menu') render(); };
 window.onQuizQuestionsFailed = function(){ quizFailed = true; };
 window.onLeaderboardUpdated = function(data){ leaderboard = data.sort(function(a,b){ return b.score - a.score; }); leaderboardReady = true; if (view==='leaderboard') render(); };
 window.onLeaderboardFailed = function(){ leaderboardFailed = true; if (view==='leaderboard') render(); };
