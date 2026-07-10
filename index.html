@@ -210,7 +210,7 @@ const I18N = {
     pinLabel:'Enter your area access code', accessBtn:'Access', pinError:'Incorrect code. Please try again.',
     logout:'Log out', subsections:'subsections', subsection:'subsection',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Quiz Questions', browse:'Browse & Manage'},
+    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Quiz Questions', browse:'Browse & Manage', scouting:'Scouting Pipeline', projects:'Project Tracking'},
     comingTitle:'coming soon', comingSub:'This module will be built next inside the same hub.',
     extIdeaTitle:'Submit a new research idea', extIdeaSub:'Share this public link with stakeholders to collect new proposals.', extIdeaBtn:'Open form',
     tPending:'Pending', tAccepted:'Accepted', tDeclined:'Declined', tAll:'All',
@@ -241,6 +241,30 @@ const I18N = {
       save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No drafts yet' },
     quizT:{ newQuestion:'New question', editQuestion:'Edit question', question:'Question', option:'Option', correctAnswer:'Correct answer', week:'Week',
       importBank:'Import 30-week bank', save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noQuestions:'No quiz questions yet' },
+    scoutT:{ newEntry:'New tech entry', editEntry:'Edit tech entry', name:'Name', category:'Category', metric:'Metric / domain', decision:'Decision',
+      stage:'Pipeline stage', owner:'Owner', vendor:'Vendor / brand link', dateAdded:'Date added', notes:'Notes', relatedProject:'Related project',
+      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No tech entries in the pipeline yet',
+      dUnderReview:'Under review', dReject:'Reject', dOnHold:'On hold', dApproved:'Approved',
+      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
+    projT:{ newEntry:'New project', editEntry:'Edit project', name:'Name', status:'Status', owner:'Owner', area:'Area', priority:'Priority',
+      startDate:'Start date', dueDate:'Due date', stage:'Stage', notes:'Notes', completion:'Completion %', relatedTech:'Related tech',
+      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No projects tracked yet',
+      stTodo:'To do', stProgress:'In progress', stReview:'Review', stDone:'Done',
+      pHigh:'High', pMedium:'Medium', pLow:'Low',
+      score:'Final score', noScore:'Not yet scored',
+      gA:'A — Strong evidence', gB:'B — Acceptable evidence', gC:'C — Weak evidence', gD:'D — Insufficient / negative',
+      gADesc:'Peer-reviewed support, expert endorsement, positive internal trial \u2192 full integration',
+      gBDesc:'Expert backing, reasonable pilot data \u2192 monitored integration',
+      gCDesc:'Inconclusive evaluation, limited studies \u2192 hold, gather more data',
+      gDDesc:'Expert consensus against, failed testing \u2192 formal rejection',
+      howWeEvaluate:'How we evaluate', hideFramework:'Hide', showFramework:'Show framework',
+      phasesTitle:'6-phase governance process', phase1:'1. Scoping — identify need & candidate technologies',
+      phase2:'2. Evidence review — McCall model (Search \u2192 Assess \u2192 Combine), STRN Quality Framework',
+      phase3:'3. Gate 1 — Sports Innovation + Function Lead sign-off to proceed',
+      phase4:'4. Pilot & trial — 2\u20134 week time-boxed test, KPIs agreed in advance',
+      phase5:'5. Gate 2 — Performance Director review of pilot outcome \u2192 grade assigned',
+      phase6:'6. Deploy or reject — quarterly review of deployed tech against KPIs',
+      gradesTitle:'Graded recommendation (A\u2013D)' },
     tip:{ newPost:'New post', editPost:'Edit post', postTitle:'Title', coverImage:'Cover image URL (optional)', coverImageHint:'Paste a link to an already-hosted image, or upload a file below',
       uploadBtn:'Upload JPG/PNG', removeImg:'Remove image', compressing:'Processing image...',
       body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
@@ -255,7 +279,7 @@ const I18N = {
     pinLabel:'Inserisci il codice di accesso dell\u2019area', accessBtn:'Accedi', pinError:'Codice errato. Riprova.',
     logout:'Esci', subsections:'sottosezioni', subsection:'sottosezione',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Domande Quiz', browse:'Sfoglia e gestisci'},
+    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Domande Quiz', browse:'Sfoglia e gestisci', scouting:'Scouting Pipeline', projects:'Project Tracking'},
     comingTitle:'in arrivo', comingSub:'Questo modulo verr\u00e0 costruito nei prossimi passaggi, dentro lo stesso hub.',
     extIdeaTitle:'Sottometti una nuova idea di ricerca', extIdeaSub:'Condividi questo link pubblico con gli stakeholder per raccogliere nuove proposte.', extIdeaBtn:'Apri il form',
     tPending:'In attesa', tAccepted:'Accettate', tDeclined:'Rifiutate', tAll:'Tutte',
@@ -287,6 +311,30 @@ const I18N = {
     quizT:{ newQuestion:'Nuova domanda', editQuestion:'Modifica domanda', question:'Domanda', option:'Opzione', correctAnswer:'Risposta corretta', week:'Settimana',
       importBank:'Importa banca 30 settimane',
       save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noQuestions:'Nessuna domanda quiz ancora' },
+    scoutT:{ newEntry:'Nuova tech', editEntry:'Modifica tech', name:'Nome', category:'Categoria', metric:'Metrica / dominio', decision:'Decisione',
+      stage:'Fase pipeline', owner:'Owner', vendor:'Link vendor / brand', dateAdded:'Data aggiunta', notes:'Note', relatedProject:'Progetto collegato',
+      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessuna tech nella pipeline ancora',
+      dUnderReview:'In revisione', dReject:'Rifiutata', dOnHold:'In pausa', dApproved:'Approvata',
+      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
+    projT:{ newEntry:'Nuovo progetto', editEntry:'Modifica progetto', name:'Nome', status:'Stato', owner:'Owner', area:'Area', priority:'Priorit\u00e0',
+      startDate:'Data inizio', dueDate:'Scadenza', stage:'Fase', notes:'Note', completion:'Completamento %', relatedTech:'Tech collegata',
+      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessun progetto tracciato ancora',
+      stTodo:'Da fare', stProgress:'In corso', stReview:'In revisione', stDone:'Completato',
+      pHigh:'Alta', pMedium:'Media', pLow:'Bassa',
+      score:'Score finale', noScore:'Non ancora valutato',
+      gA:'A — Evidenza forte', gB:'B — Evidenza accettabile', gC:'C — Evidenza debole', gD:'D — Insufficiente / negativa',
+      gADesc:'Supporto peer-reviewed, endorsement esperti, trial interno positivo \u2192 integrazione completa',
+      gBDesc:'Supporto esperti, dati pilota ragionevoli \u2192 integrazione monitorata',
+      gCDesc:'Valutazione inconcludente, studi limitati \u2192 in pausa, raccogliere pi\u00f9 dati',
+      gDDesc:'Consenso esperti contrario, test falliti \u2192 rifiuto formale',
+      howWeEvaluate:'Come valutiamo', hideFramework:'Nascondi', showFramework:'Mostra framework',
+      phasesTitle:'Processo di governance a 6 fasi', phase1:'1. Scoping — identificare bisogno e tecnologie candidate',
+      phase2:'2. Revisione evidenze — modello McCall (Cerca \u2192 Valuta \u2192 Combina), STRN Quality Framework',
+      phase3:'3. Gate 1 — approvazione di Sports Innovation + Function Lead per procedere',
+      phase4:'4. Pilot & trial — test a tempo di 2\u20134 settimane, KPI concordati in anticipo',
+      phase5:'5. Gate 2 — revisione del Performance Director sull\u2019esito del pilot \u2192 assegnazione score',
+      phase6:'6. Deploy o rifiuto — revisione trimestrale della tech attiva rispetto ai KPI',
+      gradesTitle:'Raccomandazione graduata (A\u2013D)' },
     tip:{ newPost:'Nuovo post', editPost:'Modifica post', postTitle:'Titolo', coverImage:'URL immagine di copertina (opzionale)', coverImageHint:'Incolla il link a un\u2019immagine gi\u00e0 online, oppure caricane una qui sotto',
       uploadBtn:'Carica JPG/PNG', removeImg:'Rimuovi immagine', compressing:'Elaborazione immagine...',
       body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
@@ -301,7 +349,7 @@ const I18N = {
     pinLabel:'Saisissez le code d\u2019acc\u00e8s du domaine', accessBtn:'Acc\u00e9der', pinError:'Code incorrect. Veuillez r\u00e9essayer.',
     logout:'D\u00e9connexion', subsections:'sous-sections', subsection:'sous-section',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Questions Quiz', browse:'Parcourir et g\u00e9rer'},
+    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Questions Quiz', browse:'Parcourir et g\u00e9rer', scouting:'Pipeline de veille', projects:'Suivi de projets'},
     comingTitle:'bient\u00f4t disponible', comingSub:'Ce module sera d\u00e9velopp\u00e9 prochainement, au sein du m\u00eame hub.',
     extIdeaTitle:'Soumettre une nouvelle id\u00e9e de recherche', extIdeaSub:'Partagez ce lien public avec les parties prenantes pour recueillir de nouvelles propositions.', extIdeaBtn:'Ouvrir le formulaire',
     tPending:'En attente', tAccepted:'Accept\u00e9es', tDeclined:'Refus\u00e9es', tAll:'Toutes',
@@ -333,6 +381,30 @@ const I18N = {
     quizT:{ newQuestion:'Nouvelle question', editQuestion:'Modifier la question', question:'Question', option:'Option', correctAnswer:'Bonne r\u00e9ponse', week:'Semaine',
       importBank:'Importer la banque de 30 semaines',
       save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noQuestions:'Aucune question de quiz pour l\u2019instant' },
+    scoutT:{ newEntry:'Nouvelle tech', editEntry:'Modifier la tech', name:'Nom', category:'Cat\u00e9gorie', metric:'M\u00e9trique / domaine', decision:'D\u00e9cision',
+      stage:'\u00c9tape pipeline', owner:'Owner', vendor:'Lien fournisseur / marque', dateAdded:'Date d\u2019ajout', notes:'Notes', relatedProject:'Projet li\u00e9',
+      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucune tech dans le pipeline pour l\u2019instant',
+      dUnderReview:'En r\u00e9vision', dReject:'Rejet\u00e9e', dOnHold:'En pause', dApproved:'Approuv\u00e9e',
+      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
+    projT:{ newEntry:'Nouveau projet', editEntry:'Modifier le projet', name:'Nom', status:'Statut', owner:'Owner', area:'Domaine', priority:'Priorit\u00e9',
+      startDate:'Date de d\u00e9but', dueDate:'\u00c9ch\u00e9ance', stage:'\u00c9tape', notes:'Notes', completion:'Avancement %', relatedTech:'Tech li\u00e9e',
+      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucun projet suivi pour l\u2019instant',
+      stTodo:'\u00c0 faire', stProgress:'En cours', stReview:'En r\u00e9vision', stDone:'Termin\u00e9',
+      pHigh:'Haute', pMedium:'Moyenne', pLow:'Basse',
+      score:'Score final', noScore:'Pas encore \u00e9valu\u00e9',
+      gA:'A — Preuves solides', gB:'B — Preuves acceptables', gC:'C — Preuves faibles', gD:'D — Insuffisant / n\u00e9gatif',
+      gADesc:'Soutien peer-reviewed, endorsement d\u2019experts, essai interne positif \u2192 int\u00e9gration compl\u00e8te',
+      gBDesc:'Soutien d\u2019experts, donn\u00e9es pilotes raisonnables \u2192 int\u00e9gration surveill\u00e9e',
+      gCDesc:'\u00c9valuation peu concluante, \u00e9tudes limit\u00e9es \u2192 en pause, recueillir plus de donn\u00e9es',
+      gDDesc:'Consensus d\u2019experts d\u00e9favorable, tests \u00e9chou\u00e9s \u2192 rejet formel',
+      howWeEvaluate:'Comment nous \u00e9valuons', hideFramework:'Masquer', showFramework:'Afficher le framework',
+      phasesTitle:'Processus de gouvernance en 6 phases', phase1:'1. Scoping — identifier le besoin et les technologies candidates',
+      phase2:'2. Revue des preuves — mod\u00e8le McCall (Chercher \u2192 \u00c9valuer \u2192 Combiner), STRN Quality Framework',
+      phase3:'3. Gate 1 — validation de Sports Innovation + Function Lead pour continuer',
+      phase4:'4. Pilote & essai — test de 2\u20134 semaines, KPI convenus \u00e0 l\u2019avance',
+      phase5:'5. Gate 2 — revue du Performance Director sur le r\u00e9sultat du pilote \u2192 score attribu\u00e9',
+      phase6:'6. D\u00e9ployer ou rejeter — revue trimestrielle de la tech d\u00e9ploy\u00e9e vs KPI',
+      gradesTitle:'Recommandation grad\u00e9e (A\u2013D)' },
     tip:{ newPost:'Nouveau post', editPost:'Modifier le post', postTitle:'Titre', coverImage:'URL image de couverture (facultatif)', coverImageHint:'Collez le lien vers une image d\u00e9j\u00e0 en ligne, ou t\u00e9l\u00e9versez-en une ci-dessous',
       uploadBtn:'T\u00e9l\u00e9verser JPG/PNG', removeImg:'Supprimer l\u2019image', compressing:'Traitement de l\u2019image...',
       body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
@@ -347,7 +419,7 @@ const I18N = {
     pinLabel:'Introduce el c\u00f3digo de acceso del \u00e1rea', accessBtn:'Acceder', pinError:'C\u00f3digo incorrecto. Int\u00e9ntalo de nuevo.',
     logout:'Cerrar sesi\u00f3n', subsections:'subsecciones', subsection:'subsecci\u00f3n',
     areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Preguntas Quiz', browse:'Explorar y gestionar'},
+    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Preguntas Quiz', browse:'Explorar y gestionar', scouting:'Pipeline de b\u00fasqueda', projects:'Seguimiento de proyectos'},
     comingTitle:'pr\u00f3ximamente', comingSub:'Este m\u00f3dulo se construir\u00e1 a continuaci\u00f3n, dentro del mismo hub.',
     extIdeaTitle:'Enviar una nueva idea de investigaci\u00f3n', extIdeaSub:'Comparte este enlace p\u00fablico con los interesados para recopilar nuevas propuestas.', extIdeaBtn:'Abrir formulario',
     tPending:'Pendientes', tAccepted:'Aceptadas', tDeclined:'Rechazadas', tAll:'Todas',
@@ -379,6 +451,30 @@ const I18N = {
     quizT:{ newQuestion:'Nueva pregunta', editQuestion:'Editar pregunta', question:'Pregunta', option:'Opci\u00f3n', correctAnswer:'Respuesta correcta', week:'Semana',
       importBank:'Importar banco de 30 semanas',
       save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noQuestions:'A\u00fan no hay preguntas de quiz' },
+    scoutT:{ newEntry:'Nueva tecnolog\u00eda', editEntry:'Editar tecnolog\u00eda', name:'Nombre', category:'Categor\u00eda', metric:'M\u00e9trica / dominio', decision:'Decisi\u00f3n',
+      stage:'Etapa del pipeline', owner:'Owner', vendor:'Enlace proveedor / marca', dateAdded:'Fecha de alta', notes:'Notas', relatedProject:'Proyecto relacionado',
+      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay tecnolog\u00edas en el pipeline',
+      dUnderReview:'En revisi\u00f3n', dReject:'Rechazada', dOnHold:'En pausa', dApproved:'Aprobada',
+      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
+    projT:{ newEntry:'Nuevo proyecto', editEntry:'Editar proyecto', name:'Nombre', status:'Estado', owner:'Owner', area:'\u00c1rea', priority:'Prioridad',
+      startDate:'Fecha de inicio', dueDate:'Fecha l\u00edmite', stage:'Etapa', notes:'Notas', completion:'Progreso %', relatedTech:'Tecnolog\u00eda relacionada',
+      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay proyectos registrados',
+      stTodo:'Pendiente', stProgress:'En curso', stReview:'En revisi\u00f3n', stDone:'Completado',
+      pHigh:'Alta', pMedium:'Media', pLow:'Baja',
+      score:'Puntuaci\u00f3n final', noScore:'A\u00fan sin puntuar',
+      gA:'A — Evidencia fuerte', gB:'B — Evidencia aceptable', gC:'C — Evidencia d\u00e9bil', gD:'D — Insuficiente / negativa',
+      gADesc:'Apoyo revisado por pares, respaldo de expertos, prueba interna positiva \u2192 integraci\u00f3n completa',
+      gBDesc:'Respaldo de expertos, datos piloto razonables \u2192 integraci\u00f3n supervisada',
+      gCDesc:'Evaluaci\u00f3n no concluyente, estudios limitados \u2192 en pausa, recopilar m\u00e1s datos',
+      gDDesc:'Consenso de expertos en contra, pruebas fallidas \u2192 rechazo formal',
+      howWeEvaluate:'C\u00f3mo evaluamos', hideFramework:'Ocultar', showFramework:'Mostrar framework',
+      phasesTitle:'Proceso de gobernanza en 6 fases', phase1:'1. Scoping — identificar necesidad y tecnolog\u00edas candidatas',
+      phase2:'2. Revisi\u00f3n de evidencia — modelo McCall (Buscar \u2192 Evaluar \u2192 Combinar), STRN Quality Framework',
+      phase3:'3. Gate 1 — aprobaci\u00f3n de Sports Innovation + Function Lead para continuar',
+      phase4:'4. Piloto y prueba — prueba de 2\u20134 semanas, KPI acordados de antemano',
+      phase5:'5. Gate 2 — revisi\u00f3n del Performance Director sobre el resultado del piloto \u2192 puntuaci\u00f3n asignada',
+      phase6:'6. Desplegar o rechazar — revisi\u00f3n trimestral de la tech desplegada frente a los KPI',
+      gradesTitle:'Recomendaci\u00f3n graduada (A\u2013D)' },
     tip:{ newPost:'Nueva publicaci\u00f3n', editPost:'Editar publicaci\u00f3n', postTitle:'T\u00edtulo', coverImage:'URL de imagen de portada (opcional)', coverImageHint:'Pega el enlace a una imagen ya alojada online, o sube un archivo abajo',
       uploadBtn:'Subir JPG/PNG', removeImg:'Quitar imagen', compressing:'Procesando imagen...',
       body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
@@ -407,7 +503,11 @@ const AREAS = [
       {id:'quiz',     key:'quiz',     type:'quiz'}
     ]},
   { id:'techstack', key:'techstack', owner:'Area owner', pin:'TECH-2026', icon:'ti-code',        bg:'rgba(20,20,40,.08)', tx:'#141428',
-    subs:[ {id:'browse', key:'browse', type:'techstack'} ]},
+    subs:[
+      {id:'browse',    key:'browse',    type:'techstack'},
+      {id:'scouting',  key:'scouting',  type:'scouting'},
+      {id:'projects',  key:'projects',  type:'projects'}
+    ]},
   { id:'designviz', key:'designviz', owner:'Area owner', pin:'DSGN-2026', icon:'ti-chart-dots',  bg:'#f6edd4', tx:'#856316',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
   { id:'quarterly', key:'quarterly', owner:'Area owner', pin:'QTR-2026',  icon:'ti-calendar-stats', bg:'#fdf0d6', tx:'#92580a',
@@ -463,6 +563,13 @@ let draftsEditing = null; // { id?, title, content }
 
 let quizQuestions = [], quizReady = false, quizFailed = false;
 let quizEditing = null; // { id?, question, options:[4], correctIndex }
+
+let scoutEntries = [], scoutReady = false, scoutFailed = false;
+let scoutEditing = null;
+
+let projEntries = [], projReady = false, projFailed = false;
+let projEditing = null;
+let frameworkOpen = false;
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -561,6 +668,12 @@ function renderPanels(){
     } else if (s.type === 'techstack') {
       const tsEl = document.getElementById('panel-' + s.id);
       if (tsEl) tsEl.innerHTML = '<iframe src="techstack-admin.html" style="width:100%;height:85vh;border:0.5px solid var(--border);border-radius:var(--radius-sm);display:block;background:#fff"></iframe>';
+    } else if (s.type === 'scouting') {
+      renderScoutPanel();
+      if (window.startScoutListener) window.startScoutListener();
+    } else if (s.type === 'projects') {
+      renderProjPanel();
+      if (window.startProjListener) window.startProjListener();
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
@@ -1592,6 +1705,233 @@ window.confirmDeleteQuizQuestion = confirmDeleteQuizQuestion;
 window.onQuizQuestionsUpdated = function(data){ quizQuestions = data; quizReady = true; renderQuizPanel(); };
 window.onQuizQuestionsFailed = function(){ quizFailed = true; renderQuizPanel(); };
 
+/* ---- Scouting Pipeline ---- */
+function newScoutDraft(){ return { id:null, name:'', category:'Equipment', metric:'', decision:'Under review', stage:'Scoping', owner:'', vendor:'', dateAdded:new Date().toISOString().slice(0,10), notes:'', relatedProject:'' }; }
+function openNewScout(){ scoutEditing = newScoutDraft(); renderScoutPanel(); }
+function openEditScout(id){
+  const e = scoutEntries.find(function(x){ return x.id === id; });
+  if (!e) return;
+  scoutEditing = Object.assign(newScoutDraft(), e);
+  renderScoutPanel();
+}
+function cancelScoutEdit(){ scoutEditing = null; renderScoutPanel(); }
+function updateScoutField(field, val){ if (scoutEditing) scoutEditing[field] = val; }
+function confirmSaveScout(){
+  if (!scoutEditing || !scoutEditing.name) return;
+  const payload = Object.assign({}, scoutEditing); delete payload.id;
+  if (window.saveScoutEntry) window.saveScoutEntry(scoutEditing.id, payload);
+  scoutEditing = null;
+}
+function confirmDeleteScout(id){ if (window.deleteScoutEntry) window.deleteScoutEntry(id); }
+
+function scoutBadge(kind, val){
+  const tt = t('scoutT');
+  const map = {
+    decision: { 'Under review': ['amber-bg','amber-tx',tt.dUnderReview], 'Reject': ['coral-bg','coral-tx',tt.dReject], 'On hold': ['grey-bg','grey-tx',tt.dOnHold], 'Approved': ['green-bg','green-tx',tt.dApproved] },
+    stage: { 'Scoping': ['purple-bg','purple-tx',tt.sScoping], 'Pilot': ['blue-bg','blue-tx',tt.sPilot], 'Paused': ['amber-bg','amber-tx',tt.sPaused], 'Closed': ['grey-bg','grey-tx',tt.sClosed], 'Deployed': ['green-bg','green-tx',tt.sDeployed] }
+  };
+  const entry = (map[kind] && map[kind][val]) || ['grey-bg','grey-tx', val];
+  return '<span class="badge" style="background:var(--'+entry[0]+');color:var(--'+entry[1]+')">'+entry[2]+'</span>';
+}
+
+function scoutEditorMarkup(){
+  const tt = t('scoutT');
+  const d = scoutEditing;
+  return '<div class="card">'+
+    '<div class="field-block"><label>'+tt.name+'</label><input type="text" value="'+esc(d.name)+'" oninput="updateScoutField(\'name\',this.value)"></div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.category+'</label>'+
+    '<select onchange="updateScoutField(\'category\',this.value)"><option '+(d.category==='Equipment'?'selected':'')+'>Equipment</option><option '+(d.category==='Software'?'selected':'')+'>Software</option></select></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.metric+'</label><input type="text" value="'+esc(d.metric)+'" oninput="updateScoutField(\'metric\',this.value)" placeholder="e.g. EMG, Gait Analysis..."></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.decision+'</label>'+
+    '<select onchange="updateScoutField(\'decision\',this.value)">'+['Under review','Reject','On hold','Approved'].map(function(o){return '<option '+(d.decision===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.stage+'</label>'+
+    '<select onchange="updateScoutField(\'stage\',this.value)">'+['Scoping','Pilot','Paused','Closed','Deployed'].map(function(o){return '<option '+(d.stage===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.owner+'</label><input type="text" value="'+esc(d.owner)+'" oninput="updateScoutField(\'owner\',this.value)"></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.dateAdded+'</label><input type="date" value="'+esc(d.dateAdded)+'" onchange="updateScoutField(\'dateAdded\',this.value)"></div>'+
+    '</div>'+
+    '<div class="field-block"><label>'+tt.vendor+'</label><input type="text" value="'+esc(d.vendor)+'" oninput="updateScoutField(\'vendor\',this.value)" placeholder="https://..."></div>'+
+    '<div class="field-block"><label>'+tt.relatedProject+'</label><input type="text" value="'+esc(d.relatedProject)+'" oninput="updateScoutField(\'relatedProject\',this.value)"></div>'+
+    '<div class="field-block"><label>'+tt.notes+'</label><textarea rows="3" oninput="updateScoutField(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
+    '<div class="idea-actions">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmSaveScout()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
+    '<button class="btn btn-sm" onclick="cancelScoutEdit()">'+tt.cancel+'</button>'+
+    '</div></div>';
+}
+
+function scoutListMarkup(){
+  const tt = t('scoutT');
+  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
+    '<button class="btn btn-sm btn-primary" onclick="openNewScout()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
+  if (!scoutEntries.length) return header + '<div class="empty"><i class="ti ti-telescope" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
+  return header + scoutEntries.map(function(e){
+    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
+      '<div class="idea-title">'+esc(e.name)+'</div>'+
+      '<div class="idea-meta">'+esc(e.metric||'')+(e.owner?' \u00b7 '+esc(e.owner):'')+(e.dateAdded?' \u00b7 '+esc(e.dateAdded):'')+'</div></div>'+
+      '<div style="display:flex;gap:6px">'+scoutBadge('decision', e.decision)+scoutBadge('stage', e.stage)+'</div></div>'+
+      '<div style="padding:0 1.25rem 1.25rem">'+
+      (e.notes ? '<div class="field-block"><label>'+tt.notes+'</label><div class="val">'+esc(e.notes)+'</div></div>' : '')+
+      '<div class="idea-actions">'+
+      '<button class="btn btn-sm" onclick="openEditScout(\''+e.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
+      '<button class="btn btn-sm btn-red" onclick="confirmDeleteScout(\''+e.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+
+function renderScoutPanel(){
+  const el = document.getElementById('panel-scouting');
+  if (!el) return;
+  if (scoutFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
+  if (!scoutReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
+  el.innerHTML = scoutEditing ? scoutEditorMarkup() : scoutListMarkup();
+}
+
+/* ---- Project Tracking ---- */
+function newProjDraft(){ return { id:null, name:'', status:'To do', owner:'', area:'Projects', priority:'Medium', startDate:'', dueDate:'', stage:'', notes:'', completion:'', relatedTech:'', score:'' }; }
+function openNewProj(){ projEditing = newProjDraft(); renderProjPanel(); }
+function openEditProj(id){
+  const e = projEntries.find(function(x){ return x.id === id; });
+  if (!e) return;
+  projEditing = Object.assign(newProjDraft(), e);
+  renderProjPanel();
+}
+function cancelProjEdit(){ projEditing = null; renderProjPanel(); }
+function updateProjField(field, val){ if (projEditing) projEditing[field] = val; }
+function confirmSaveProj(){
+  if (!projEditing || !projEditing.name) return;
+  const payload = Object.assign({}, projEditing); delete payload.id;
+  if (window.saveProjEntry) window.saveProjEntry(projEditing.id, payload);
+  projEditing = null;
+}
+function confirmDeleteProj(id){ if (window.deleteProjEntry) window.deleteProjEntry(id); }
+
+function projBadge(kind, val){
+  const tt = t('projT');
+  const map = {
+    status: { 'To do': ['blue-bg','blue-tx',tt.stTodo], 'In progress': ['amber-bg','amber-tx',tt.stProgress], 'Review': ['purple-bg','purple-tx',tt.stReview], 'Done': ['green-bg','green-tx',tt.stDone] },
+    priority: { 'High': ['coral-bg','coral-tx',tt.pHigh], 'Medium': ['amber-bg','amber-tx',tt.pMedium], 'Low': ['grey-bg','grey-tx',tt.pLow] },
+    score: { 'A': ['green-bg','green-tx','A'], 'B': ['blue-bg','blue-tx','B'], 'C': ['amber-bg','amber-tx','C'], 'D': ['coral-bg','coral-tx','D'] }
+  };
+  const entry = (map[kind] && map[kind][val]) || ['grey-bg','grey-tx', val];
+  return '<span class="badge" style="background:var(--'+entry[0]+');color:var(--'+entry[1]+')">'+entry[2]+'</span>';
+}
+
+function projEditorMarkup(){
+  const tt = t('projT');
+  const d = projEditing;
+  return '<div class="card">'+
+    '<div class="field-block"><label>'+tt.name+'</label><input type="text" value="'+esc(d.name)+'" oninput="updateProjField(\'name\',this.value)"></div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.status+'</label>'+
+    '<select onchange="updateProjField(\'status\',this.value)">'+['To do','In progress','Review','Done'].map(function(o){return '<option '+(d.status===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.priority+'</label>'+
+    '<select onchange="updateProjField(\'priority\',this.value)">'+['High','Medium','Low'].map(function(o){return '<option '+(d.priority===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.owner+'</label><input type="text" value="'+esc(d.owner)+'" oninput="updateProjField(\'owner\',this.value)"></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.area+'</label><input type="text" value="'+esc(d.area)+'" oninput="updateProjField(\'area\',this.value)"></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.startDate+'</label><input type="date" value="'+esc(d.startDate)+'" onchange="updateProjField(\'startDate\',this.value)"></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.dueDate+'</label><input type="date" value="'+esc(d.dueDate)+'" onchange="updateProjField(\'dueDate\',this.value)"></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.stage+'</label><input type="text" value="'+esc(d.stage)+'" oninput="updateProjField(\'stage\',this.value)" placeholder="Active, Scoping..."></div>'+
+    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.completion+'</label><input type="number" min="0" max="100" value="'+esc(d.completion)+'" oninput="updateProjField(\'completion\',this.value)"></div>'+
+    '</div>'+
+    '<div class="field-block"><label>'+tt.relatedTech+'</label><input type="text" value="'+esc(d.relatedTech)+'" oninput="updateProjField(\'relatedTech\',this.value)"></div>'+
+    '<div class="field-block"><label>'+tt.score+'</label>'+
+    '<select onchange="updateProjField(\'score\',this.value)"><option value="" '+(!d.score?'selected':'')+'>'+tt.noScore+'</option>'+
+    ['A','B','C','D'].map(function(g){ return '<option value="'+g+'" '+(d.score===g?'selected':'')+'>'+tt['g'+g]+'</option>'; }).join('')+
+    '</select></div>'+
+    '<div class="field-block"><label>'+tt.notes+'</label><textarea rows="3" oninput="updateProjField(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
+    '<div class="idea-actions">'+
+    '<button class="btn btn-sm btn-primary" onclick="confirmSaveProj()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
+    '<button class="btn btn-sm" onclick="cancelProjEdit()">'+tt.cancel+'</button>'+
+    '</div></div>';
+}
+
+function projListMarkup(){
+  const tt = t('projT');
+  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
+    '<button class="btn btn-sm btn-primary" onclick="openNewProj()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
+  if (!projEntries.length) return header + '<div class="empty"><i class="ti ti-clipboard-list" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
+  return header + projEntries.map(function(e){
+    const pct = e.completion !== '' && e.completion !== undefined ? e.completion + '%' : '';
+    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
+      '<div class="idea-title">'+esc(e.name)+'</div>'+
+      '<div class="idea-meta">'+esc(e.owner||'')+(e.area?' \u00b7 '+esc(e.area):'')+(pct?' \u00b7 '+pct:'')+(e.dueDate?' \u00b7 due '+esc(e.dueDate):'')+'</div></div>'+
+      '<div style="display:flex;gap:6px">'+projBadge('status', e.status)+projBadge('priority', e.priority)+(e.score?projBadge('score', e.score):'')+'</div></div>'+
+      '<div style="padding:0 1.25rem 1.25rem">'+
+      (e.relatedTech ? '<div class="field-block"><label>'+tt.relatedTech+'</label><div class="val">'+esc(e.relatedTech)+'</div></div>' : '')+
+      (e.notes ? '<div class="field-block"><label>'+tt.notes+'</label><div class="val">'+esc(e.notes)+'</div></div>' : '')+
+      '<div class="idea-actions">'+
+      '<button class="btn btn-sm" onclick="openEditProj(\''+e.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
+      '<button class="btn btn-sm btn-red" onclick="confirmDeleteProj(\''+e.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+
+function toggleFramework(){ frameworkOpen = !frameworkOpen; renderProjPanel(); }
+window.toggleFramework = toggleFramework;
+
+function frameworkMarkup(){
+  const tt = t('projT');
+  const gradeColors = { A:['green-bg','green-tx'], B:['blue-bg','blue-tx'], C:['amber-bg','amber-tx'], D:['coral-bg','coral-tx'] };
+  return '<div class="card" style="background:var(--teal-bg);border-color:var(--border);margin-bottom:1.25rem">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleFramework()">'+
+    '<div style="font-weight:600;font-size:14px;color:var(--teal-tx)"><i class="ti ti-sitemap"></i> '+tt.howWeEvaluate+'</div>'+
+    '<span style="font-size:12px;color:var(--teal-tx)">'+(frameworkOpen?tt.hideFramework:tt.showFramework)+' <i class="ti ti-chevron-'+(frameworkOpen?'up':'down')+'"></i></span>'+
+    '</div>'+
+    (frameworkOpen ? (
+      '<div style="margin-top:1rem;font-size:13px;color:var(--teal-tx)">'+
+      '<div style="font-weight:600;margin-bottom:6px">'+tt.phasesTitle+'</div>'+
+      '<div style="line-height:1.8">'+[tt.phase1,tt.phase2,tt.phase3,tt.phase4,tt.phase5,tt.phase6].map(function(p){ return '<div>'+p+'</div>'; }).join('')+'</div>'+
+      '<div style="font-weight:600;margin:1rem 0 8px">'+tt.gradesTitle+'</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px">'+
+      ['A','B','C','D'].map(function(g){
+        const c = gradeColors[g];
+        return '<div style="background:var(--surface);border-radius:8px;padding:.6rem .8rem">'+
+          '<span class="badge" style="background:var(--'+c[0]+');color:var(--'+c[1]+')">'+g+'</span> '+
+          '<strong style="font-size:12px;color:var(--text)">'+tt['g'+g].replace(g+' \u2014 ','')+'</strong>'+
+          '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+tt['g'+g+'Desc']+'</div>'+
+          '</div>';
+      }).join('')+
+      '</div></div>'
+    ) : '')+
+    '</div>';
+}
+
+function renderProjPanel(){
+  const el = document.getElementById('panel-projects');
+  if (!el) return;
+  if (projFailed) { el.innerHTML = frameworkMarkup() + '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
+  if (!projReady) { el.innerHTML = frameworkMarkup() + '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
+  el.innerHTML = frameworkMarkup() + (projEditing ? projEditorMarkup() : projListMarkup());
+}
+
+window.openNewScout = openNewScout;
+window.openEditScout = openEditScout;
+window.cancelScoutEdit = cancelScoutEdit;
+window.updateScoutField = updateScoutField;
+window.confirmSaveScout = confirmSaveScout;
+window.confirmDeleteScout = confirmDeleteScout;
+window.onScoutUpdated = function(data){ scoutEntries = data; scoutReady = true; renderScoutPanel(); };
+window.onScoutFailed = function(){ scoutFailed = true; renderScoutPanel(); };
+
+window.openNewProj = openNewProj;
+window.openEditProj = openEditProj;
+window.cancelProjEdit = cancelProjEdit;
+window.updateProjField = updateProjField;
+window.confirmSaveProj = confirmSaveProj;
+window.confirmDeleteProj = confirmDeleteProj;
+window.onProjUpdated = function(data){ projEntries = data; projReady = true; renderProjPanel(); };
+window.onProjFailed = function(){ projFailed = true; renderProjPanel(); };
+
 window.selectPhdStudent = selectPhdStudent;
 window.backToPhdList = backToPhdList;
 window.onPhdStudiesUpdated = function(data){ phdStudies = data; phdReady = true; renderPhdPanel(); };
@@ -1968,6 +2308,52 @@ window.startAllPhdListeners = function () {
       if (window.onPhdAllDataUpdated) window.onPhdAllDataUpdated(id, data);
     }, function () {});
   });
+};
+
+let scoutStarted = false;
+window.startScoutListener = function () {
+  if (scoutStarted || !db) { if (!db && window.onScoutFailed) window.onScoutFailed(); return; }
+  scoutStarted = true;
+  const q = query(collection(db, 'techScouting'), orderBy('dateAdded', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onScoutUpdated) window.onScoutUpdated(data);
+    },
+    function () { if (window.onScoutFailed) window.onScoutFailed(); }
+  );
+};
+window.saveScoutEntry = async function (id, payload) {
+  if (!db) return;
+  if (id) { await updateDoc(doc(db, 'techScouting', id), payload); }
+  else { await addDoc(collection(db, 'techScouting'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
+};
+window.deleteScoutEntry = async function (id) {
+  if (!db) return;
+  await deleteDoc(doc(db, 'techScouting', id));
+};
+
+let projStarted = false;
+window.startProjListener = function () {
+  if (projStarted || !db) { if (!db && window.onProjFailed) window.onProjFailed(); return; }
+  projStarted = true;
+  const q = query(collection(db, 'projectsMaster'), orderBy('createdAt', 'desc'));
+  onSnapshot(q,
+    function (snap) {
+      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      if (window.onProjUpdated) window.onProjUpdated(data);
+    },
+    function () { if (window.onProjFailed) window.onProjFailed(); }
+  );
+};
+window.saveProjEntry = async function (id, payload) {
+  if (!db) return;
+  if (id) { await updateDoc(doc(db, 'projectsMaster', id), payload); }
+  else { await addDoc(collection(db, 'projectsMaster'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
+};
+window.deleteProjEntry = async function (id) {
+  if (!db) return;
+  await deleteDoc(doc(db, 'projectsMaster', id));
 };
 </script>
 </body>
