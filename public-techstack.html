@@ -583,6 +583,23 @@ body {
 /* Booking */
 .book-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
 .book-btn:hover{opacity:0.88}
+
+/* Bookings calendar view */
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.cal-nav-btn{background:var(--off-white);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px}
+.cal-nav-btn:hover{background:#fff}
+.cal-month-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--border);border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.cal-head{background:var(--off-white);text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);padding:8px 2px}
+.cal-cell{background:#fff;min-height:84px;padding:5px;font-size:11px}
+.cal-empty{background:var(--off-white)}
+.cal-today{box-shadow:inset 0 0 0 2px var(--navy)}
+.cal-daynum{font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:600}
+.cal-chip{border-radius:5px;padding:2px 6px;margin-bottom:2px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:var(--navy);color:#fff}
+.cal-more{font-size:10px;color:var(--muted)}
+.cal-list{margin-top:20px}
+.cal-list-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+
 .booking-form{background:var(--off-white);border-radius:12px;padding:16px;margin-top:8px}
 .booking-form label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin:10px 0 4px}
 .booking-form label:first-child{margin-top:0}
@@ -674,12 +691,15 @@ body {
   <div class="view-toggle">
     <button class="view-btn active" id="grid-btn">⊞ Grid</button>
     <button class="view-btn" id="table-btn">☰ Table</button>
+    <button class="view-btn" id="cal-btn">📅 Bookings</button>
   </div>
 </div>
 
-<div class="results-bar">
+<div class="results-bar" id="results-bar-wrap">
   <span class="results-count" id="results-count">71 items</span>
 </div>
+
+<div id="bookings-view" style="display:none;padding:0 32px 32px"></div>
 
 <div class="domain-legend">
   <span class="legend-item"><span class="legend-dot" style="background:#0066CC"></span>Load Monitoring</span>
@@ -973,16 +993,35 @@ document.getElementById('search').addEventListener('input', e => {
 document.getElementById('grid-btn').addEventListener('click', () => {
   document.getElementById('grid-container').style.display = '';
   document.getElementById('table-container').style.display = 'none';
+  document.getElementById('bookings-view').style.display = 'none';
+  document.getElementById('results-bar-wrap').style.display = '';
+  document.querySelector('.domain-legend').style.display = '';
   document.getElementById('grid-btn').classList.add('active');
   document.getElementById('table-btn').classList.remove('active');
+  document.getElementById('cal-btn').classList.remove('active');
   update();
 });
 document.getElementById('table-btn').addEventListener('click', () => {
   document.getElementById('grid-container').style.display = 'none';
   document.getElementById('table-container').style.display = '';
+  document.getElementById('bookings-view').style.display = 'none';
+  document.getElementById('results-bar-wrap').style.display = '';
+  document.querySelector('.domain-legend').style.display = '';
   document.getElementById('table-btn').classList.add('active');
   document.getElementById('grid-btn').classList.remove('active');
+  document.getElementById('cal-btn').classList.remove('active');
   update();
+});
+document.getElementById('cal-btn').addEventListener('click', () => {
+  document.getElementById('grid-container').style.display = 'none';
+  document.getElementById('table-container').style.display = 'none';
+  document.getElementById('bookings-view').style.display = '';
+  document.getElementById('results-bar-wrap').style.display = 'none';
+  document.querySelector('.domain-legend').style.display = 'none';
+  document.getElementById('cal-btn').classList.add('active');
+  document.getElementById('grid-btn').classList.remove('active');
+  document.getElementById('table-btn').classList.remove('active');
+  renderBookingsCalendar();
 });
 
 // Modal
@@ -1043,6 +1082,77 @@ let bookingFormOpen = false;
 let bookingSubmittedMsg = false;
 
 function itemKey(item) { return (item.equipment || '') + '|' + (item.brand || ''); }
+
+/* ---- General bookings calendar ---- */
+let bkCalDate = new Date(); bkCalDate.setDate(1);
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+function isoDate(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+
+function bkChangeMonth(delta) { bkCalDate = new Date(bkCalDate.getFullYear(), bkCalDate.getMonth() + delta, 1); renderBookingsCalendar(); }
+function bkGoToday() { bkCalDate = new Date(); bkCalDate.setDate(1); renderBookingsCalendar(); }
+window.bkChangeMonth = bkChangeMonth;
+window.bkGoToday = bkGoToday;
+
+function bookingsInRange(dateStr) {
+  return ALL_BOOKINGS.filter(b => b.startDate <= dateStr && b.endDate >= dateStr);
+}
+
+function bookingsCalendarGrid() {
+  const y = bkCalDate.getFullYear(), m = bkCalDate.getMonth();
+  const first = new Date(y, m, 1);
+  const offset = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+  const todayStr = isoDate(new Date());
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  let cells = '';
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - offset + 1;
+    if (dayNum < 1 || dayNum > daysInMonth) { cells += '<div class="cal-cell cal-empty"></div>'; continue; }
+    const d = new Date(y, m, dayNum);
+    const dStr = isoDate(d);
+    const dayBookings = bookingsInRange(dStr);
+    const isToday = dStr === todayStr;
+    cells += `<div class="cal-cell ${isToday ? 'cal-today' : ''}">
+      <div class="cal-daynum">${dayNum}</div>
+      ${dayBookings.slice(0, 3).map(b => `<div class="cal-chip" title="${b.equipmentName} — ${b.requesterName}">${b.equipmentName}</div>`).join('')}
+      ${dayBookings.length > 3 ? `<div class="cal-more">+${dayBookings.length - 3}</div>` : ''}
+    </div>`;
+  }
+
+  const monthLabel = bkCalDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  return `
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="bkChangeMonth(-1)">←</button>
+      <div class="cal-month-label">${monthLabel}</div>
+      <button class="cal-nav-btn" onclick="bkChangeMonth(1)">→</button>
+      <button class="cal-nav-btn" onclick="bkGoToday()">Today</button>
+    </div>
+    <div class="cal-grid">
+      ${dayNames.map(d => `<div class="cal-head">${d}</div>`).join('')}
+      ${cells}
+    </div>`;
+}
+
+function bookingsListMarkup() {
+  const today = isoDate(new Date());
+  const upcoming = ALL_BOOKINGS.filter(b => b.endDate >= today).sort((a, b) => a.startDate < b.startDate ? -1 : 1);
+  if (!upcoming.length) return '<div class="no-bookings">No upcoming bookings across any equipment.</div>';
+  return upcoming.map(b => `
+    <div class="booking-item">
+      <div class="bk-dates">${b.startDate} → ${b.endDate}</div>
+      <div class="bk-meta"><strong>${b.equipmentName}</strong> (${b.brand || '—'})</div>
+      <div class="bk-meta">${b.requesterName || '—'} · ${b.location || '—'}</div>
+      <div class="bk-meta">${b.purpose || ''}</div>
+    </div>`).join('');
+}
+
+function renderBookingsCalendar() {
+  const el = document.getElementById('bookings-view');
+  el.innerHTML = bookingsCalendarGrid() +
+    '<div class="cal-list"><div class="cal-list-title">All upcoming bookings</div>' + bookingsListMarkup() + '</div>';
+}
 
 function openBookingForm() {
   bookingFormOpen = true;
@@ -1128,7 +1238,11 @@ window.openBookingForm = openBookingForm;
 window.submitBooking = submitBooking;
 
 window.onTechStackUpdated = function (items) { ALL_ITEMS = items; update(); };
-window.onTechBookingsUpdated = function (bookings) { ALL_BOOKINGS = bookings; renderUpcomingBookings(); };
+window.onTechBookingsUpdated = function (bookings) {
+  ALL_BOOKINGS = bookings;
+  renderUpcomingBookings();
+  if (document.getElementById('bookings-view').style.display !== 'none') renderBookingsCalendar();
+};
 
 // Init
 update();
