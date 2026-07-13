@@ -8,20 +8,31 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+@font-face { font-family:'Virage'; font-weight:400; font-style:normal; src:url('assets/fonts/Virage-Regular.otf') format('opentype'); font-display:swap; }
 @font-face { font-family:'Virage'; font-weight:600; font-style:normal; src:url('assets/fonts/Virage-Semibold.otf') format('opentype'); font-display:swap; }
 @font-face { font-family:'Virage'; font-weight:700; font-style:normal; src:url('assets/fonts/Virage-Bold.otf') format('opentype'); font-display:swap; }
-:root{
+:root, [data-theme="light"] {
   --font-sans:'Geist','Inter',system-ui,-apple-system,sans-serif;
   --font-display:'Virage','Geist',system-ui,sans-serif;
   --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 
-  --bg:#F6F8FA;--surface:#fff;--surface2:#EAEEF1;
-  --border:#E1E6F0;--border2:#a1a1a1;
+  /* Surfaces: brand-silver canvas ladder */
+  --bg:#F6F8FA;--surface:#ffffff;--surface2:#EAEEF1;
+  --border:#E1E6F0;--border2:#c3cad7;
   --text:#171717;--text2:#4d4d4d;--text3:#888888;
-  --radius:0 12px 0 12px;--radius-sm:6px;
-  --accent:#141428;--accent-press:#0c0c18;--accent-soft:rgba(20,20,40,.08);--accent-contrast:#fff;
+  --radius:0 12px 0 12px;--radius-sm:6px;--radius-pill:64px;
+
+  /* Accent: PSG Bleu Nuit, the single action colour */
+  --accent:#141428;--accent-press:#0f0f1e;--accent-soft:rgba(20,20,40,.10);--accent-line:rgba(20,20,40,.26);--accent-contrast:#ffffff;
   --psg-navy:#004070;--psg-red:#E30613;--psg-gold:#CEAB5D;
 
+  /* Hero band */
+  --hero-bg:#141428;--hero-body:rgba(255,255,255,.78);--hero-mute:rgba(255,255,255,.58);
+  --wm-opacity:.06;
+
+  /* Status palette (meaning-locked): blue = in progress, green = done,
+     amber = pending, gold(purple vars) = new/highlighted, red(coral vars) = blocked,
+     grey = draft / not started */
   --blue-bg:#e2edfd;--blue-tx:#0a5bc4;
   --green-bg:#e8f4ec;--green-tx:#11733d;
   --amber-bg:#fdf0d6;--amber-tx:#92580a;
@@ -30,67 +41,91 @@
   --coral-bg:#fbe6e4;--coral-tx:#c0291f;
   --grey-bg:#f0f1f3;--grey-tx:#5a6473;
   --red:#c0291f;
+
+  /* Viz categoricals: discipline/area identity chips only (sealed elsewhere) */
+  --viz-blue:#315FCA;--viz-blue-soft:rgba(49,95,202,.12);
+  --viz-teal:#289187;--viz-teal-soft:rgba(40,145,135,.12);
+  --viz-purple:#954ECD;--viz-purple-soft:rgba(149,78,205,.12);
+  --viz-berry:#C03277;--viz-berry-soft:rgba(192,50,119,.12);
+  --viz-yellow:#8f8100;--viz-yellow-soft:rgba(176,158,0,.14);
+
+  /* Elevation: stacked shadows, hairline holds the edge */
+  --elev-1:0 1px 1px rgba(0,0,0,.02),0 2px 2px rgba(0,0,0,.04);
+  --elev-2:0 2px 2px rgba(0,0,0,.04),0 8px 8px -8px rgba(0,0,0,.04);
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#171717;--surface:#212121;--surface2:#2a2a2a;
-  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.22);
-  --text:#f2f2f2;--text2:#b4b4b4;--text3:#888888;
-  --accent:#7f8fdc;--accent-press:#a3b0e6;--accent-soft:rgba(127,143,220,.14);--accent-contrast:#141428;
-  --blue-bg:#0a5bc4;--blue-tx:#e2edfd;
-  --green-bg:#11733d;--green-tx:#e8f4ec;
-  --amber-bg:#92580a;--amber-tx:#fdf0d6;
-  --purple-bg:#856316;--purple-tx:#f6edd4;
-  --teal-bg:rgba(127,143,220,.14);--teal-tx:#c7cef2;
-  --coral-bg:#c0291f;--coral-tx:#fbe6e4;
-  --grey-bg:#3a3f47;--grey-tx:#c2c8d1;
-}}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:var(--accent)}
 .hidden{display:none!important}
 .container{max-width:900px;margin:0 auto;padding:2rem 1.25rem}
-.logo{font-family:var(--font-display);font-weight:700;font-size:21px;display:flex;align-items:center;gap:9px;color:var(--text)}
+.logo{font-family:var(--font-display);font-weight:600;font-size:21px;display:flex;align-items:center;gap:10px;color:var(--text)}
 .logo img{height:28px;width:auto}
 .logo i{color:var(--accent)}
 .sub{font-size:14px;color:var(--text2);margin-top:4px;font-family:var(--font-sans)}
-.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:transparent;font-size:14px;cursor:pointer;color:var(--text);font-family:var(--font-sans);text-decoration:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--elev-1)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);font-family:var(--font-sans);text-decoration:none;transition:background-color .16s ease,border-color .16s ease}
 .btn:hover{background:var(--surface2)}
 .btn-primary{background:var(--accent);color:var(--accent-contrast);border-color:var(--accent)}
 .btn-primary:hover{background:var(--accent-press);border-color:var(--accent-press)}
 .btn-sm{padding:5px 10px;font-size:12px}
-.btn-green{border-color:var(--green-tx);color:var(--green-tx)}
-.btn-green:hover{background:var(--green-bg)}
-.btn-red{border-color:var(--red);color:var(--red)}
-.btn-red:hover{background:rgba(192,41,31,.08)}
-input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:var(--font-sans);font-size:14px;outline:none}
+.btn-green{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
+.btn-green:hover{background:var(--accent-soft);border-color:var(--accent)}
+.btn-red{color:var(--red);border-color:var(--border2);background:transparent}
+.btn-red:hover{background:var(--coral-bg)}
+input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:var(--font-sans);font-size:14px;outline:none;transition:border-color .16s ease,box-shadow .16s ease}
+input:focus,textarea:focus{border-color:var(--border2);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
 
-.lang-switch{display:flex;gap:4px}
-.lang-btn{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer}
-.lang-btn.active{background:var(--text);color:var(--surface);border-color:var(--text)}
-.top-strip{display:flex;justify-content:flex-end;margin-bottom:1rem}
-.hero{position:relative;overflow:hidden;background:#141428;border-radius:var(--radius);padding:2rem 1.75rem;margin-bottom:1.75rem}
-.hero .wm{position:absolute;right:-6%;bottom:-30%;width:60%;opacity:.10;filter:invert(1);pointer-events:none}
+.top-strip{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:1rem}
+.lang-switch{display:flex;gap:4px;align-items:center}
+.lang-btn{padding:4px 9px;border-radius:9999px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:background-color .16s ease,color .16s ease}
+.lang-btn:hover{background:var(--surface2)}
+.lang-btn.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
+.lang-select{appearance:none;-webkit-appearance:none;padding:5px 28px 5px 12px;border-radius:9999px;font-size:11px;font-weight:600;border:1px solid var(--border);background-color:transparent;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');background-repeat:no-repeat;background-position:right 9px center;color:var(--text2);cursor:pointer;font-family:var(--font-sans);transition:background-color .16s ease,border-color .16s ease}
+.lang-select:hover{background-color:var(--surface2)}
+.lang-select option{color:#171717}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:14px;transition:background-color .16s ease}
+.icon-btn:hover{background:var(--surface2)}
+
+/* Hero: full-bleed flat navy band + colossal filaire watermark */
+.hero{position:relative;overflow:hidden;background:var(--hero-bg);margin:-2rem calc(50% - 50vw) 1.75rem;padding:2.5rem max(1.25rem,calc(50vw - 430px)) 3rem}
+.hero .wm{position:absolute;z-index:0;top:100%;left:75%;height:300%;width:auto;transform:translate(-50%,-61.6%);opacity:var(--wm-opacity);filter:invert(1);pointer-events:none}
 .hero-content{position:relative;z-index:1}
+.hero-masthead{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.hero-masthead img{height:36px;width:auto;display:block}
+.hero-masthead span{font-family:var(--font-display);font-weight:400;font-size:20px;line-height:1;color:#fff}
+.hero-title{font-family:var(--font-display);font-weight:600;font-size:34px;line-height:1.15;color:#fff;margin:0 0 6px;text-wrap:balance}
+.hero-sub{font-size:14px;color:var(--hero-body)}
 .hero .logo{color:#fff}
-.hero .sub{color:rgba(255,255,255,.78)}
+.hero .sub{color:var(--hero-body)}
 
 .area-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:1.5rem}
-.area-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;cursor:pointer;transition:border-color .15s,transform .1s}
-.area-card:hover{border-color:var(--border2);transform:translateY(-1px)}
-.area-card.sel{border-width:2px}
-.area-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px}
+.area-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;cursor:pointer;box-shadow:var(--elev-1);transition:border-color .16s ease}
+.area-card:hover{border-color:var(--border2)}
+.area-card.sel{border-width:2px;padding:calc(1.1rem - 1px) calc(1.25rem - 1px)}
+.area-icon{width:42px;height:42px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px}
 .area-nm{font-size:14px;font-weight:600}
 .area-st{font-size:12px;color:var(--text2);margin-top:2px}
-.pin-area{margin-top:1.75rem;padding-top:1.75rem;border-top:0.5px solid var(--border)}
+.pin-area{margin-top:1.75rem;padding-top:1.75rem;border-top:1px solid var(--border)}
 .pin-row{display:flex;gap:8px;margin-top:10px}
 .pin-row input{max-width:180px;flex:0 0 auto}
 .alert{padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;margin-top:8px}
-.alert-err{background:rgba(226,75,74,.1);color:var(--red);border:0.5px solid rgba(226,75,74,.3)}
+.alert-err{background:var(--coral-bg);color:var(--coral-tx);border:1px solid transparent}
 
-.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
-.sub-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
-.sub-tab{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid var(--border2);color:var(--text2);white-space:nowrap}
-.sub-tab.active{background:var(--text);color:var(--surface);border-color:var(--text)}
+.app-topbar{display:flex;align-items:center;gap:16px;padding-bottom:1.1rem;margin-bottom:1.6rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.app-brand{display:flex;align-items:center;gap:11px}
+.app-brand img{height:30px;width:auto;display:block}
+.app-brand span{font-family:var(--font-display);font-weight:400;font-size:17px;color:var(--text)}
+.app-divider{width:1px;height:32px;background:var(--border)}
+.app-area .name{font-family:var(--font-display);font-weight:600;font-size:22px;color:var(--text)}
+.app-spacer{margin-left:auto}
+.owner-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:9999px;padding:6px 11px}
+@media(max-width:560px){.app-divider{display:none}.app-area .name{font-size:19px}}
+
+/* Menu: inset segmented track, active segment solid accent */
+.sub-tabs{display:inline-flex;gap:2px;background:var(--surface2);border-radius:8px;padding:3px;margin-bottom:1.25rem;flex-wrap:wrap}
+.sub-tab{display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:var(--radius-sm);font-size:13.5px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;transition:color .16s ease,background-color .16s ease}
+.sub-tab:hover{color:var(--text)}
+.sub-tab.active{background:var(--accent);color:var(--accent-contrast)}
 .panel{display:none}
 .panel.active{display:block}
 .placeholder{text-align:center;padding:3.5rem 1rem;color:var(--text3)}
@@ -98,28 +133,30 @@ input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);borde
 .placeholder .ph-title{font-size:14px;color:var(--text2);margin-top:10px;font-weight:600}
 .placeholder .ph-sub{font-size:12px;margin-top:4px}
 
-.ext-link-card{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--teal-bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.ext-link-card{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--teal-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.25rem;flex-wrap:wrap}
 .ext-link-card .txt{font-size:13px;color:var(--teal-tx)}
 .ext-link-card .txt strong{display:block;font-size:14px;margin-bottom:2px}
-.ext-link-card .btn{border-color:var(--teal-tx);color:var(--teal-tx);background:var(--surface)}
-.ext-link-card .btn:hover{background:var(--teal-bg)}
+.ext-link-card .btn{border-color:var(--accent-line);color:var(--accent);background:var(--surface)}
+.ext-link-card .btn:hover{background:var(--accent-soft)}
 
-.tabs{display:flex;gap:6px;margin-bottom:1.25rem}
-.tab{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid var(--border2);color:var(--text2)}
-.tab.active{background:var(--text);color:var(--surface);border-color:var(--text)}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+/* Submenu: tab-ghost pills, active rides accent-soft */
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:var(--radius-pill);font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;transition:color .16s ease,border-color .16s ease,background-color .16s ease}
+.tab:hover{border-color:var(--border2)}
+.tab.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line);font-weight:500}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:600;white-space:nowrap}
 .b-pending{background:var(--amber-bg);color:var(--amber-tx)}
 .b-accepted{background:var(--green-bg);color:var(--green-tx)}
 .b-declined{background:var(--coral-bg);color:var(--coral-tx)}
-.idea-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
-.idea-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.idea-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;box-shadow:var(--elev-1)}
+.idea-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;transition:background-color .16s ease}
 .idea-header:hover{background:var(--surface2)}
 .idea-title{font-size:15px;font-weight:600}
 .idea-meta{font-size:12px;color:var(--text3);margin-top:2px}
 .idea-body{padding:0 1.25rem 1.25rem;display:none}
 .idea-body.open{display:block}
 .field-block{margin-top:.9rem}
-.field-block label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.field-block label{display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
 .field-block .val{font-size:13px;color:var(--text);white-space:pre-wrap;line-height:1.5}
 .idea-actions{display:flex;gap:8px;margin-top:1.1rem;flex-wrap:wrap}
 .decision-form{margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:var(--radius-sm)}
@@ -127,14 +164,19 @@ input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);borde
 .field-row>div{flex:1}
 .field-row input,.field-row select{margin-top:4px}
 
+/* Compact link pill: replaces raw long URLs */
+.link-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-line);border-radius:9999px;padding:6px 12px;text-decoration:none;transition:background-color .16s ease,border-color .16s ease}
+.link-btn:hover{background:var(--accent-soft);border-color:var(--accent)}
+.link-btn i{font-size:13px}
+
 .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
 .cal-filters{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
-.cal-head{background:var(--surface2);text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);padding:6px 2px}
-.cal-cell{background:var(--surface);min-height:74px;padding:4px;font-size:11px;cursor:pointer}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.cal-head{background:var(--surface2);text-align:center;font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:6px 2px}
+.cal-cell{background:var(--surface);min-height:74px;padding:4px;font-size:11px;cursor:pointer;transition:background-color .16s ease}
 .cal-cell:hover{background:var(--surface2)}
 .cal-empty{background:var(--bg);cursor:default}
-.cal-today .cal-daynum{background:var(--text);color:var(--surface);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
+.cal-today .cal-daynum{background:var(--accent);color:var(--accent-contrast);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
 .cal-daynum{font-size:11px;color:var(--text2);margin-bottom:3px}
 .cal-chip{border-radius:5px;padding:1px 5px;margin-bottom:2px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .cal-blue{background:var(--blue-bg);color:var(--blue-tx)}
@@ -152,28 +194,35 @@ input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);borde
 .badge.b-cal-amber{background:var(--amber-bg);color:var(--amber-tx)}
 @media(max-width:600px){.cal-cell{min-height:56px;font-size:10px}.cal-chip{font-size:9px}}
 .empty{text-align:center;padding:3rem 1rem;color:var(--text3)}
-.spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--blue-tx);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+.spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .pres-type{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;display:inline-block}
 .pres-oral{background:var(--purple-bg);color:var(--purple-tx)}
 .pres-abstract{background:var(--teal-bg);color:var(--teal-tx)}
 .pres-poster{background:var(--amber-bg);color:var(--amber-tx)}
 .chip{font-size:11px;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:4px}
+.hero .lang-switch{position:absolute;top:1.4rem;right:max(1.25rem,calc(50vw - 430px));z-index:2}
+.hero .lang-btn{border-color:rgba(255,255,255,.24);color:rgba(255,255,255,.74);background:rgba(255,255,255,.06)}
+.hero .lang-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+.hero .lang-btn.active{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.44)}
+.hero .lang-select{border-color:rgba(255,255,255,.24);color:#fff;background-color:rgba(255,255,255,.06);background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>')}
+.hero .lang-select:hover{background-color:rgba(255,255,255,.12)}
 </style>
 </head>
 <body>
 <div class="container">
 
-<div class="top-strip">
-  <div class="lang-switch" id="lang-switch"></div>
-</div>
-
 <div id="screen-home">
   <div class="hero">
     <img class="wm" src="assets/logos/psg-watermark.svg" alt="" aria-hidden="true">
+    <div class="lang-switch" id="lang-switch"></div>
     <div class="hero-content">
-      <div class="logo"><img src="assets/logos/psg-crest-white.svg" alt=""> <span data-t="hubTitle">Research Hub</span></div>
-      <div class="sub" data-t="hubSub">Select your area and enter your access code</div>
+      <div class="hero-masthead">
+        <img src="assets/logos/psg-crest-white.svg" alt="">
+        <span>Performance</span>
+      </div>
+      <h1 class="hero-title" data-t="hubTitle">Research Hub</h1>
+      <div class="hero-sub" data-t="hubSub">Select your area and enter your access code</div>
     </div>
   </div>
   <div class="area-grid" id="area-list"></div>
@@ -190,11 +239,17 @@ input,textarea{width:100%;padding:8px 12px;border:1px solid var(--border2);borde
 </div>
 
 <div id="screen-area" class="hidden">
-  <div class="top-bar">
-    <div>
-      <div class="logo" id="area-name"></div>
-      <div class="sub" id="area-owner"></div>
+  <div class="app-topbar">
+    <div class="app-brand">
+      <img src="assets/logos/psg-crest-black.svg" alt="">
+      <span>Performance</span>
     </div>
+    <div class="app-divider"></div>
+    <div class="app-area">
+      <div class="name">Research Hub</div>
+    </div>
+    <div class="app-spacer"></div>
+    <span class="owner-chip"><i class="ti ti-shield-lock" style="font-size:13px"></i> <span data-t="ownerAccess">Admin access</span></span>
     <button class="btn btn-sm" onclick="logout()"><i class="ti ti-logout"></i> <span data-t="logout">Log out</span></button>
   </div>
   <div class="sub-tabs" id="sub-tabs"></div>
@@ -208,9 +263,9 @@ const I18N = {
   en: {
     hubTitle:'Research Hub', hubSub:'Select your area and enter your access code',
     pinLabel:'Enter your area access code', accessBtn:'Access', pinError:'Incorrect code. Please try again.',
-    logout:'Log out', subsections:'subsections', subsection:'subsection',
-    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Quiz Questions', browse:'Browse & Manage', scouting:'Scouting Pipeline', projects:'Project Tracking'},
+    logout:'Log out', ownerAccess:'Admin access', subsections:'subsections', subsection:'subsection',
+    areas:{research:'Research', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Idea screening', calendar:'Research calendar', tip:'Tip of the week', rss:'Papers RSS', phd:'PhD activities', overview:'Overview'},
     comingTitle:'coming soon', comingSub:'This module will be built next inside the same hub.',
     extIdeaTitle:'Submit a new research idea', extIdeaSub:'Share this public link with stakeholders to collect new proposals.', extIdeaBtn:'Open form',
     tPending:'Pending', tAccepted:'Accepted', tDeclined:'Declined', tAll:'All',
@@ -235,36 +290,6 @@ const I18N = {
       tabRequests:'Requests', tabLibrary:'PDF Library' },
     libT:{ addEntry:'Add entry', editEntry:'Edit entry', title:'Title', journal:'Journal', year:'Year', authors:'Authors', pmid:'PMID',
       save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No papers in the library yet' },
-    notesT:{ newEntry:'New note', editEntry:'Edit note', person:'Person', date:'Date', notes:'Notes',
-      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No 1:1 notes yet' },
-    draftsT:{ newEntry:'New draft', editEntry:'Edit draft', title:'Title', content:'Content',
-      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No drafts yet' },
-    quizT:{ newQuestion:'New question', editQuestion:'Edit question', question:'Question', option:'Option', correctAnswer:'Correct answer', week:'Week',
-      importBank:'Import 30-week bank', save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noQuestions:'No quiz questions yet' },
-    scoutT:{ newEntry:'New tech entry', editEntry:'Edit tech entry', name:'Name', category:'Category', metric:'Metric / domain', decision:'Decision',
-      stage:'Pipeline stage', owner:'Owner', vendor:'Vendor / brand link', dateAdded:'Date added', notes:'Notes', relatedProject:'Related project',
-      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No tech entries in the pipeline yet',
-      dUnderReview:'Under review', dReject:'Reject', dOnHold:'On hold', dApproved:'Approved',
-      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
-    projT:{ newEntry:'New project', editEntry:'Edit project', name:'Name', status:'Status', owner:'Owner', area:'Area', priority:'Priority',
-      startDate:'Start date', dueDate:'Due date', stage:'Stage', notes:'Notes', completion:'Completion %', relatedTech:'Related tech',
-      save:'Save', cancel:'Cancel', edit:'Edit', delete:'Delete', noEntries:'No projects tracked yet',
-      stTodo:'To do', stProgress:'In progress', stReview:'Review', stDone:'Done',
-      pHigh:'High', pMedium:'Medium', pLow:'Low',
-      score:'Final score', noScore:'Not yet scored',
-      gA:'A — Strong evidence', gB:'B — Acceptable evidence', gC:'C — Weak evidence', gD:'D — Insufficient / negative',
-      gADesc:'Peer-reviewed support, expert endorsement, positive internal trial \u2192 full integration',
-      gBDesc:'Expert backing, reasonable pilot data \u2192 monitored integration',
-      gCDesc:'Inconclusive evaluation, limited studies \u2192 hold, gather more data',
-      gDDesc:'Expert consensus against, failed testing \u2192 formal rejection',
-      howWeEvaluate:'How we evaluate', hideFramework:'Hide', showFramework:'Show framework',
-      phasesTitle:'6-phase governance process', phase1:'1. Scoping — identify need & candidate technologies',
-      phase2:'2. Evidence review — McCall model (Search \u2192 Assess \u2192 Combine), STRN Quality Framework',
-      phase3:'3. Gate 1 — Sports Innovation + Function Lead sign-off to proceed',
-      phase4:'4. Pilot & trial — 2\u20134 week time-boxed test, KPIs agreed in advance',
-      phase5:'5. Gate 2 — Performance Director review of pilot outcome \u2192 grade assigned',
-      phase6:'6. Deploy or reject — quarterly review of deployed tech against KPIs',
-      gradesTitle:'Graded recommendation (A\u2013D)' },
     tip:{ newPost:'New post', editPost:'Edit post', postTitle:'Title', coverImage:'Cover image URL (optional)', coverImageHint:'Paste a link to an already-hosted image, or upload a file below',
       uploadBtn:'Upload JPG/PNG', removeImg:'Remove image', compressing:'Processing image...',
       body:'Body', bodyHint:'Write the post content. Line breaks are preserved.',
@@ -277,9 +302,9 @@ const I18N = {
   it: {
     hubTitle:'Research Hub', hubSub:'Seleziona la tua area e inserisci il codice di accesso',
     pinLabel:'Inserisci il codice di accesso dell\u2019area', accessBtn:'Accedi', pinError:'Codice errato. Riprova.',
-    logout:'Esci', subsections:'sottosezioni', subsection:'sottosezione',
-    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Domande Quiz', browse:'Sfoglia e gestisci', scouting:'Scouting Pipeline', projects:'Project Tracking'},
+    logout:'Esci', ownerAccess:'Accesso admin', subsections:'sottosezioni', subsection:'sottosezione',
+    areas:{research:'Research', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Screening idee', calendar:'Calendario ricerca', tip:'Tip of the week', rss:'Papers RSS', phd:'Attivit\u00e0 PhD', overview:'Panoramica'},
     comingTitle:'in arrivo', comingSub:'Questo modulo verr\u00e0 costruito nei prossimi passaggi, dentro lo stesso hub.',
     extIdeaTitle:'Sottometti una nuova idea di ricerca', extIdeaSub:'Condividi questo link pubblico con gli stakeholder per raccogliere nuove proposte.', extIdeaBtn:'Apri il form',
     tPending:'In attesa', tAccepted:'Accettate', tDeclined:'Rifiutate', tAll:'Tutte',
@@ -304,37 +329,6 @@ const I18N = {
       tabRequests:'Richieste', tabLibrary:'PDF Library' },
     libT:{ addEntry:'Aggiungi voce', editEntry:'Modifica voce', title:'Titolo', journal:'Giornale', year:'Anno', authors:'Autori', pmid:'PMID',
       save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessun articolo ancora nella libreria' },
-    notesT:{ newEntry:'Nuova nota', editEntry:'Modifica nota', person:'Persona', date:'Data', notes:'Note',
-      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessuna nota 1:1 ancora' },
-    draftsT:{ newEntry:'Nuova bozza', editEntry:'Modifica bozza', title:'Titolo', content:'Contenuto',
-      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessuna bozza ancora' },
-    quizT:{ newQuestion:'Nuova domanda', editQuestion:'Modifica domanda', question:'Domanda', option:'Opzione', correctAnswer:'Risposta corretta', week:'Settimana',
-      importBank:'Importa banca 30 settimane',
-      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noQuestions:'Nessuna domanda quiz ancora' },
-    scoutT:{ newEntry:'Nuova tech', editEntry:'Modifica tech', name:'Nome', category:'Categoria', metric:'Metrica / dominio', decision:'Decisione',
-      stage:'Fase pipeline', owner:'Owner', vendor:'Link vendor / brand', dateAdded:'Data aggiunta', notes:'Note', relatedProject:'Progetto collegato',
-      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessuna tech nella pipeline ancora',
-      dUnderReview:'In revisione', dReject:'Rifiutata', dOnHold:'In pausa', dApproved:'Approvata',
-      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
-    projT:{ newEntry:'Nuovo progetto', editEntry:'Modifica progetto', name:'Nome', status:'Stato', owner:'Owner', area:'Area', priority:'Priorit\u00e0',
-      startDate:'Data inizio', dueDate:'Scadenza', stage:'Fase', notes:'Note', completion:'Completamento %', relatedTech:'Tech collegata',
-      save:'Salva', cancel:'Annulla', edit:'Modifica', delete:'Elimina', noEntries:'Nessun progetto tracciato ancora',
-      stTodo:'Da fare', stProgress:'In corso', stReview:'In revisione', stDone:'Completato',
-      pHigh:'Alta', pMedium:'Media', pLow:'Bassa',
-      score:'Score finale', noScore:'Non ancora valutato',
-      gA:'A — Evidenza forte', gB:'B — Evidenza accettabile', gC:'C — Evidenza debole', gD:'D — Insufficiente / negativa',
-      gADesc:'Supporto peer-reviewed, endorsement esperti, trial interno positivo \u2192 integrazione completa',
-      gBDesc:'Supporto esperti, dati pilota ragionevoli \u2192 integrazione monitorata',
-      gCDesc:'Valutazione inconcludente, studi limitati \u2192 in pausa, raccogliere pi\u00f9 dati',
-      gDDesc:'Consenso esperti contrario, test falliti \u2192 rifiuto formale',
-      howWeEvaluate:'Come valutiamo', hideFramework:'Nascondi', showFramework:'Mostra framework',
-      phasesTitle:'Processo di governance a 6 fasi', phase1:'1. Scoping — identificare bisogno e tecnologie candidate',
-      phase2:'2. Revisione evidenze — modello McCall (Cerca \u2192 Valuta \u2192 Combina), STRN Quality Framework',
-      phase3:'3. Gate 1 — approvazione di Sports Innovation + Function Lead per procedere',
-      phase4:'4. Pilot & trial — test a tempo di 2\u20134 settimane, KPI concordati in anticipo',
-      phase5:'5. Gate 2 — revisione del Performance Director sull\u2019esito del pilot \u2192 assegnazione score',
-      phase6:'6. Deploy o rifiuto — revisione trimestrale della tech attiva rispetto ai KPI',
-      gradesTitle:'Raccomandazione graduata (A\u2013D)' },
     tip:{ newPost:'Nuovo post', editPost:'Modifica post', postTitle:'Titolo', coverImage:'URL immagine di copertina (opzionale)', coverImageHint:'Incolla il link a un\u2019immagine gi\u00e0 online, oppure caricane una qui sotto',
       uploadBtn:'Carica JPG/PNG', removeImg:'Rimuovi immagine', compressing:'Elaborazione immagine...',
       body:'Testo', bodyHint:'Scrivi il contenuto del post. Gli a capo vengono mantenuti.',
@@ -347,9 +341,9 @@ const I18N = {
   fr: {
     hubTitle:'Research Hub', hubSub:'S\u00e9lectionnez votre domaine et saisissez votre code d\u2019acc\u00e8s',
     pinLabel:'Saisissez le code d\u2019acc\u00e8s du domaine', accessBtn:'Acc\u00e9der', pinError:'Code incorrect. Veuillez r\u00e9essayer.',
-    logout:'D\u00e9connexion', subsections:'sous-sections', subsection:'sous-section',
-    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Questions Quiz', browse:'Parcourir et g\u00e9rer', scouting:'Pipeline de veille', projects:'Suivi de projets'},
+    logout:'D\u00e9connexion', ownerAccess:'Acc\u00e8s admin', subsections:'sous-sections', subsection:'sous-section',
+    areas:{research:'Research', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'\u00c9valuation des id\u00e9es', calendar:'Calendrier recherche', tip:'Tip of the week', rss:'Papers RSS', phd:'Activit\u00e9s doctorat', overview:'Aper\u00e7u'},
     comingTitle:'bient\u00f4t disponible', comingSub:'Ce module sera d\u00e9velopp\u00e9 prochainement, au sein du m\u00eame hub.',
     extIdeaTitle:'Soumettre une nouvelle id\u00e9e de recherche', extIdeaSub:'Partagez ce lien public avec les parties prenantes pour recueillir de nouvelles propositions.', extIdeaBtn:'Ouvrir le formulaire',
     tPending:'En attente', tAccepted:'Accept\u00e9es', tDeclined:'Refus\u00e9es', tAll:'Toutes',
@@ -374,37 +368,6 @@ const I18N = {
       tabRequests:'Demandes', tabLibrary:'PDF Library' },
     libT:{ addEntry:'Ajouter une entr\u00e9e', editEntry:'Modifier l\u2019entr\u00e9e', title:'Titre', journal:'Revue', year:'Ann\u00e9e', authors:'Auteurs', pmid:'PMID',
       save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucun article dans la biblioth\u00e8que pour l\u2019instant' },
-    notesT:{ newEntry:'Nouvelle note', editEntry:'Modifier la note', person:'Personne', date:'Date', notes:'Notes',
-      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucune note 1:1 pour l\u2019instant' },
-    draftsT:{ newEntry:'Nouveau brouillon', editEntry:'Modifier le brouillon', title:'Titre', content:'Contenu',
-      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucun brouillon pour l\u2019instant' },
-    quizT:{ newQuestion:'Nouvelle question', editQuestion:'Modifier la question', question:'Question', option:'Option', correctAnswer:'Bonne r\u00e9ponse', week:'Semaine',
-      importBank:'Importer la banque de 30 semaines',
-      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noQuestions:'Aucune question de quiz pour l\u2019instant' },
-    scoutT:{ newEntry:'Nouvelle tech', editEntry:'Modifier la tech', name:'Nom', category:'Cat\u00e9gorie', metric:'M\u00e9trique / domaine', decision:'D\u00e9cision',
-      stage:'\u00c9tape pipeline', owner:'Owner', vendor:'Lien fournisseur / marque', dateAdded:'Date d\u2019ajout', notes:'Notes', relatedProject:'Projet li\u00e9',
-      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucune tech dans le pipeline pour l\u2019instant',
-      dUnderReview:'En r\u00e9vision', dReject:'Rejet\u00e9e', dOnHold:'En pause', dApproved:'Approuv\u00e9e',
-      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
-    projT:{ newEntry:'Nouveau projet', editEntry:'Modifier le projet', name:'Nom', status:'Statut', owner:'Owner', area:'Domaine', priority:'Priorit\u00e9',
-      startDate:'Date de d\u00e9but', dueDate:'\u00c9ch\u00e9ance', stage:'\u00c9tape', notes:'Notes', completion:'Avancement %', relatedTech:'Tech li\u00e9e',
-      save:'Enregistrer', cancel:'Annuler', edit:'Modifier', delete:'Supprimer', noEntries:'Aucun projet suivi pour l\u2019instant',
-      stTodo:'\u00c0 faire', stProgress:'En cours', stReview:'En r\u00e9vision', stDone:'Termin\u00e9',
-      pHigh:'Haute', pMedium:'Moyenne', pLow:'Basse',
-      score:'Score final', noScore:'Pas encore \u00e9valu\u00e9',
-      gA:'A — Preuves solides', gB:'B — Preuves acceptables', gC:'C — Preuves faibles', gD:'D — Insuffisant / n\u00e9gatif',
-      gADesc:'Soutien peer-reviewed, endorsement d\u2019experts, essai interne positif \u2192 int\u00e9gration compl\u00e8te',
-      gBDesc:'Soutien d\u2019experts, donn\u00e9es pilotes raisonnables \u2192 int\u00e9gration surveill\u00e9e',
-      gCDesc:'\u00c9valuation peu concluante, \u00e9tudes limit\u00e9es \u2192 en pause, recueillir plus de donn\u00e9es',
-      gDDesc:'Consensus d\u2019experts d\u00e9favorable, tests \u00e9chou\u00e9s \u2192 rejet formel',
-      howWeEvaluate:'Comment nous \u00e9valuons', hideFramework:'Masquer', showFramework:'Afficher le framework',
-      phasesTitle:'Processus de gouvernance en 6 phases', phase1:'1. Scoping — identifier le besoin et les technologies candidates',
-      phase2:'2. Revue des preuves — mod\u00e8le McCall (Chercher \u2192 \u00c9valuer \u2192 Combiner), STRN Quality Framework',
-      phase3:'3. Gate 1 — validation de Sports Innovation + Function Lead pour continuer',
-      phase4:'4. Pilote & essai — test de 2\u20134 semaines, KPI convenus \u00e0 l\u2019avance',
-      phase5:'5. Gate 2 — revue du Performance Director sur le r\u00e9sultat du pilote \u2192 score attribu\u00e9',
-      phase6:'6. D\u00e9ployer ou rejeter — revue trimestrielle de la tech d\u00e9ploy\u00e9e vs KPI',
-      gradesTitle:'Recommandation grad\u00e9e (A\u2013D)' },
     tip:{ newPost:'Nouveau post', editPost:'Modifier le post', postTitle:'Titre', coverImage:'URL image de couverture (facultatif)', coverImageHint:'Collez le lien vers une image d\u00e9j\u00e0 en ligne, ou t\u00e9l\u00e9versez-en une ci-dessous',
       uploadBtn:'T\u00e9l\u00e9verser JPG/PNG', removeImg:'Supprimer l\u2019image', compressing:'Traitement de l\u2019image...',
       body:'Contenu', bodyHint:'\u00c9crivez le contenu du post. Les retours \u00e0 la ligne sont conserv\u00e9s.',
@@ -417,9 +380,9 @@ const I18N = {
   es: {
     hubTitle:'Research Hub', hubSub:'Selecciona tu \u00e1rea e introduce tu c\u00f3digo de acceso',
     pinLabel:'Introduce el c\u00f3digo de acceso del \u00e1rea', accessBtn:'Acceder', pinError:'C\u00f3digo incorrecto. Int\u00e9ntalo de nuevo.',
-    logout:'Cerrar sesi\u00f3n', subsections:'subsecciones', subsection:'subsecci\u00f3n',
-    areas:{research:'Research', techstack:'Tech stack', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
-    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen', notes:'1:1 Notes', drafts:'Research Drafts', quiz:'Preguntas Quiz', browse:'Explorar y gestionar', scouting:'Pipeline de b\u00fasqueda', projects:'Seguimiento de proyectos'},
+    logout:'Cerrar sesi\u00f3n', ownerAccess:'Acceso admin', subsections:'subsecciones', subsection:'subsecci\u00f3n',
+    areas:{research:'Research', designviz:'Design & Viz', quarterly:'Quarterly update', education:'Education'},
+    subs:{ideas:'Evaluaci\u00f3n de ideas', calendar:'Calendario de investigaci\u00f3n', tip:'Tip of the week', rss:'Papers RSS', phd:'Actividades del doctorado', overview:'Resumen'},
     comingTitle:'pr\u00f3ximamente', comingSub:'Este m\u00f3dulo se construir\u00e1 a continuaci\u00f3n, dentro del mismo hub.',
     extIdeaTitle:'Enviar una nueva idea de investigaci\u00f3n', extIdeaSub:'Comparte este enlace p\u00fablico con los interesados para recopilar nuevas propuestas.', extIdeaBtn:'Abrir formulario',
     tPending:'Pendientes', tAccepted:'Aceptadas', tDeclined:'Rechazadas', tAll:'Todas',
@@ -444,37 +407,6 @@ const I18N = {
       tabRequests:'Solicitudes', tabLibrary:'PDF Library' },
     libT:{ addEntry:'A\u00f1adir entrada', editEntry:'Editar entrada', title:'T\u00edtulo', journal:'Revista', year:'A\u00f1o', authors:'Autores', pmid:'PMID',
       save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay art\u00edculos en la biblioteca' },
-    notesT:{ newEntry:'Nueva nota', editEntry:'Editar nota', person:'Persona', date:'Fecha', notes:'Notas',
-      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay notas 1:1' },
-    draftsT:{ newEntry:'Nuevo borrador', editEntry:'Editar borrador', title:'T\u00edtulo', content:'Contenido',
-      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay borradores' },
-    quizT:{ newQuestion:'Nueva pregunta', editQuestion:'Editar pregunta', question:'Pregunta', option:'Opci\u00f3n', correctAnswer:'Respuesta correcta', week:'Semana',
-      importBank:'Importar banco de 30 semanas',
-      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noQuestions:'A\u00fan no hay preguntas de quiz' },
-    scoutT:{ newEntry:'Nueva tecnolog\u00eda', editEntry:'Editar tecnolog\u00eda', name:'Nombre', category:'Categor\u00eda', metric:'M\u00e9trica / dominio', decision:'Decisi\u00f3n',
-      stage:'Etapa del pipeline', owner:'Owner', vendor:'Enlace proveedor / marca', dateAdded:'Fecha de alta', notes:'Notas', relatedProject:'Proyecto relacionado',
-      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay tecnolog\u00edas en el pipeline',
-      dUnderReview:'En revisi\u00f3n', dReject:'Rechazada', dOnHold:'En pausa', dApproved:'Aprobada',
-      sScoping:'Scoping', sPilot:'Pilot', sPaused:'Paused', sClosed:'Closed', sDeployed:'Deployed' },
-    projT:{ newEntry:'Nuevo proyecto', editEntry:'Editar proyecto', name:'Nombre', status:'Estado', owner:'Owner', area:'\u00c1rea', priority:'Prioridad',
-      startDate:'Fecha de inicio', dueDate:'Fecha l\u00edmite', stage:'Etapa', notes:'Notas', completion:'Progreso %', relatedTech:'Tecnolog\u00eda relacionada',
-      save:'Guardar', cancel:'Cancelar', edit:'Editar', delete:'Eliminar', noEntries:'A\u00fan no hay proyectos registrados',
-      stTodo:'Pendiente', stProgress:'En curso', stReview:'En revisi\u00f3n', stDone:'Completado',
-      pHigh:'Alta', pMedium:'Media', pLow:'Baja',
-      score:'Puntuaci\u00f3n final', noScore:'A\u00fan sin puntuar',
-      gA:'A — Evidencia fuerte', gB:'B — Evidencia aceptable', gC:'C — Evidencia d\u00e9bil', gD:'D — Insuficiente / negativa',
-      gADesc:'Apoyo revisado por pares, respaldo de expertos, prueba interna positiva \u2192 integraci\u00f3n completa',
-      gBDesc:'Respaldo de expertos, datos piloto razonables \u2192 integraci\u00f3n supervisada',
-      gCDesc:'Evaluaci\u00f3n no concluyente, estudios limitados \u2192 en pausa, recopilar m\u00e1s datos',
-      gDDesc:'Consenso de expertos en contra, pruebas fallidas \u2192 rechazo formal',
-      howWeEvaluate:'C\u00f3mo evaluamos', hideFramework:'Ocultar', showFramework:'Mostrar framework',
-      phasesTitle:'Proceso de gobernanza en 6 fases', phase1:'1. Scoping — identificar necesidad y tecnolog\u00edas candidatas',
-      phase2:'2. Revisi\u00f3n de evidencia — modelo McCall (Buscar \u2192 Evaluar \u2192 Combinar), STRN Quality Framework',
-      phase3:'3. Gate 1 — aprobaci\u00f3n de Sports Innovation + Function Lead para continuar',
-      phase4:'4. Piloto y prueba — prueba de 2\u20134 semanas, KPI acordados de antemano',
-      phase5:'5. Gate 2 — revisi\u00f3n del Performance Director sobre el resultado del piloto \u2192 puntuaci\u00f3n asignada',
-      phase6:'6. Desplegar o rechazar — revisi\u00f3n trimestral de la tech desplegada frente a los KPI',
-      gradesTitle:'Recomendaci\u00f3n graduada (A\u2013D)' },
     tip:{ newPost:'Nueva publicaci\u00f3n', editPost:'Editar publicaci\u00f3n', postTitle:'T\u00edtulo', coverImage:'URL de imagen de portada (opcional)', coverImageHint:'Pega el enlace a una imagen ya alojada online, o sube un archivo abajo',
       uploadBtn:'Subir JPG/PNG', removeImg:'Quitar imagen', compressing:'Procesando imagen...',
       body:'Contenido', bodyHint:'Escribe el contenido de la publicaci\u00f3n. Los saltos de l\u00ednea se conservan.',
@@ -491,28 +423,19 @@ try { lang = localStorage.getItem('hubLang') || 'en'; } catch(e) {}
 function t(key){ return (I18N[lang] && I18N[lang][key]) || I18N.en[key]; }
 
 const AREAS = [
-  { id:'research',  key:'research',  owner:'Area owner', pin:'RES-2026',  icon:'ti-microscope',  bg:'#e2edfd', tx:'#0a5bc4',
+  { id:'research',  key:'research',  owner:'Area owner', pin:'RES-2026',  icon:'ti-microscope',  bg:'var(--accent-soft)', tx:'var(--accent)',
     subs:[
       {id:'ideas',    key:'ideas',    type:'ideas'},
       {id:'calendar', key:'calendar', type:'calendar'},
       {id:'tip',      key:'tip',      type:'tip'},
       {id:'rss',      key:'rss',      type:'rss'},
-      {id:'phd',      key:'phd',      type:'phd'},
-      {id:'notes',    key:'notes',    type:'notes'},
-      {id:'drafts',   key:'drafts',   type:'drafts'},
-      {id:'quiz',     key:'quiz',     type:'quiz'}
+      {id:'phd',      key:'phd',      type:'phd'}
     ]},
-  { id:'techstack', key:'techstack', owner:'Area owner', pin:'TECH-2026', icon:'ti-code',        bg:'rgba(20,20,40,.08)', tx:'#141428',
-    subs:[
-      {id:'browse',    key:'browse',    type:'techstack'},
-      {id:'scouting',  key:'scouting',  type:'scouting'},
-      {id:'projects',  key:'projects',  type:'projects'}
-    ]},
-  { id:'designviz', key:'designviz', owner:'Area owner', pin:'DSGN-2026', icon:'ti-chart-dots',  bg:'#f6edd4', tx:'#856316',
+  { id:'designviz', key:'designviz', owner:'Area owner', pin:'DSGN-2026', icon:'ti-chart-dots',  bg:'var(--accent-soft)', tx:'var(--accent)',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
-  { id:'quarterly', key:'quarterly', owner:'Area owner', pin:'QTR-2026',  icon:'ti-calendar-stats', bg:'#fdf0d6', tx:'#92580a',
+  { id:'quarterly', key:'quarterly', owner:'Area owner', pin:'QTR-2026',  icon:'ti-calendar-stats', bg:'var(--accent-soft)', tx:'var(--accent)',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]},
-  { id:'education', key:'education', owner:'Area owner', pin:'EDU-2026',  icon:'ti-school',      bg:'#f0f1f3', tx:'#5a6473',
+  { id:'education', key:'education', owner:'Area owner', pin:'EDU-2026',  icon:'ti-school',      bg:'var(--accent-soft)', tx:'var(--accent)',
     subs:[ {id:'overview', key:'overview', type:'placeholder'} ]}
 ];
 
@@ -555,28 +478,14 @@ let phdView = 'students'; // 'students' | 'abstracts'
 let phdAllData = {}; // studentId -> studies[]
 let phdAllStarted = false;
 
-let notesEntries = [], notesReady = false, notesFailed = false;
-let notesEditing = null; // { id?, person, date, notes }
-
-let draftsEntries = [], draftsReady = false, draftsFailed = false;
-let draftsEditing = null; // { id?, title, content }
-
-let quizQuestions = [], quizReady = false, quizFailed = false;
-let quizEditing = null; // { id?, question, options:[4], correctIndex }
-
-let scoutEntries = [], scoutReady = false, scoutFailed = false;
-let scoutEditing = null;
-
-let projEntries = [], projReady = false, projFailed = false;
-let projEditing = null;
-let frameworkOpen = false;
-
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function linkLabel(u){ try { return new URL(u).hostname.replace(/^www\./,''); } catch(e) { u = String(u||''); return u.length > 42 ? u.slice(0,39) + '...' : u; } }
+
 function renderLangSwitch(){
-  document.getElementById('lang-switch').innerHTML = ['en','fr','it','es'].map(function(l){
-    return '<button class="lang-btn '+(l===lang?'active':'')+'" onclick="setLang(\''+l+'\')">'+l.toUpperCase()+'</button>';
-  }).join('');
+  document.getElementById('lang-switch').innerHTML = '<select class="lang-select" aria-label="Language" onchange="setLang(this.value)">'+['en','fr','it','es'].map(function(l){
+    return '<option value="'+l+'" '+(l===lang?'selected':'')+'>'+l.toUpperCase()+'</option>';
+  }).join('')+'</select>';
 }
 function setLang(l){
   lang = l;
@@ -606,7 +515,7 @@ function selectArea(id){
   AREAS.forEach(function(a){
     const el = document.getElementById('ac-' + a.id);
     el.classList.toggle('sel', a.id === id);
-    el.style.borderColor = a.id === id ? a.tx : '';
+    el.style.borderColor = a.id === id ? 'var(--accent)' : '';
   });
   document.getElementById('pin-input').focus();
 }
@@ -623,8 +532,6 @@ function openArea(a, keepSub){
   if (!keepSub) activeSub = a.subs[0].id;
   document.getElementById('screen-home').classList.add('hidden');
   document.getElementById('screen-area').classList.remove('hidden');
-  document.getElementById('area-name').innerHTML = '<img src="assets/logos/psg-crest-black.svg" style="height:24px"> '+I18N[lang].areas[a.key];
-  document.getElementById('area-owner').textContent = a.owner;
   document.getElementById('sub-tabs').innerHTML = a.subs.map(function(s){
     return '<div class="sub-tab '+(s.id===activeSub?'active':'')+'" onclick="setSub(\''+s.id+'\')">'+I18N[lang].subs[s.key]+'</div>';
   }).join('');
@@ -656,24 +563,6 @@ function renderPanels(){
     } else if (s.type === 'phd') {
       renderPhdPanel();
       if (window.startAllPhdListeners) window.startAllPhdListeners();
-    } else if (s.type === 'notes') {
-      renderNotesPanel();
-      if (window.startNotesListener) window.startNotesListener();
-    } else if (s.type === 'drafts') {
-      renderDraftsPanel();
-      if (window.startDraftsListener) window.startDraftsListener();
-    } else if (s.type === 'quiz') {
-      renderQuizPanel();
-      if (window.startQuizListener) window.startQuizListener();
-    } else if (s.type === 'techstack') {
-      const tsEl = document.getElementById('panel-' + s.id);
-      if (tsEl) tsEl.innerHTML = '<iframe src="techstack-admin.html" style="width:100%;height:85vh;border:0.5px solid var(--border);border-radius:var(--radius-sm);display:block;background:#fff"></iframe>';
-    } else if (s.type === 'scouting') {
-      renderScoutPanel();
-      if (window.startScoutListener) window.startScoutListener();
-    } else if (s.type === 'projects') {
-      renderProjPanel();
-      if (window.startProjListener) window.startProjListener();
     } else {
       const el = document.getElementById('panel-' + s.id);
       el.innerHTML = '<div class="card placeholder"><i class="ti ti-hammer"></i>'+
@@ -766,9 +655,9 @@ function decisionFormMarkup(i){
     '<input type="checkbox" id="meet-chk" style="width:auto" '+(c.meeting?'checked':'')+' onchange="updateDraft(\'meeting\',this.checked)">'+
     '<label style="margin:0;text-transform:none;font-size:13px;font-weight:400;color:var(--text)" for="meet-chk">'+t('meetingLabel')+'</label></div>'+
     (c.meeting ? '<div class="field-row" style="margin-top:.6rem">'+
-      '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('meetingDate')+'</label>'+
+      '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+t('meetingDate')+'</label>'+
       '<input type="date" value="'+esc(c.date)+'" onchange="updateDraft(\'date\',this.value)"></div>'+
-      '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('meetingTime')+'</label>'+
+      '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+t('meetingTime')+'</label>'+
       '<input type="time" value="'+esc(c.time)+'" onchange="updateDraft(\'time\',this.value)"></div>'+
       '</div>' : '')+
     '<div class="idea-actions">'+
@@ -841,13 +730,13 @@ function eventFormMarkup(){
     '<div class="field-block"><label>'+t('cal').title+'</label>'+
     '<input type="text" value="'+esc(d.title)+'" oninput="updateEventDraft(\'title\',this.value)"></div>'+
     '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').type+'</label>'+
-    '<select onchange="updateEventDraft(\'type\',this.value)" style="width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text)">'+
+    '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+t('cal').type+'</label>'+
+    '<select onchange="updateEventDraft(\'type\',this.value)" style="width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text)">'+
     EVENT_TYPES.map(function(ty){ return '<option value="'+ty+'" '+(d.type===ty?'selected':'')+'>'+t('cal')[ty]+'</option>'; }).join('')+
     '</select></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').date+'</label>'+
+    '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+t('cal').date+'</label>'+
     '<input type="date" value="'+esc(d.date)+'" onchange="updateEventDraft(\'date\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+t('cal').time+'</label>'+
+    '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+t('cal').time+'</label>'+
     '<input type="time" value="'+esc(d.time)+'" onchange="updateEventDraft(\'time\',this.value)"></div>'+
     '</div>'+
     '<div class="field-block"><label>'+t('cal').notes+'</label>'+
@@ -960,8 +849,8 @@ function libEditorMarkup(){
   return '<div class="card">'+
     '<div class="field-block"><label>'+tt.title+'</label><input type="text" value="'+esc(d.title)+'" oninput="updateLibField(\'title\',this.value)"></div>'+
     '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.journal+'</label><input type="text" value="'+esc(d.journal)+'" oninput="updateLibField(\'journal\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.year+'</label><input type="text" value="'+esc(d.year)+'" oninput="updateLibField(\'year\',this.value)"></div>'+
+    '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+tt.journal+'</label><input type="text" value="'+esc(d.journal)+'" oninput="updateLibField(\'journal\',this.value)"></div>'+
+    '<div><label style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500">'+tt.year+'</label><input type="text" value="'+esc(d.year)+'" oninput="updateLibField(\'year\',this.value)"></div>'+
     '</div>'+
     '<div class="field-block"><label>'+tt.authors+'</label><input type="text" value="'+esc(d.authors)+'" oninput="updateLibField(\'authors\',this.value)"></div>'+
     '<div class="field-block"><label>'+tt.pmid+'</label><input type="text" value="'+esc(d.pmid)+'" oninput="updateLibField(\'pmid\',this.value)"></div>'+
@@ -1056,9 +945,9 @@ function renderRssPanel(){
           '<div class="idea-meta">'+t('rss').requester+': '+esc(r.requesterEmail)+' \u00b7 '+dLabel+'</div></div>'+
           '<span class="badge '+(r.status==='fulfilled'?'b-accepted':'b-pending')+'">'+(r.status==='fulfilled'?t('rss').fulfilled:t('rss').pending)+'</span></div>'+
           '<div style="padding:0 1.25rem 1.25rem">'+
-          (r.articleLink ? '<div class="field-block"><label>'+t('rss').article+'</label><div class="val"><a href="'+esc(r.articleLink)+'" target="_blank" rel="noopener">'+esc(r.articleLink)+'</a></div></div>' : '')+
+          (r.articleLink ? '<div class="field-block"><label>'+t('rss').article+'</label><div class="val"><a class="link-btn" href="'+esc(r.articleLink)+'" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> '+esc(linkLabel(r.articleLink))+'</a></div></div>' : '')+
           (r.notes ? '<div class="field-block"><label>'+t('rss').note+'</label><div class="val">'+esc(r.notes)+'</div></div>' : '')+
-          (r.pdfLink ? '<div class="field-block"><label>'+t('rss').pdfLinkOn+'</label><div class="val"><a href="'+esc(r.pdfLink)+'" target="_blank" rel="noopener">'+esc(r.pdfLink)+'</a></div></div>' : '')+
+          (r.pdfLink ? '<div class="field-block"><label>'+t('rss').pdfLinkOn+'</label><div class="val"><a class="link-btn" href="'+esc(r.pdfLink)+'" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> '+esc(linkLabel(r.pdfLink))+'</a></div></div>' : '')+
           (fulfillDraft && fulfillDraft.id === r.id ? fulfillFormMarkup(r) :
             '<div class="idea-actions"><button class="btn btn-sm" onclick="'+(r.status==='fulfilled'?'reopenRequest(\''+r.id+'\')':'openFulfillForm(\''+r.id+'\')')+'"><i class="ti ti-check"></i> '+(r.status==='fulfilled'?t('rss').markPending:t('rss').markFulfilled)+'</button></div>')+
           '</div></div>';
@@ -1204,16 +1093,16 @@ window.selectArea = selectArea;
 /* ---- PhD activities (owner overview, no PIN needed per student) ---- */
 function phdStatusBadge(v){
   const map = {
-    to_start:'<span class="badge b-todo" style="background:var(--blue-bg);color:var(--blue-tx)">To start</span>',
-    ongoing:'<span class="badge" style="background:var(--amber-bg);color:var(--amber-tx)">Ongoing</span>',
+    to_start:'<span class="badge" style="background:var(--grey-bg);color:var(--grey-tx)">To start</span>',
+    ongoing:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Ongoing</span>',
     done:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Done</span>',
     blocked:'<span class="badge" style="background:var(--coral-bg);color:var(--coral-tx)">Blocked</span>',
-    not_submitted:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Not submitted</span>',
-    submitted:'<span class="badge" style="background:var(--purple-bg);color:var(--purple-tx)">Submitted</span>',
-    under_review:'<span class="badge" style="background:var(--teal-bg);color:var(--teal-tx)">Under review</span>',
+    not_submitted:'<span class="badge" style="background:var(--grey-bg);color:var(--grey-tx)">Not submitted</span>',
+    submitted:'<span class="badge" style="background:var(--amber-bg);color:var(--amber-tx)">Submitted</span>',
+    under_review:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Under review</span>',
     published:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Published</span>',
-    not_started:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">Not started</span>',
-    in_progress:'<span class="badge" style="background:var(--amber-bg);color:var(--amber-tx)">In progress</span>',
+    not_started:'<span class="badge" style="background:var(--grey-bg);color:var(--grey-tx)">Not started</span>',
+    in_progress:'<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx)">In progress</span>',
     completed:'<span class="badge" style="background:var(--green-bg);color:var(--green-tx)">Completed</span>'
   };
   return map[v] || v;
@@ -1250,8 +1139,8 @@ function abstractsMarkup(){
   const list = allAbstracts();
   if (!list.length) return '<div class="empty"><i class="ti ti-microphone-off" style="font-size:26px"></i><div style="margin-top:8px">'+t('phdT').noAbstracts+'</div></div>';
   return list.map(function(p){
-    return '<div class="pres-item" style="border-bottom:0.5px solid var(--border);padding:10px 0;display:flex;gap:10px;align-items:flex-start">'+
-      '<span class="badge" style="background:var(--blue-bg);color:var(--blue-tx);flex-shrink:0">'+esc(p.year||'')+'</span>'+
+    return '<div class="pres-item" style="border-bottom:1px solid var(--border);padding:10px 0;display:flex;gap:10px;align-items:flex-start">'+
+      '<span class="badge" style="background:var(--surface2);color:var(--text2);flex-shrink:0">'+esc(p.year||'')+'</span>'+
       '<div style="flex:1;min-width:0">'+
       '<div style="font-size:13px;font-weight:600">'+esc(p.congress)+'</div>'+
       (p.description ? '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+esc(p.description)+'</div>' : '')+
@@ -1273,7 +1162,7 @@ function phdStudyMarkup(s){
     '</div></div>'+
     '<div style="padding:0 1.25rem 1.25rem">'+
     (s.objectives ? '<div class="field-block"><label>Objectives</label><div class="val">'+esc(s.objectives)+'</div></div>' : '')+
-    (ds.link ? '<div class="field-block"><label>Dataset</label><div class="val"><a href="'+esc(ds.link)+'" target="_blank" rel="noopener">'+esc(ds.name||'Dataset')+'</a></div></div>' : '')+
+    (ds.link ? '<div class="field-block"><label>Dataset</label><div class="val"><a class="link-btn" href="'+esc(ds.link)+'" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> '+esc(ds.name||linkLabel(ds.link))+'</a></div></div>' : '')+
     '<div class="field-block"><label>Data collection</label><div class="val">'+phdStatusBadge((s.dataCollection||{}).status||'to_start')+(s.dataCollection&&s.dataCollection.notes?' \u2014 '+esc(s.dataCollection.notes):'')+'</div></div>'+
     '<div class="field-block"><label>Data analysis</label><div class="val">'+phdStatusBadge((s.dataAnalysis||{}).status||'to_start')+(s.dataAnalysis&&s.dataAnalysis.notes?' \u2014 '+esc(s.dataAnalysis.notes):'')+'</div></div>'+
     '<div class="field-block"><label>Paper writing</label><div class="val">'+phdStatusBadge((s.paperWriting||{}).status||'not_started')+' \u00b7 '+pp+'/4 sections</div></div>'+
@@ -1300,7 +1189,7 @@ function renderPhdPanel(){
     el.innerHTML = tabsHtml + '<div class="sub" style="margin-bottom:1rem;font-weight:600;color:var(--text)">'+t('phdT').studentsTitle+'</div>'+
       '<div class="area-grid">'+PHD_STUDENTS.map(function(st){
         return '<div class="area-card" onclick="selectPhdStudent(\''+st.id+'\')">'+
-          '<div class="area-icon" style="background:var(--blue-bg);color:var(--blue-tx)"><i class="ti ti-user"></i></div>'+
+          '<div class="area-icon" style="background:var(--accent-soft);color:var(--accent)"><i class="ti ti-user"></i></div>'+
           '<div class="area-nm">'+esc(st.name)+'</div>'+
           '<div class="area-st">'+esc(st.place)+'</div></div>';
       }).join('')+'</div>';
@@ -1327,610 +1216,6 @@ function renderPhdPanel(){
 }
 
 window.setPhdView = setPhdView;
-
-/* ---- 1:1 Notes ---- */
-function newNoteDraft(){ return { id:null, person:'', date:new Date().toISOString().slice(0,10), notes:'' }; }
-function openNewNote(){ notesEditing = newNoteDraft(); renderNotesPanel(); }
-function openEditNote(id){
-  const n = notesEntries.find(function(x){ return x.id === id; });
-  if (!n) return;
-  notesEditing = { id: n.id, person: n.person, date: n.date, notes: n.notes };
-  renderNotesPanel();
-}
-function cancelNoteEdit(){ notesEditing = null; renderNotesPanel(); }
-function updateNoteField(field, val){ if (notesEditing) notesEditing[field] = val; }
-function confirmSaveNote(){
-  if (!notesEditing || !notesEditing.person || !notesEditing.notes) return;
-  const payload = { person: notesEditing.person, date: notesEditing.date, notes: notesEditing.notes };
-  if (window.saveNoteEntry) window.saveNoteEntry(notesEditing.id, payload);
-  notesEditing = null;
-}
-function confirmDeleteNote(id){ if (window.deleteNoteEntry) window.deleteNoteEntry(id); }
-
-function noteEditorMarkup(){
-  const tt = t('notesT');
-  const d = notesEditing;
-  return '<div class="card">'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.person+'</label><input type="text" value="'+esc(d.person)+'" oninput="updateNoteField(\'person\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.date+'</label><input type="date" value="'+esc(d.date)+'" onchange="updateNoteField(\'date\',this.value)"></div>'+
-    '</div>'+
-    '<div class="field-block"><label>'+tt.notes+'</label><textarea rows="6" oninput="updateNoteField(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
-    '<div class="idea-actions">'+
-    '<button class="btn btn-sm btn-primary" onclick="confirmSaveNote()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
-    '<button class="btn btn-sm" onclick="cancelNoteEdit()">'+tt.cancel+'</button>'+
-    '</div></div>';
-}
-
-function notesListMarkup(){
-  const tt = t('notesT');
-  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
-    '<button class="btn btn-sm btn-primary" onclick="openNewNote()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
-  if (!notesEntries.length) return header + '<div class="empty"><i class="ti ti-notebook" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
-  return header + notesEntries.map(function(n){
-    const dLabel = n.date ? new Date(n.date+'T00:00:00').toLocaleDateString(I18N[lang].locale,{day:'numeric',month:'short',year:'numeric'}) : '';
-    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
-      '<div class="idea-title">'+esc(n.person)+'</div>'+
-      '<div class="idea-meta">'+dLabel+'</div></div></div>'+
-      '<div style="padding:0 1.25rem 1.25rem">'+
-      '<div class="val" style="white-space:pre-wrap;font-size:13px;color:var(--text2)">'+esc(n.notes)+'</div>'+
-      '<div class="idea-actions" style="margin-top:1rem">'+
-      '<button class="btn btn-sm" onclick="openEditNote(\''+n.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
-      '<button class="btn btn-sm btn-red" onclick="confirmDeleteNote(\''+n.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
-      '</div></div></div>';
-  }).join('');
-}
-
-function renderNotesPanel(){
-  const el = document.getElementById('panel-notes');
-  if (!el) return;
-  if (notesFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
-  if (!notesReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
-  el.innerHTML = notesEditing ? noteEditorMarkup() : notesListMarkup();
-}
-
-/* ---- Research drafts ---- */
-function newDraftDraft(){ return { id:null, title:'', content:'' }; }
-function openNewDraft(){ draftsEditing = newDraftDraft(); renderDraftsPanel(); }
-function openEditDraft(id){
-  const d0 = draftsEntries.find(function(x){ return x.id === id; });
-  if (!d0) return;
-  draftsEditing = { id: d0.id, title: d0.title, content: d0.content };
-  renderDraftsPanel();
-}
-function cancelDraftEdit(){ draftsEditing = null; renderDraftsPanel(); }
-function updateDraftField(field, val){ if (draftsEditing) draftsEditing[field] = val; }
-function confirmSaveDraft(){
-  if (!draftsEditing || !draftsEditing.title) return;
-  const payload = { title: draftsEditing.title, content: draftsEditing.content };
-  if (window.saveDraftEntry) window.saveDraftEntry(draftsEditing.id, payload);
-  draftsEditing = null;
-}
-function confirmDeleteDraft(id){ if (window.deleteDraftEntry) window.deleteDraftEntry(id); }
-
-function draftEditorMarkup(){
-  const tt = t('draftsT');
-  const d = draftsEditing;
-  return '<div class="card">'+
-    '<div class="field-block"><label>'+tt.title+'</label><input type="text" value="'+esc(d.title)+'" oninput="updateDraftField(\'title\',this.value)"></div>'+
-    '<div class="field-block"><label>'+tt.content+'</label><textarea rows="8" oninput="updateDraftField(\'content\',this.value)">'+esc(d.content)+'</textarea></div>'+
-    '<div class="idea-actions">'+
-    '<button class="btn btn-sm btn-primary" onclick="confirmSaveDraft()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
-    '<button class="btn btn-sm" onclick="cancelDraftEdit()">'+tt.cancel+'</button>'+
-    '</div></div>';
-}
-
-function draftsListMarkup(){
-  const tt = t('draftsT');
-  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
-    '<button class="btn btn-sm btn-primary" onclick="openNewDraft()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
-  if (!draftsEntries.length) return header + '<div class="empty"><i class="ti ti-bulb" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
-  return header + draftsEntries.map(function(d){
-    const snippet = (d.content || '').slice(0, 160);
-    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
-      '<div class="idea-title">'+esc(d.title)+'</div>'+
-      '</div></div>'+
-      '<div style="padding:0 1.25rem 1.25rem">'+
-      (snippet ? '<div class="val" style="white-space:pre-wrap;font-size:13px;color:var(--text2)">'+esc(snippet)+(d.content && d.content.length>160?'...':'')+'</div>' : '')+
-      '<div class="idea-actions" style="margin-top:1rem">'+
-      '<button class="btn btn-sm" onclick="openEditDraft(\''+d.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
-      '<button class="btn btn-sm btn-red" onclick="confirmDeleteDraft(\''+d.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
-      '</div></div></div>';
-  }).join('');
-}
-
-function renderDraftsPanel(){
-  const el = document.getElementById('panel-drafts');
-  if (!el) return;
-  if (draftsFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
-  if (!draftsReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
-  el.innerHTML = draftsEditing ? draftEditorMarkup() : draftsListMarkup();
-}
-
-window.openNewNote = openNewNote;
-window.openEditNote = openEditNote;
-window.cancelNoteEdit = cancelNoteEdit;
-window.updateNoteField = updateNoteField;
-window.confirmSaveNote = confirmSaveNote;
-window.confirmDeleteNote = confirmDeleteNote;
-window.onNotesUpdated = function(data){ notesEntries = data; notesReady = true; renderNotesPanel(); };
-window.onNotesFailed = function(){ notesFailed = true; renderNotesPanel(); };
-
-window.openNewDraft = openNewDraft;
-window.openEditDraft = openEditDraft;
-window.cancelDraftEdit = cancelDraftEdit;
-window.updateDraftField = updateDraftField;
-window.confirmSaveDraft = confirmSaveDraft;
-window.confirmDeleteDraft = confirmDeleteDraft;
-window.onDraftsUpdated = function(data){ draftsEntries = data; draftsReady = true; renderDraftsPanel(); };
-window.onDraftsFailed = function(){ draftsFailed = true; renderDraftsPanel(); };
-
-/* ---- Quiz questions ---- */
-const QUIZ_SEED_BANK = [
-  { week:1, question:'What is the main purpose of a control group in an experiment?', options:['To make the study look more scientific','To provide a baseline for comparison against the intervention','To increase the sample size','To reduce the cost of the study'], correctIndex:1 },
-  { week:1, question:'Which study design provides the strongest evidence of causation?', options:['Case report','Cross-sectional study','Randomized controlled trial','Expert opinion'], correctIndex:2 },
-  { week:1, question:'A cross-sectional study collects data at:', options:['Multiple time points over years','A single point in time','Only during an intervention','Only after the outcome occurs'], correctIndex:1 },
-  { week:1, question:'What distinguishes a cohort study from a case-control study?', options:['Cohort studies start with exposure and follow forward; case-control starts with outcome and looks back','They are identical designs','Case-control studies are always randomized','Cohort studies never have a control group'], correctIndex:0 },
-  { week:1, question:'Which of these is an observational (non-experimental) design?', options:['Randomized controlled trial','Crossover trial','Prospective cohort study','Double-blind trial'], correctIndex:2 },
-  { week:2, question:'A p-value of 0.03 means:', options:['There is a 3% chance the null hypothesis is true','There is a 3% probability of observing this result (or more extreme) if the null hypothesis were true','The effect size is 3%','The study has a 97% chance of being replicated'], correctIndex:1 },
-  { week:2, question:'What does a 95% confidence interval represent?', options:['95% of individual data points fall in this range','We are 95% confident the sample mean is correct','If we repeated the study many times, 95% of such intervals would contain the true value','The margin of error is always 5%'], correctIndex:2 },
-  { week:2, question:'Which measure of central tendency is most affected by outliers?', options:['Median','Mode','Mean','Range'], correctIndex:2 },
-  { week:2, question:'Standard deviation describes:', options:['The average value of a dataset','The spread of data around the mean','The number of data points','The correlation between two variables'], correctIndex:1 },
-  { week:2, question:'What is statistical power?', options:['The probability of correctly rejecting a false null hypothesis','The probability of a Type I error','The sample size needed for significance','The strength of the correlation'], correctIndex:0 },
-  { week:3, question:'Selection bias occurs when:', options:['Participants are randomly assigned to groups','The sample is not representative of the target population','The study uses a control group','Data is collected prospectively'], correctIndex:1 },
-  { week:3, question:'A confounding variable is one that:', options:['Has no relationship to the outcome','Is related to both the exposure and the outcome, distorting the association','Only affects the control group','Is always measured directly'], correctIndex:1 },
-  { week:3, question:'Recall bias is most likely to affect which study design?', options:['Randomized controlled trial','Retrospective case-control study','Prospective cohort study','Cross-sectional survey with objective measures'], correctIndex:1 },
-  { week:3, question:'Blinding in a trial is used primarily to reduce:', options:['Sample size requirements','Performance and detection bias','The cost of the study','Statistical power'], correctIndex:1 },
-  { week:3, question:'Publication bias refers to the tendency for:', options:['Negative results to be published more often','Studies with significant/positive results to be more likely published','All studies to be published equally','Journals to reject all studies'], correctIndex:1 },
-  { week:4, question:'VO2max measures:', options:['Maximum heart rate','Maximum rate of oxygen consumption during exercise','Total lung capacity','Muscle glycogen stores'], correctIndex:1 },
-  { week:4, question:'GPS units in team sports are primarily used to quantify:', options:['Player nutrition','External training/match load (distance, speed, accelerations)','Internal psychological state','Match officiating decisions'], correctIndex:1 },
-  { week:4, question:'\'Internal load\' in training monitoring refers to:', options:['The physiological/psychological response to external load (e.g. heart rate, RPE)','The distance covered by a player','The number of matches played','The weight of the training equipment'], correctIndex:0 },
-  { week:4, question:'RPE stands for:', options:['Rate of Physical Endurance','Rating of Perceived Exertion','Repeated Power Effort','Recovery Performance Evaluation'], correctIndex:1 },
-  { week:4, question:'Which tool is commonly used to assess countermovement jump performance?', options:['Force platform / jump mat','GPS unit','Heart rate monitor only','Skinfold calipers'], correctIndex:0 },
-  { week:5, question:'A simple random sample means:', options:['Every member of the population has an equal chance of selection','Only convenient participants are chosen','Participants choose whether to join','Only the first respondents are included'], correctIndex:0 },
-  { week:5, question:'Convenience sampling is a concern because it may:', options:['Guarantee representativeness','Introduce selection bias, limiting generalizability','Always increase statistical power','Eliminate confounding'], correctIndex:1 },
-  { week:5, question:'Stratified sampling is useful when:', options:['The population has no subgroups','You want to ensure subgroups are proportionally represented','Randomization is not possible at all','Sample size does not matter'], correctIndex:1 },
-  { week:5, question:'What is a Type II error?', options:['Rejecting a true null hypothesis','Failing to reject a false null hypothesis','Selecting the wrong statistical test','Sampling too many participants'], correctIndex:1 },
-  { week:5, question:'Why is sample size calculation important before a study?', options:['It guarantees significant results','It ensures the study has adequate power to detect a real effect','It removes the need for a control group','It is only relevant for qualitative research'], correctIndex:1 },
-  { week:6, question:'Statistical significance tells us:', options:['The result is practically important','The result is unlikely to be due to chance alone, given the null hypothesis','The effect is large','The study was well designed'], correctIndex:1 },
-  { week:6, question:'Effect size is important because it:', options:['Replaces the need for a p-value entirely','Quantifies the magnitude of a finding, independent of sample size','Is only used in qualitative research','Always equals the correlation coefficient'], correctIndex:1 },
-  { week:6, question:'Cohen\'s d is a common effect size measure for:', options:['Categorical associations','The difference between two means, in standard deviation units','Sample size adequacy','Inter-rater reliability'], correctIndex:1 },
-  { week:6, question:'A statistically significant result with a very small effect size suggests:', options:['The finding is clinically important','The finding may have limited practical relevance despite significance','The study had insufficient power','The result is definitely false'], correctIndex:1 },
-  { week:6, question:'Why can very large sample sizes produce statistically significant but trivial findings?', options:['Large samples always contain errors','Small p-values can arise from tiny effects when power is very high','Large samples reduce effect sizes','Statistical tests behave differently above 1000 participants'], correctIndex:1 },
-  { week:7, question:'Reliability refers to:', options:['Whether a measure assesses what it claims to measure','The consistency/reproducibility of a measurement','The statistical significance of results','The sample size of a study'], correctIndex:1 },
-  { week:7, question:'Validity refers to:', options:['The consistency of repeated measurements','Whether a test truly measures the construct it intends to measure','The number of participants','The speed of data collection'], correctIndex:1 },
-  { week:7, question:'Test-retest reliability assesses:', options:['Agreement between two different raters','Consistency of results when the same test is repeated over time','Whether the test is valid','The internal structure of a questionnaire'], correctIndex:1 },
-  { week:7, question:'Inter-rater reliability is especially important when:', options:['Data collection involves subjective judgment by observers','Data is collected automatically by sensors','Only one researcher collects all the data','The study has no human assessment involved'], correctIndex:0 },
-  { week:7, question:'Construct validity concerns:', options:['Whether a tool measures the theoretical concept it is intended to measure','The cost of a research instrument','Sample size requirements','Statistical power'], correctIndex:0 },
-  { week:8, question:'Injury incidence in sports is typically expressed as:', options:['Injuries per 1000 hours of exposure','Total injuries only','Percentage of games won','Average player age'], correctIndex:0 },
-  { week:8, question:'A non-contact injury is one that:', options:['Involves a collision with another player','Occurs without direct physical contact from another player or object','Only happens during training','Always requires surgery'], correctIndex:1 },
-  { week:8, question:'Which factor is commonly studied as a modifiable injury risk factor?', options:['Player\'s date of birth','Training load management','Team\'s league ranking','Stadium capacity'], correctIndex:1 },
-  { week:8, question:'The \'acute:chronic workload ratio\' is used to:', options:['Measure match attendance','Estimate injury risk based on recent vs longer-term training load','Calculate ticket prices','Assess nutrition intake'], correctIndex:1 },
-  { week:8, question:'Retrospective injury studies commonly face which limitation?', options:['Perfect data completeness','Recall and reporting bias','Absence of any bias','Guaranteed causation'], correctIndex:1 },
-  { week:9, question:'Periodization in training refers to:', options:['Random variation of training with no plan','Systematic planning of training phases to optimize performance and manage fatigue','Only increasing training volume constantly','A method to reduce team size'], correctIndex:1 },
-  { week:9, question:'Overreaching, if not managed, may progress to:', options:['Improved long-term performance automatically','Overtraining syndrome','Increased VO2max instantly','Better sleep quality only'], correctIndex:1 },
-  { week:9, question:'Monitoring training load helps practitioners primarily to:', options:['Reduce injury risk and optimize performance adaptations','Determine ticket prices','Select the team captain','Choose the kit color'], correctIndex:0 },
-  { week:9, question:'A taper before competition typically involves:', options:['A sharp increase in training volume','A planned reduction in training load while maintaining intensity','Complete cessation of all activity','Doubling match frequency'], correctIndex:1 },
-  { week:9, question:'Which is an example of an \'external load\' metric?', options:['Heart rate variability','Total distance covered','Session RPE','Blood lactate concentration'], correctIndex:1 },
-  { week:10, question:'A systematic review differs from a narrative review because it:', options:['Uses a predefined, reproducible search and selection methodology','Only summarizes the author\'s opinion','Never includes a methods section','Cannot include statistical analysis'], correctIndex:0 },
-  { week:10, question:'Meta-analysis is a statistical method used to:', options:['Design a new randomized trial','Combine results from multiple studies to estimate an overall effect','Replace the need for original research entirely','Only assess qualitative data'], correctIndex:1 },
-  { week:10, question:'Heterogeneity in a meta-analysis refers to:', options:['The uniformity of results across included studies','The variability in results/methods across the included studies','The number of authors in a paper','The countries where studies were performed'], correctIndex:1 },
-  { week:10, question:'PRISMA guidelines are used to:', options:['Report systematic reviews and meta-analyses transparently','Design laboratory experiments','Calculate VO2max','Recruit trial participants'], correctIndex:0 },
-  { week:10, question:'Funnel plots in meta-analysis are used to detect:', options:['Sample size errors','Potential publication bias','Statistical power','Effect size units'], correctIndex:1 },
-  { week:11, question:'Qualitative research is primarily concerned with:', options:['Numerical measurement and statistical testing','Understanding experiences, meanings, and perspectives','Randomized experimental control','Calculating p-values'], correctIndex:1 },
-  { week:11, question:'A common qualitative data collection method is:', options:['Semi-structured interviews','Randomized controlled trials','Meta-analysis','Power calculations'], correctIndex:0 },
-  { week:11, question:'Thematic analysis is used to:', options:['Calculate statistical significance','Identify patterns/themes within qualitative data','Design a sampling frame','Measure VO2max'], correctIndex:1 },
-  { week:11, question:'Mixed-methods research combines:', options:['Two quantitative designs only','Qualitative and quantitative approaches within one study','Only historical data','Only laboratory experiments'], correctIndex:1 },
-  { week:11, question:'Triangulation in qualitative research refers to:', options:['Using multiple data sources or methods to strengthen credibility of findings','A three-group experimental design','A statistical test for normality','Recruiting exactly three participants'], correctIndex:0 },
-  { week:12, question:'Informed consent requires that participants:', options:['Are not told the purpose of the study','Voluntarily agree to participate after understanding the study\'s purpose, risks, and benefits','Are paid for participation','Sign a waiver of all rights'], correctIndex:1 },
-  { week:12, question:'An Institutional Review Board (IRB) / Ethics Committee primarily exists to:', options:['Approve funding for research','Protect the rights and welfare of research participants','Select which journals to publish in','Design the statistical analysis'], correctIndex:1 },
-  { week:12, question:'Confidentiality in research means:', options:['Data is shared publicly immediately','Participant identity and data are protected from unauthorized disclosure','Results are kept secret from other researchers forever','Only the funder can see the data'], correctIndex:1 },
-  { week:12, question:'Which is considered a conflict of interest in research?', options:['A researcher having no financial ties to the study sponsor','A researcher\'s funding source could bias interpretation of results','Publishing in a peer-reviewed journal','Using a control group'], correctIndex:1 },
-  { week:12, question:'Research misconduct includes:', options:['Fabrication, falsification, and plagiarism','Peer review','Replication studies','Preregistration'], correctIndex:0 },
-  { week:13, question:'The FAIR data principles stand for:', options:['Findable, Accessible, Interoperable, Reusable','Fast, Accurate, Independent, Reliable','Formatted, Analyzed, Indexed, Reported','Filed, Archived, Inspected, Released'], correctIndex:0 },
-  { week:13, question:'A data management plan typically outlines:', options:['How data will be collected, stored, shared, and preserved','Only the study\'s budget','The journal for submission','The participant recruitment poster'], correctIndex:0 },
-  { week:13, question:'Anonymization of data means:', options:['Removing identifying information so individuals cannot be identified','Encrypting data with a password only the researcher knows','Publishing raw data with names included','Deleting all data after the study'], correctIndex:0 },
-  { week:13, question:'Version control in research data is important to:', options:['Track changes and avoid confusion between dataset versions','Increase sample size','Improve statistical power','Reduce the need for ethics approval'], correctIndex:0 },
-  { week:13, question:'Open data sharing can benefit research by:', options:['Preventing any reuse of data','Enabling verification and further analysis by other researchers','Guaranteeing no errors exist','Replacing the need for ethics approval'], correctIndex:1 },
-  { week:14, question:'The main purpose of peer review is to:', options:['Guarantee a paper is completely correct','Provide expert evaluation of a manuscript\'s quality and validity before publication','Determine authorship order','Set the journal\'s subscription price'], correctIndex:1 },
-  { week:14, question:'A preprint is:', options:['A final, peer-reviewed published article','A manuscript shared publicly before or during peer review','A grant application','A conference poster only'], correctIndex:1 },
-  { week:14, question:'Impact factor of a journal reflects:', options:['The average number of citations to recent articles in that journal','The number of pages in the journal','The number of authors per article','The cost of open access publishing'], correctIndex:0 },
-  { week:14, question:'Predatory journals are characterized by:', options:['Rigorous peer review and no fees','Charging fees while providing little to no genuine peer review','Being indexed exclusively in top databases','Publishing only systematic reviews'], correctIndex:1 },
-  { week:14, question:'Authorship criteria (e.g. ICMJE) typically require:', options:['Only financial contribution to the study','Substantial contribution to the work and approval of the final manuscript','Being the lab director regardless of contribution','Being listed as a courtesy'], correctIndex:1 },
-  { week:15, question:'Correlation measures:', options:['Causation between two variables','The strength and direction of a linear relationship between two variables','The difference between group means','Sample size adequacy'], correctIndex:1 },
-  { week:15, question:'A correlation coefficient of -0.85 indicates:', options:['A strong negative linear relationship','No relationship','A weak positive relationship','An error in calculation'], correctIndex:0 },
-  { week:15, question:'\'Correlation does not imply causation\' means:', options:['Two correlated variables can never be related','An association does not prove one variable causes the other','Correlated variables are always confounded','Regression analysis is unnecessary'], correctIndex:1 },
-  { week:15, question:'In linear regression, the R-squared value represents:', options:['The proportion of variance in the outcome explained by the predictor(s)','The sample size','The p-value of the model','The number of predictors'], correctIndex:0 },
-  { week:15, question:'Multicollinearity in regression refers to:', options:['High correlation among predictor variables, complicating interpretation','A perfectly designed experiment','The absence of any relationship','A type of qualitative analysis'], correctIndex:0 },
-  { week:16, question:'The null hypothesis typically states that:', options:['There is a significant effect or difference','There is no effect or no difference','The sample size is too small','The study design is flawed'], correctIndex:1 },
-  { week:16, question:'An alpha level of 0.05 means:', options:['We accept a 5% risk of a Type I error','We accept a 5% risk of a Type II error','The effect size must be 5%','Power must be 5%'], correctIndex:0 },
-  { week:16, question:'A one-tailed test is appropriate when:', options:['The researcher has a specific directional hypothesis','Direction of effect is never specified in advance','Two groups are being compared without any hypothesis','Sample size is very small only'], correctIndex:0 },
-  { week:16, question:'Multiple comparisons without correction increase the risk of:', options:['Type II errors only','Type I errors (false positives)','Larger effect sizes','Higher statistical power'], correctIndex:1 },
-  { week:16, question:'A paired t-test is used when:', options:['Comparing two independent, unrelated groups','Comparing two related measurements from the same subjects (e.g. pre/post)','Comparing more than two groups','No numerical data exists'], correctIndex:1 },
-  { week:17, question:'3D motion capture is commonly used in sports research to:', options:['Measure blood biomarkers','Quantify joint angles and movement patterns','Assess psychological state','Record match attendance'], correctIndex:1 },
-  { week:17, question:'Force plates are primarily used to measure:', options:['Ground reaction forces','Heart rate','Oxygen consumption','Sleep quality'], correctIndex:0 },
-  { week:17, question:'Electromyography (EMG) measures:', options:['Electrical activity of muscles','Bone density','Cardiac output','Lung volume'], correctIndex:0 },
-  { week:17, question:'Kinematics in biomechanics refers to:', options:['The forces causing movement','The description of motion without regard to forces','Only muscular activation patterns','Psychological readiness'], correctIndex:1 },
-  { week:17, question:'Kinetics in biomechanics refers to:', options:['The study of motion patterns only','The forces that cause or result from movement','Heart rate monitoring','Recovery strategies'], correctIndex:1 },
-  { week:18, question:'A Likert scale is commonly used to:', options:['Measure exact physiological values','Capture attitudes or perceptions along an ordered scale','Randomize participants','Replace statistical testing'], correctIndex:1 },
-  { week:18, question:'Face validity of a questionnaire refers to:', options:['Whether it appears, on the surface, to measure what it intends to','Statistical reliability coefficients','Sample size adequacy','Randomization procedures'], correctIndex:0 },
-  { week:18, question:'A pilot study before a main survey helps to:', options:['Guarantee significant results','Identify and fix issues with the questionnaire or procedure beforehand','Replace the need for ethics approval','Increase the budget automatically'], correctIndex:1 },
-  { week:18, question:'Response bias in surveys can occur when:', options:['Participants answer in a way they think is socially desirable rather than truthful','All responses are anonymous','The sample size is very large','Questions are validated'], correctIndex:0 },
-  { week:18, question:'Internal consistency of a questionnaire is often measured using:', options:['Cronbach\'s alpha','VO2max','GPS distance','Force plate data'], correctIndex:0 },
-  { week:19, question:'Overfitting in a machine learning model means:', options:['The model generalizes well to new, unseen data','The model performs well on training data but poorly on new data','The model has too few parameters','The model cannot be trained at all'], correctIndex:1 },
-  { week:19, question:'A common use of machine learning in sports science is:', options:['Predicting injury risk from training load and biomechanical data','Manually scoring a Likert scale','Replacing peer review','Random group assignment'], correctIndex:0 },
-  { week:19, question:'Cross-validation is used to:', options:['Increase the sample size artificially','Assess how well a model generalizes to independent data','Eliminate the need for a test set','Guarantee zero error'], correctIndex:1 },
-  { week:19, question:'A \'black box\' model in machine learning refers to one that:', options:['Is fully interpretable at every step','Produces predictions without easily interpretable internal logic','Cannot make any predictions','Only works with small datasets'], correctIndex:1 },
-  { week:19, question:'Feature selection in predictive modelling refers to:', options:['Choosing which input variables to include in a model','Selecting which journal to publish in','Randomizing participants','Blinding assessors'], correctIndex:0 },
-  { week:20, question:'In a case-control study, participants are selected based on:', options:['Their exposure status','Whether they have the outcome (cases) or not (controls)','Random sampling from the general population only','Their willingness to be randomized'], correctIndex:1 },
-  { week:20, question:'Odds ratio is the typical effect measure reported in:', options:['Randomized controlled trials only','Case-control studies','Cross-sectional surveys only','Systematic reviews only'], correctIndex:1 },
-  { week:20, question:'Relative risk (risk ratio) is more naturally calculated in:', options:['Case-control studies','Prospective cohort studies','Retrospective chart reviews only','Qualitative interviews'], correctIndex:1 },
-  { week:20, question:'A key advantage of prospective cohort studies is:', options:['Lower cost than any other design','Temporal sequence between exposure and outcome is clearer','They are always faster than case-control studies','They eliminate all confounding automatically'], correctIndex:1 },
-  { week:20, question:'Loss to follow-up is a particular concern in:', options:['Cross-sectional studies','Longitudinal cohort studies','Case reports','Meta-analyses'], correctIndex:1 },
-  { week:21, question:'A strong grant proposal typically includes:', options:['A vague aim with no methodology','Clear aims, significance, and a detailed methodology','Only a budget with no scientific rationale','A guarantee of positive results'], correctIndex:1 },
-  { week:21, question:'Dissemination of research findings can include:', options:['Conference presentations and peer-reviewed publications only','Never sharing results publicly','Keeping data solely within the lab','Avoiding any stakeholder communication'], correctIndex:0 },
-  { week:21, question:'Altmetrics measure:', options:['Traditional citation counts only','Online attention to research (e.g. social media, news mentions)','Sample size adequacy','Statistical power'], correctIndex:1 },
-  { week:21, question:'A logic model in a grant proposal helps to:', options:['Illustrate how inputs and activities are expected to lead to outcomes','Calculate p-values','Replace the literature review','Determine journal impact factor'], correctIndex:0 },
-  { week:21, question:'Knowledge translation refers to:', options:['Converting research findings into practical applications for end-users','Translating a paper into another language only','A statistical test','A type of sampling method'], correctIndex:0 },
-  { week:22, question:'Missing data in a dataset can be handled by methods such as:', options:['Ignoring the problem entirely','Multiple imputation or complete case analysis, depending on context','Always deleting the entire dataset','Randomly duplicating existing rows'], correctIndex:1 },
-  { week:22, question:'An outlier in a dataset is:', options:['Always an error that must be deleted','A data point that differs markedly from other observations, which may or may not be an error','Impossible to identify statistically','Only relevant in qualitative research'], correctIndex:1 },
-  { week:22, question:'Data cleaning typically involves:', options:['Identifying and correcting errors, inconsistencies, and missing values','Deleting all data before analysis','Skipping the analysis stage','Publishing raw, unchecked data'], correctIndex:0 },
-  { week:22, question:'A codebook in a dataset serves to:', options:['Encrypt the data for security','Document variable names, definitions, and coding schemes','Replace the need for ethics approval','Determine sample size'], correctIndex:1 },
-  { week:22, question:'Data entry errors can be reduced by:', options:['Skipping double-checking entirely','Double data entry or validation checks','Avoiding any data checks','Only checking data after publication'], correctIndex:1 },
-  { week:23, question:'Session-RPE is calculated as:', options:['Heart rate multiplied by training duration','RPE score multiplied by session duration (minutes)','VO2max divided by body weight','Total distance covered in the session'], correctIndex:1 },
-  { week:23, question:'Heart rate variability (HRV) is often used to monitor:', options:['Muscle strength directly','Autonomic nervous system status and recovery','Match officiating decisions','Stadium temperature'], correctIndex:1 },
-  { week:23, question:'A \'red flag\' in athlete monitoring systems typically indicates:', options:['A player has scored a goal','A notable deviation in a monitored variable that may require attention','The end of a training session','A change in team kit color'], correctIndex:1 },
-  { week:23, question:'Wellness questionnaires in athlete monitoring typically assess:', options:['Only match statistics','Subjective indicators like sleep, fatigue, soreness, and mood','GPS accuracy','Weather conditions'], correctIndex:1 },
-  { week:23, question:'Why is individualized (rather than group-average) monitoring often recommended in athlete load management?', options:['Athletes respond differently to the same training load','All athletes respond identically to training','Group averages are always more accurate','Individual monitoring is prohibited by research ethics'], correctIndex:0 },
-  { week:24, question:'CONSORT guidelines are used for reporting:', options:['Randomized controlled trials','Systematic reviews','Qualitative studies','Case reports'], correctIndex:0 },
-  { week:24, question:'STROBE guidelines apply to reporting of:', options:['Randomized trials only','Observational studies (cohort, case-control, cross-sectional)','Meta-analyses only','Laboratory protocols only'], correctIndex:1 },
-  { week:24, question:'Preregistration of a study protocol helps to:', options:['Reduce selective outcome reporting and increase transparency','Guarantee significant findings','Replace peer review','Eliminate the need for ethics approval'], correctIndex:0 },
-  { week:24, question:'A CONSORT flow diagram typically shows:', options:['The journal\'s editorial process','Participant flow through enrollment, allocation, follow-up, and analysis','The funding sources of a study','The statistical software used'], correctIndex:1 },
-  { week:24, question:'Reporting guidelines (e.g. PRISMA, CONSORT, STROBE) primarily aim to:', options:['Make studies harder to publish','Improve completeness and transparency of research reporting','Replace statistical analysis','Reduce the need for a methods section'], correctIndex:1 },
-  { week:25, question:'Indirect calorimetry is used to estimate:', options:['Bone mineral density','Energy expenditure via oxygen consumption and carbon dioxide production','Muscle fiber type directly','Psychological stress'], correctIndex:1 },
-  { week:25, question:'Skinfold measurements are commonly used to estimate:', options:['Body fat percentage','Aerobic capacity','Reaction time','Cognitive load'], correctIndex:0 },
-  { week:25, question:'A double-blind nutrition trial means:', options:['Only the researcher knows the group allocation','Neither participants nor assessors know group allocation','Only participants know their group','No blinding is used at all'], correctIndex:1 },
-  { week:25, question:'Muscle biopsy in exercise physiology research is used to study:', options:['Match officiating decisions','Muscle fiber composition and metabolic adaptations','GPS accuracy','Team tactics'], correctIndex:1 },
-  { week:25, question:'A crossover trial design involves:', options:['Each participant receiving only one condition','Each participant receiving multiple conditions in sequence, acting as their own control','No control condition at all','Randomization is never used'], correctIndex:1 },
-  { week:26, question:'The relative age effect refers to:', options:['Athletes born earlier in the selection year having a developmental advantage','No difference based on birth month','A measure of muscle strength','A GPS metric'], correctIndex:0 },
-  { week:26, question:'Longitudinal studies in talent development are valuable because they:', options:['Only provide a single snapshot in time','Track changes and development over time in the same individuals','Cannot include physical testing','Are always retrospective'], correctIndex:1 },
-  { week:26, question:'A common critique of single-test talent identification batteries is that:', options:['They perfectly predict future success','Performance at a young age may not strongly predict long-term success','They require no statistical validation','They are universally standardized worldwide'], correctIndex:1 },
-  { week:26, question:'Maturation status in youth athletes can be estimated using:', options:['Skeletal age or predicted age at peak height velocity','Only chronological age','Team ranking','Match attendance'], correctIndex:0 },
-  { week:26, question:'Why is normative data important in fitness testing?', options:['It allows meaningful comparison of an individual\'s results to a reference population','It removes the need for reliability testing','It guarantees causation','It replaces informed consent'], correctIndex:0 },
-  { week:27, question:'A mixed-effects (multilevel) model is useful when:', options:['Data has no grouping structure','Data has a nested/hierarchical structure (e.g. players within teams)','Only one participant is studied','No repeated measures exist'], correctIndex:1 },
-  { week:27, question:'Bootstrapping is a statistical technique used to:', options:['Estimate the sampling distribution of a statistic via resampling','Randomize participants into groups','Replace the need for a hypothesis','Calculate VO2max'], correctIndex:0 },
-  { week:27, question:'Bayesian statistics differs from frequentist statistics mainly in that it:', options:['Never uses probability','Incorporates prior information/beliefs updated with new data','Cannot produce confidence intervals','Is only used in qualitative research'], correctIndex:1 },
-  { week:27, question:'An interaction effect in statistics means:', options:['Two variables have completely independent effects','The effect of one variable depends on the level of another variable','There is no relationship between variables','The sample size was too small'], correctIndex:1 },
-  { week:27, question:'Effect of small sample sizes on statistical estimates is typically to:', options:['Increase precision','Increase variability/uncertainty of estimates','Have no effect at all','Guarantee non-significance'], correctIndex:1 },
-  { week:28, question:'Translating research findings into real-world practice is often called:', options:['Knowledge translation or implementation science','Data cleaning','Peer review','Sampling'], correctIndex:0 },
-  { week:28, question:'A common barrier to implementing sports science research in practice is:', options:['Findings are always immediately applicable','Gap between research context and the complexity of real-world settings','Too much collaboration between researchers and practitioners','Excess funding for translation'], correctIndex:1 },
-  { week:28, question:'Action research is characterized by:', options:['A cyclical process of planning, acting, observing, and reflecting in practice','A purely theoretical, non-applied approach','The absence of any stakeholder involvement','Fixed, unchangeable protocols'], correctIndex:0 },
-  { week:28, question:'Co-design with practitioners in applied research helps to:', options:['Reduce the ecological validity of findings','Increase relevance and practical applicability of research questions','Eliminate the need for ethics review','Guarantee funding'], correctIndex:1 },
-  { week:28, question:'Ecological validity refers to:', options:['Statistical power of a study','The extent to which findings generalize to real-world settings','The number of variables measured','Sample randomization'], correctIndex:1 },
-  { week:29, question:'Interdisciplinary research in sports science often combines expertise from:', options:['Only physiology','Physiology, biomechanics, psychology, medicine, and data science, among others','A single discipline exclusively','No collaboration is needed'], correctIndex:1 },
-  { week:29, question:'A research mentor\'s role typically includes:', options:['Taking sole credit for all work','Guiding professional and methodological development of less experienced researchers','Avoiding any feedback','Preventing collaboration with other labs'], correctIndex:1 },
-  { week:29, question:'Why is replication important in science?', options:['It wastes resources with no benefit','It helps confirm whether findings are robust and reliable across contexts','It guarantees the original study was wrong','It is only relevant in qualitative research'], correctIndex:1 },
-  { week:29, question:'A registered report is a publication format where:', options:['The study is peer-reviewed and accepted based on its methodology before results are known','Only the abstract is reviewed','No peer review occurs','Results must be positive to be published'], correctIndex:0 },
-  { week:29, question:'Open science practices include:', options:['Hiding methods and data from other researchers','Sharing protocols, data, and materials openly where possible','Avoiding preregistration','Restricting all findings to internal use only'], correctIndex:1 },
-  { week:30, question:'Which best describes \'evidence-based practice\' in sports science?', options:['Relying solely on personal experience','Integrating best available research evidence with practitioner expertise and athlete context','Ignoring athlete preferences entirely','Using only anecdotal reports'], correctIndex:1 },
-  { week:30, question:'A key strength of triangulating quantitative and qualitative data in applied research is:', options:['It guarantees statistical significance','It provides a richer, more complete understanding of a phenomenon','It removes the need for ethics approval','It eliminates all bias'], correctIndex:1 },
-  { week:30, question:'Why should researchers preregister hypotheses before data collection?', options:['To reduce the risk of HARKing (Hypothesizing After Results are Known)','To make data collection faster','To increase the sample size automatically','To avoid needing a literature review'], correctIndex:0 },
-  { week:30, question:'A well-written research question should be:', options:['Vague and broad to cover more ground','Specific, feasible, and answerable with available methods','Impossible to test','Based only on personal opinion'], correctIndex:1 },
-  { week:30, question:'The ultimate goal of combining rigorous methodology with applied sports science practice is to:', options:['Publish as many papers as possible regardless of quality','Generate trustworthy findings that can meaningfully improve athlete health and performance','Avoid any practical application','Focus solely on theoretical modelling'], correctIndex:1 },
-];
-
-function newQuizDraft(){ return { id:null, question:'', options:['','','',''], correctIndex:0, week:1 }; }
-function openNewQuizQuestion(){ quizEditing = newQuizDraft(); renderQuizPanel(); }
-function openEditQuizQuestion(id){
-  const q = quizQuestions.find(function(x){ return x.id === id; });
-  if (!q) return;
-  quizEditing = { id: q.id, question: q.question, options: (q.options || ['','','','']).slice(0,4), correctIndex: q.correctIndex || 0, week: q.week || 1 };
-  renderQuizPanel();
-}
-function cancelQuizEdit(){ quizEditing = null; renderQuizPanel(); }
-function updateQuizQuestion(val){ if (quizEditing) quizEditing.question = val; }
-function updateQuizWeek(val){ if (quizEditing) quizEditing.week = parseInt(val,10) || 1; }
-function updateQuizOption(idx, val){ if (quizEditing) quizEditing.options[idx] = val; }
-function updateQuizCorrect(idx){ if (quizEditing) { quizEditing.correctIndex = idx; renderQuizPanel(); } }
-function confirmSaveQuizQuestion(){
-  if (!quizEditing || !quizEditing.question || quizEditing.options.some(function(o){ return !o; })) return;
-  const payload = { question: quizEditing.question, options: quizEditing.options, correctIndex: quizEditing.correctIndex, week: quizEditing.week };
-  if (window.saveQuizQuestion) window.saveQuizQuestion(quizEditing.id, payload);
-  quizEditing = null;
-}
-function confirmDeleteQuizQuestion(id){ if (window.deleteQuizQuestion) window.deleteQuizQuestion(id); }
-
-function quizEditorMarkup(){
-  const tt = t('quizT');
-  const d = quizEditing;
-  return '<div class="card">'+
-    '<div class="field-block"><label>'+tt.week+'</label><input type="number" min="1" max="30" value="'+d.week+'" oninput="updateQuizWeek(this.value)" style="max-width:100px"></div>'+
-    '<div class="field-block"><label>'+tt.question+'</label><textarea rows="2" oninput="updateQuizQuestion(this.value)">'+esc(d.question)+'</textarea></div>'+
-    d.options.map(function(o, idx){
-      return '<div class="field-block" style="display:flex;align-items:center;gap:8px">'+
-        '<input type="radio" name="correctOpt" '+(d.correctIndex===idx?'checked':'')+' onchange="updateQuizCorrect('+idx+')" style="width:auto">'+
-        '<input type="text" value="'+esc(o)+'" placeholder="'+tt.option+' '+(idx+1)+'" oninput="updateQuizOption('+idx+',this.value)" style="flex:1">'+
-        '</div>';
-    }).join('')+
-    '<div class="ts" style="font-size:11px;color:var(--text3);margin:-.4rem 0 1rem 26px">'+tt.correctAnswer+'</div>'+
-    '<div class="idea-actions">'+
-    '<button class="btn btn-sm btn-primary" onclick="confirmSaveQuizQuestion()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
-    '<button class="btn btn-sm" onclick="cancelQuizEdit()">'+tt.cancel+'</button>'+
-    '</div></div>';
-}
-
-function quizListMarkup(){
-  const tt = t('quizT');
-  const header = '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:1rem">'+
-    '<button class="btn btn-sm" onclick="importQuizSeedBank()"><i class="ti ti-database-import"></i> '+tt.importBank+'</button>'+
-    '<button class="btn btn-sm btn-primary" onclick="openNewQuizQuestion()"><i class="ti ti-plus"></i> '+tt.newQuestion+'</button></div>';
-  if (!quizQuestions.length) return header + '<div class="empty"><i class="ti ti-help-circle" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noQuestions+'</div></div>';
-  const sorted = quizQuestions.slice().sort(function(a,b){ return (a.week||1) - (b.week||1); });
-  return header + sorted.map(function(q){
-    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
-      '<div class="idea-title">'+esc(q.question)+'</div>'+
-      '<div class="idea-meta">'+tt.week+' '+(q.week||1)+' \u00b7 '+(q.options||[]).map(function(o,i){ return (i===q.correctIndex?'<strong style="color:var(--green-tx)">'+esc(o)+'</strong>':esc(o)); }).join(' \u00b7 ')+'</div></div></div>'+
-      '<div style="padding:0 1.25rem 1.25rem" class="idea-actions">'+
-      '<button class="btn btn-sm" onclick="openEditQuizQuestion(\''+q.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
-      '<button class="btn btn-sm btn-red" onclick="confirmDeleteQuizQuestion(\''+q.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
-      '</div></div>';
-  }).join('');
-}
-
-function importQuizSeedBank(){
-  if (!window.bulkImportQuizQuestions) return;
-  if (quizQuestions.length > 0) {
-    if (!confirm('This will add 150 questions (30 weeks x 5) to the existing question bank. Continue?')) return;
-  }
-  window.bulkImportQuizQuestions(QUIZ_SEED_BANK);
-}
-window.importQuizSeedBank = importQuizSeedBank;
-
-function renderQuizPanel(){
-  const el = document.getElementById('panel-quiz');
-  if (!el) return;
-  if (quizFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
-  if (!quizReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
-  el.innerHTML = quizEditing ? quizEditorMarkup() : quizListMarkup();
-}
-
-window.openNewQuizQuestion = openNewQuizQuestion;
-window.openEditQuizQuestion = openEditQuizQuestion;
-window.cancelQuizEdit = cancelQuizEdit;
-window.updateQuizQuestion = updateQuizQuestion;
-window.updateQuizOption = updateQuizOption;
-window.updateQuizCorrect = updateQuizCorrect;
-window.confirmSaveQuizQuestion = confirmSaveQuizQuestion;
-window.confirmDeleteQuizQuestion = confirmDeleteQuizQuestion;
-window.onQuizQuestionsUpdated = function(data){ quizQuestions = data; quizReady = true; renderQuizPanel(); };
-window.onQuizQuestionsFailed = function(){ quizFailed = true; renderQuizPanel(); };
-
-/* ---- Scouting Pipeline ---- */
-function newScoutDraft(){ return { id:null, name:'', category:'Equipment', metric:'', decision:'Under review', stage:'Scoping', owner:'', vendor:'', dateAdded:new Date().toISOString().slice(0,10), notes:'', relatedProject:'' }; }
-function openNewScout(){ scoutEditing = newScoutDraft(); renderScoutPanel(); }
-function openEditScout(id){
-  const e = scoutEntries.find(function(x){ return x.id === id; });
-  if (!e) return;
-  scoutEditing = Object.assign(newScoutDraft(), e);
-  renderScoutPanel();
-}
-function cancelScoutEdit(){ scoutEditing = null; renderScoutPanel(); }
-function updateScoutField(field, val){ if (scoutEditing) scoutEditing[field] = val; }
-function confirmSaveScout(){
-  if (!scoutEditing || !scoutEditing.name) return;
-  const payload = Object.assign({}, scoutEditing); delete payload.id;
-  if (window.saveScoutEntry) window.saveScoutEntry(scoutEditing.id, payload);
-  scoutEditing = null;
-}
-function confirmDeleteScout(id){ if (window.deleteScoutEntry) window.deleteScoutEntry(id); }
-
-function scoutBadge(kind, val){
-  const tt = t('scoutT');
-  const map = {
-    decision: { 'Under review': ['amber-bg','amber-tx',tt.dUnderReview], 'Reject': ['coral-bg','coral-tx',tt.dReject], 'On hold': ['grey-bg','grey-tx',tt.dOnHold], 'Approved': ['green-bg','green-tx',tt.dApproved] },
-    stage: { 'Scoping': ['purple-bg','purple-tx',tt.sScoping], 'Pilot': ['blue-bg','blue-tx',tt.sPilot], 'Paused': ['amber-bg','amber-tx',tt.sPaused], 'Closed': ['grey-bg','grey-tx',tt.sClosed], 'Deployed': ['green-bg','green-tx',tt.sDeployed] }
-  };
-  const entry = (map[kind] && map[kind][val]) || ['grey-bg','grey-tx', val];
-  return '<span class="badge" style="background:var(--'+entry[0]+');color:var(--'+entry[1]+')">'+entry[2]+'</span>';
-}
-
-function scoutEditorMarkup(){
-  const tt = t('scoutT');
-  const d = scoutEditing;
-  return '<div class="card">'+
-    '<div class="field-block"><label>'+tt.name+'</label><input type="text" value="'+esc(d.name)+'" oninput="updateScoutField(\'name\',this.value)"></div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.category+'</label>'+
-    '<select onchange="updateScoutField(\'category\',this.value)"><option '+(d.category==='Equipment'?'selected':'')+'>Equipment</option><option '+(d.category==='Software'?'selected':'')+'>Software</option></select></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.metric+'</label><input type="text" value="'+esc(d.metric)+'" oninput="updateScoutField(\'metric\',this.value)" placeholder="e.g. EMG, Gait Analysis..."></div>'+
-    '</div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.decision+'</label>'+
-    '<select onchange="updateScoutField(\'decision\',this.value)">'+['Under review','Reject','On hold','Approved'].map(function(o){return '<option '+(d.decision===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.stage+'</label>'+
-    '<select onchange="updateScoutField(\'stage\',this.value)">'+['Scoping','Pilot','Paused','Closed','Deployed'].map(function(o){return '<option '+(d.stage===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
-    '</div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.owner+'</label><input type="text" value="'+esc(d.owner)+'" oninput="updateScoutField(\'owner\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.dateAdded+'</label><input type="date" value="'+esc(d.dateAdded)+'" onchange="updateScoutField(\'dateAdded\',this.value)"></div>'+
-    '</div>'+
-    '<div class="field-block"><label>'+tt.vendor+'</label><input type="text" value="'+esc(d.vendor)+'" oninput="updateScoutField(\'vendor\',this.value)" placeholder="https://..."></div>'+
-    '<div class="field-block"><label>'+tt.relatedProject+'</label><input type="text" value="'+esc(d.relatedProject)+'" oninput="updateScoutField(\'relatedProject\',this.value)"></div>'+
-    '<div class="field-block"><label>'+tt.notes+'</label><textarea rows="3" oninput="updateScoutField(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
-    '<div class="idea-actions">'+
-    '<button class="btn btn-sm btn-primary" onclick="confirmSaveScout()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
-    '<button class="btn btn-sm" onclick="cancelScoutEdit()">'+tt.cancel+'</button>'+
-    '</div></div>';
-}
-
-function scoutListMarkup(){
-  const tt = t('scoutT');
-  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
-    '<button class="btn btn-sm btn-primary" onclick="openNewScout()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
-  if (!scoutEntries.length) return header + '<div class="empty"><i class="ti ti-telescope" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
-  return header + scoutEntries.map(function(e){
-    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
-      '<div class="idea-title">'+esc(e.name)+'</div>'+
-      '<div class="idea-meta">'+esc(e.metric||'')+(e.owner?' \u00b7 '+esc(e.owner):'')+(e.dateAdded?' \u00b7 '+esc(e.dateAdded):'')+'</div></div>'+
-      '<div style="display:flex;gap:6px">'+scoutBadge('decision', e.decision)+scoutBadge('stage', e.stage)+'</div></div>'+
-      '<div style="padding:0 1.25rem 1.25rem">'+
-      (e.notes ? '<div class="field-block"><label>'+tt.notes+'</label><div class="val">'+esc(e.notes)+'</div></div>' : '')+
-      '<div class="idea-actions">'+
-      '<button class="btn btn-sm" onclick="openEditScout(\''+e.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
-      '<button class="btn btn-sm btn-red" onclick="confirmDeleteScout(\''+e.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
-      '</div></div></div>';
-  }).join('');
-}
-
-function renderScoutPanel(){
-  const el = document.getElementById('panel-scouting');
-  if (!el) return;
-  if (scoutFailed) { el.innerHTML = '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
-  if (!scoutReady) { el.innerHTML = '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
-  el.innerHTML = scoutEditing ? scoutEditorMarkup() : scoutListMarkup();
-}
-
-/* ---- Project Tracking ---- */
-function newProjDraft(){ return { id:null, name:'', status:'To do', owner:'', area:'Projects', priority:'Medium', startDate:'', dueDate:'', stage:'', notes:'', completion:'', relatedTech:'', score:'' }; }
-function openNewProj(){ projEditing = newProjDraft(); renderProjPanel(); }
-function openEditProj(id){
-  const e = projEntries.find(function(x){ return x.id === id; });
-  if (!e) return;
-  projEditing = Object.assign(newProjDraft(), e);
-  renderProjPanel();
-}
-function cancelProjEdit(){ projEditing = null; renderProjPanel(); }
-function updateProjField(field, val){ if (projEditing) projEditing[field] = val; }
-function confirmSaveProj(){
-  if (!projEditing || !projEditing.name) return;
-  const payload = Object.assign({}, projEditing); delete payload.id;
-  if (window.saveProjEntry) window.saveProjEntry(projEditing.id, payload);
-  projEditing = null;
-}
-function confirmDeleteProj(id){ if (window.deleteProjEntry) window.deleteProjEntry(id); }
-
-function projBadge(kind, val){
-  const tt = t('projT');
-  const map = {
-    status: { 'To do': ['blue-bg','blue-tx',tt.stTodo], 'In progress': ['amber-bg','amber-tx',tt.stProgress], 'Review': ['purple-bg','purple-tx',tt.stReview], 'Done': ['green-bg','green-tx',tt.stDone] },
-    priority: { 'High': ['coral-bg','coral-tx',tt.pHigh], 'Medium': ['amber-bg','amber-tx',tt.pMedium], 'Low': ['grey-bg','grey-tx',tt.pLow] },
-    score: { 'A': ['green-bg','green-tx','A'], 'B': ['blue-bg','blue-tx','B'], 'C': ['amber-bg','amber-tx','C'], 'D': ['coral-bg','coral-tx','D'] }
-  };
-  const entry = (map[kind] && map[kind][val]) || ['grey-bg','grey-tx', val];
-  return '<span class="badge" style="background:var(--'+entry[0]+');color:var(--'+entry[1]+')">'+entry[2]+'</span>';
-}
-
-function projEditorMarkup(){
-  const tt = t('projT');
-  const d = projEditing;
-  return '<div class="card">'+
-    '<div class="field-block"><label>'+tt.name+'</label><input type="text" value="'+esc(d.name)+'" oninput="updateProjField(\'name\',this.value)"></div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.status+'</label>'+
-    '<select onchange="updateProjField(\'status\',this.value)">'+['To do','In progress','Review','Done'].map(function(o){return '<option '+(d.status===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.priority+'</label>'+
-    '<select onchange="updateProjField(\'priority\',this.value)">'+['High','Medium','Low'].map(function(o){return '<option '+(d.priority===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'+
-    '</div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.owner+'</label><input type="text" value="'+esc(d.owner)+'" oninput="updateProjField(\'owner\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.area+'</label><input type="text" value="'+esc(d.area)+'" oninput="updateProjField(\'area\',this.value)"></div>'+
-    '</div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.startDate+'</label><input type="date" value="'+esc(d.startDate)+'" onchange="updateProjField(\'startDate\',this.value)"></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.dueDate+'</label><input type="date" value="'+esc(d.dueDate)+'" onchange="updateProjField(\'dueDate\',this.value)"></div>'+
-    '</div>'+
-    '<div class="field-row">'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.stage+'</label><input type="text" value="'+esc(d.stage)+'" oninput="updateProjField(\'stage\',this.value)" placeholder="Active, Scoping..."></div>'+
-    '<div><label style="font-size:11px;text-transform:uppercase;color:var(--text3);font-weight:700">'+tt.completion+'</label><input type="number" min="0" max="100" value="'+esc(d.completion)+'" oninput="updateProjField(\'completion\',this.value)"></div>'+
-    '</div>'+
-    '<div class="field-block"><label>'+tt.relatedTech+'</label><input type="text" value="'+esc(d.relatedTech)+'" oninput="updateProjField(\'relatedTech\',this.value)"></div>'+
-    '<div class="field-block"><label>'+tt.score+'</label>'+
-    '<select onchange="updateProjField(\'score\',this.value)"><option value="" '+(!d.score?'selected':'')+'>'+tt.noScore+'</option>'+
-    ['A','B','C','D'].map(function(g){ return '<option value="'+g+'" '+(d.score===g?'selected':'')+'>'+tt['g'+g]+'</option>'; }).join('')+
-    '</select></div>'+
-    '<div class="field-block"><label>'+tt.notes+'</label><textarea rows="3" oninput="updateProjField(\'notes\',this.value)">'+esc(d.notes)+'</textarea></div>'+
-    '<div class="idea-actions">'+
-    '<button class="btn btn-sm btn-primary" onclick="confirmSaveProj()"><i class="ti ti-check"></i> '+tt.save+'</button>'+
-    '<button class="btn btn-sm" onclick="cancelProjEdit()">'+tt.cancel+'</button>'+
-    '</div></div>';
-}
-
-function projListMarkup(){
-  const tt = t('projT');
-  const header = '<div style="display:flex;justify-content:flex-end;margin-bottom:1rem">'+
-    '<button class="btn btn-sm btn-primary" onclick="openNewProj()"><i class="ti ti-plus"></i> '+tt.newEntry+'</button></div>';
-  if (!projEntries.length) return header + '<div class="empty"><i class="ti ti-clipboard-list" style="font-size:26px"></i><div style="margin-top:8px">'+tt.noEntries+'</div></div>';
-  return header + projEntries.map(function(e){
-    const pct = e.completion !== '' && e.completion !== undefined ? e.completion + '%' : '';
-    return '<div class="idea-card"><div class="idea-header" style="cursor:default"><div>'+
-      '<div class="idea-title">'+esc(e.name)+'</div>'+
-      '<div class="idea-meta">'+esc(e.owner||'')+(e.area?' \u00b7 '+esc(e.area):'')+(pct?' \u00b7 '+pct:'')+(e.dueDate?' \u00b7 due '+esc(e.dueDate):'')+'</div></div>'+
-      '<div style="display:flex;gap:6px">'+projBadge('status', e.status)+projBadge('priority', e.priority)+(e.score?projBadge('score', e.score):'')+'</div></div>'+
-      '<div style="padding:0 1.25rem 1.25rem">'+
-      (e.relatedTech ? '<div class="field-block"><label>'+tt.relatedTech+'</label><div class="val">'+esc(e.relatedTech)+'</div></div>' : '')+
-      (e.notes ? '<div class="field-block"><label>'+tt.notes+'</label><div class="val">'+esc(e.notes)+'</div></div>' : '')+
-      '<div class="idea-actions">'+
-      '<button class="btn btn-sm" onclick="openEditProj(\''+e.id+'\')"><i class="ti ti-edit"></i> '+tt.edit+'</button>'+
-      '<button class="btn btn-sm btn-red" onclick="confirmDeleteProj(\''+e.id+'\')"><i class="ti ti-trash"></i> '+tt.delete+'</button>'+
-      '</div></div></div>';
-  }).join('');
-}
-
-function toggleFramework(){ frameworkOpen = !frameworkOpen; renderProjPanel(); }
-window.toggleFramework = toggleFramework;
-
-function frameworkMarkup(){
-  const tt = t('projT');
-  const gradeColors = { A:['green-bg','green-tx'], B:['blue-bg','blue-tx'], C:['amber-bg','amber-tx'], D:['coral-bg','coral-tx'] };
-  return '<div class="card" style="background:var(--teal-bg);border-color:var(--border);margin-bottom:1.25rem">'+
-    '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleFramework()">'+
-    '<div style="font-weight:600;font-size:14px;color:var(--teal-tx)"><i class="ti ti-sitemap"></i> '+tt.howWeEvaluate+'</div>'+
-    '<span style="font-size:12px;color:var(--teal-tx)">'+(frameworkOpen?tt.hideFramework:tt.showFramework)+' <i class="ti ti-chevron-'+(frameworkOpen?'up':'down')+'"></i></span>'+
-    '</div>'+
-    (frameworkOpen ? (
-      '<div style="margin-top:1rem;font-size:13px;color:var(--teal-tx)">'+
-      '<div style="font-weight:600;margin-bottom:6px">'+tt.phasesTitle+'</div>'+
-      '<div style="line-height:1.8">'+[tt.phase1,tt.phase2,tt.phase3,tt.phase4,tt.phase5,tt.phase6].map(function(p){ return '<div>'+p+'</div>'; }).join('')+'</div>'+
-      '<div style="font-weight:600;margin:1rem 0 8px">'+tt.gradesTitle+'</div>'+
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px">'+
-      ['A','B','C','D'].map(function(g){
-        const c = gradeColors[g];
-        return '<div style="background:var(--surface);border-radius:8px;padding:.6rem .8rem">'+
-          '<span class="badge" style="background:var(--'+c[0]+');color:var(--'+c[1]+')">'+g+'</span> '+
-          '<strong style="font-size:12px;color:var(--text)">'+tt['g'+g].replace(g+' \u2014 ','')+'</strong>'+
-          '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+tt['g'+g+'Desc']+'</div>'+
-          '</div>';
-      }).join('')+
-      '</div></div>'
-    ) : '')+
-    '</div>';
-}
-
-function renderProjPanel(){
-  const el = document.getElementById('panel-projects');
-  if (!el) return;
-  if (projFailed) { el.innerHTML = frameworkMarkup() + '<div class="alert alert-err">'+t('offline')+'</div>'; return; }
-  if (!projReady) { el.innerHTML = frameworkMarkup() + '<div style="text-align:center;padding:2rem"><div class="spinner"></div><div class="sub" style="margin-top:10px">'+t('connecting')+'</div></div>'; return; }
-  el.innerHTML = frameworkMarkup() + (projEditing ? projEditorMarkup() : projListMarkup());
-}
-
-window.openNewScout = openNewScout;
-window.openEditScout = openEditScout;
-window.cancelScoutEdit = cancelScoutEdit;
-window.updateScoutField = updateScoutField;
-window.confirmSaveScout = confirmSaveScout;
-window.confirmDeleteScout = confirmDeleteScout;
-window.onScoutUpdated = function(data){ scoutEntries = data; scoutReady = true; renderScoutPanel(); };
-window.onScoutFailed = function(){ scoutFailed = true; renderScoutPanel(); };
-
-window.openNewProj = openNewProj;
-window.openEditProj = openEditProj;
-window.cancelProjEdit = cancelProjEdit;
-window.updateProjField = updateProjField;
-window.confirmSaveProj = confirmSaveProj;
-window.confirmDeleteProj = confirmDeleteProj;
-window.onProjUpdated = function(data){ projEntries = data; projReady = true; renderProjPanel(); };
-window.onProjFailed = function(){ projFailed = true; renderProjPanel(); };
 
 window.selectPhdStudent = selectPhdStudent;
 window.backToPhdList = backToPhdList;
@@ -2172,87 +1457,6 @@ window.deleteLibEntry = async function (id) {
   await deleteDoc(doc(db, 'paperLibrary', id));
 };
 
-let notesStarted = false;
-window.startNotesListener = function () {
-  if (notesStarted || !db) { if (!db && window.onNotesFailed) window.onNotesFailed(); return; }
-  notesStarted = true;
-  const q = query(collection(db, 'oneToOneNotes'), orderBy('date', 'desc'));
-  onSnapshot(q,
-    function (snap) {
-      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      if (window.onNotesUpdated) window.onNotesUpdated(data);
-    },
-    function () { if (window.onNotesFailed) window.onNotesFailed(); }
-  );
-};
-window.saveNoteEntry = async function (id, payload) {
-  if (!db) return;
-  if (id) { await updateDoc(doc(db, 'oneToOneNotes', id), payload); }
-  else { await addDoc(collection(db, 'oneToOneNotes'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
-};
-window.deleteNoteEntry = async function (id) {
-  if (!db) return;
-  await deleteDoc(doc(db, 'oneToOneNotes', id));
-};
-
-let draftsStarted = false;
-window.startDraftsListener = function () {
-  if (draftsStarted || !db) { if (!db && window.onDraftsFailed) window.onDraftsFailed(); return; }
-  draftsStarted = true;
-  const q = query(collection(db, 'researchDrafts'), orderBy('createdAt', 'desc'));
-  onSnapshot(q,
-    function (snap) {
-      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      if (window.onDraftsUpdated) window.onDraftsUpdated(data);
-    },
-    function () { if (window.onDraftsFailed) window.onDraftsFailed(); }
-  );
-};
-window.saveDraftEntry = async function (id, payload) {
-  if (!db) return;
-  if (id) { await updateDoc(doc(db, 'researchDrafts', id), payload); }
-  else { await addDoc(collection(db, 'researchDrafts'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
-};
-window.deleteDraftEntry = async function (id) {
-  if (!db) return;
-  await deleteDoc(doc(db, 'researchDrafts', id));
-};
-
-let quizStarted = false;
-window.startQuizListener = function () {
-  if (quizStarted || !db) { if (!db && window.onQuizQuestionsFailed) window.onQuizQuestionsFailed(); return; }
-  quizStarted = true;
-  const q = query(collection(db, 'quizQuestions'), orderBy('createdAt', 'desc'));
-  onSnapshot(q,
-    function (snap) {
-      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      if (window.onQuizQuestionsUpdated) window.onQuizQuestionsUpdated(data);
-    },
-    function () { if (window.onQuizQuestionsFailed) window.onQuizQuestionsFailed(); }
-  );
-};
-window.saveQuizQuestion = async function (id, payload) {
-  if (!db) return;
-  if (id) { await updateDoc(doc(db, 'quizQuestions', id), payload); }
-  else { await addDoc(collection(db, 'quizQuestions'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
-};
-window.deleteQuizQuestion = async function (id) {
-  if (!db) return;
-  await deleteDoc(doc(db, 'quizQuestions', id));
-};
-window.bulkImportQuizQuestions = async function (bank) {
-  if (!db) return;
-  for (const item of bank) {
-    await addDoc(collection(db, 'quizQuestions'), {
-      question: item.question,
-      options: item.options,
-      correctIndex: item.correctIndex,
-      week: item.week,
-      createdAt: serverTimestamp()
-    });
-  }
-};
-
 let tipPostsStarted = false;
 window.startTipPostsListener = function () {
   if (tipPostsStarted || !db) { if (!db && window.onTipPostsFailed) window.onTipPostsFailed(); return; }
@@ -2308,52 +1512,6 @@ window.startAllPhdListeners = function () {
       if (window.onPhdAllDataUpdated) window.onPhdAllDataUpdated(id, data);
     }, function () {});
   });
-};
-
-let scoutStarted = false;
-window.startScoutListener = function () {
-  if (scoutStarted || !db) { if (!db && window.onScoutFailed) window.onScoutFailed(); return; }
-  scoutStarted = true;
-  const q = query(collection(db, 'techScouting'), orderBy('dateAdded', 'desc'));
-  onSnapshot(q,
-    function (snap) {
-      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      if (window.onScoutUpdated) window.onScoutUpdated(data);
-    },
-    function () { if (window.onScoutFailed) window.onScoutFailed(); }
-  );
-};
-window.saveScoutEntry = async function (id, payload) {
-  if (!db) return;
-  if (id) { await updateDoc(doc(db, 'techScouting', id), payload); }
-  else { await addDoc(collection(db, 'techScouting'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
-};
-window.deleteScoutEntry = async function (id) {
-  if (!db) return;
-  await deleteDoc(doc(db, 'techScouting', id));
-};
-
-let projStarted = false;
-window.startProjListener = function () {
-  if (projStarted || !db) { if (!db && window.onProjFailed) window.onProjFailed(); return; }
-  projStarted = true;
-  const q = query(collection(db, 'projectsMaster'), orderBy('createdAt', 'desc'));
-  onSnapshot(q,
-    function (snap) {
-      const data = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      if (window.onProjUpdated) window.onProjUpdated(data);
-    },
-    function () { if (window.onProjFailed) window.onProjFailed(); }
-  );
-};
-window.saveProjEntry = async function (id, payload) {
-  if (!db) return;
-  if (id) { await updateDoc(doc(db, 'projectsMaster', id), payload); }
-  else { await addDoc(collection(db, 'projectsMaster'), Object.assign({ createdAt: serverTimestamp() }, payload)); }
-};
-window.deleteProjEntry = async function (id) {
-  if (!db) return;
-  await deleteDoc(doc(db, 'projectsMaster', id));
 };
 </script>
 </body>
