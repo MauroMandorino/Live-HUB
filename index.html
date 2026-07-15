@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" data-register="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSG Performance Workspace</title>
+
+<!-- React 18 (production). Must load BEFORE hub-loader.js, which waits for
+     window.React / window.ReactDOM before transpiling the app. -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Design system (styles + component bundle) -->
+<script src="./ds-base.js"></script>
+<link rel="stylesheet" href="./hub.css">
+
+<!-- App loader: pulls in Babel, then transpiles and runs the hub sources in order.
+     hub-main.jsx registers the <performance-hub> custom element. -->
+<script src="./hub-loader.js"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--canvas-soft, #F6F8FA); }
+  performance-hub { display: block; height: 100%; }
+  #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+          font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 1.5px;
+          text-transform: uppercase; color: #888; }
+  performance-hub:not(:empty) + #boot { display: none; }
+</style>
+</head>
+<body>
+<performance-hub data-register="screen"></performance-hub>
+<div id="boot">Loading workspace…</div>
+</body>
+</html>
