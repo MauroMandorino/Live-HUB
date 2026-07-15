@@ -1,8 +1,0 @@
-/* ============================================================
-   PSG Performance Design System — canonical entry point
-   ------------------------------------------------------------
-   Link this ONE file to inherit the whole system: tokens, type
-   classes, component primitives, the Bleu Nuit accent, and
-   dark mode. It pulls in the self-hosted Virage faces transitively.
-   ============================================================ */
-@import url('colors_and_type.css');
