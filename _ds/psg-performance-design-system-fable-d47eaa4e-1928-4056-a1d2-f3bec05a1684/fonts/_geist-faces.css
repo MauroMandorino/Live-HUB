@@ -1,0 +1,22 @@
+/* ============================================================
+   Geist + Geist Mono — self-hosted (replaces the Google Fonts CDN
+   dependency: every preview/template page previously paid its own
+   DNS/TLS round trip to fonts.googleapis.com).
+   Working weights only: Geist 400 / 500 / 600, Geist Mono 400 / 500.
+   Upload the files below into fonts/ to activate; until then
+   --font-sans / --font-mono fall through to their fallback stack
+   (Inter / system-ui) via font-display: swap — never a blocked or
+   blank page. Reference as font-family: 'Geist' / 'Geist Mono'.
+   ============================================================ */
+
+@font-face { font-family: 'Geist'; font-weight: 400; font-style: normal;
+  src: url('Geist-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Geist'; font-weight: 500; font-style: normal;
+  src: url('Geist-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Geist'; font-weight: 600; font-style: normal;
+  src: url('Geist-Semibold.woff2') format('woff2'); font-display: swap; }
+
+@font-face { font-family: 'Geist Mono'; font-weight: 400; font-style: normal;
+  src: url('GeistMono-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Geist Mono'; font-weight: 500; font-style: normal;
+  src: url('GeistMono-Medium.woff2') format('woff2'); font-display: swap; }
