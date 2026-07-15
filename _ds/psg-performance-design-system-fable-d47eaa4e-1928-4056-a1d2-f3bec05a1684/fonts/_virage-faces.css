@@ -1,0 +1,54 @@
+/* ============================================================
+   Virage — PSG proprietary brand typeface (self-hosted)
+   Standard-width working set: Regular 400 · Medium 500 ·
+   Semibold 600 · Bold 700 · Ultrabold 800, each with italic.
+   The other widths (Compact / Condensed / Narrow / Extended /
+   Wide) and the "Extra" cuts are present in fonts/ and can be
+   declared as additional families if a layout needs them.
+   Reference as font-family: 'Virage'.
+   ============================================================ */
+
+@font-face { font-family: 'Virage'; font-weight: 400; font-style: normal;
+  src: url('Virage-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage'; font-weight: 400; font-style: italic;
+  src: url('Virage-RegularItalic.otf') format('opentype'); font-display: swap; }
+
+@font-face { font-family: 'Virage'; font-weight: 500; font-style: normal;
+  src: url('Virage-Medium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage'; font-weight: 500; font-style: italic;
+  src: url('Virage-MediumItalic.otf') format('opentype'); font-display: swap; }
+
+@font-face { font-family: 'Virage'; font-weight: 600; font-style: normal;
+  src: url('Virage-Semibold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage'; font-weight: 600; font-style: italic;
+  src: url('Virage-SemiboldItalic.otf') format('opentype'); font-display: swap; }
+
+@font-face { font-family: 'Virage'; font-weight: 700; font-style: normal;
+  src: url('Virage-Bold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage'; font-weight: 700; font-style: italic;
+  src: url('Virage-BoldItalic.otf') format('opentype'); font-display: swap; }
+
+@font-face { font-family: 'Virage'; font-weight: 800; font-style: normal;
+  src: url('Virage-Ultrabold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage'; font-weight: 800; font-style: italic;
+  src: url('Virage-UltraboldItalic.otf') format('opentype'); font-display: swap; }
+
+/* ---- Width families ---------------------------------------
+   Declared globally so the technical-label face tweak (and any layout
+   that wants a different Virage width) can call them by family name
+   without a per-file @font-face. Weights 400 / 500 / 600 each. */
+@font-face { font-family: 'Virage Narrow'; font-weight: 400; src: url('Virage-NarrowRegular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Narrow'; font-weight: 500; src: url('Virage-NarrowMedium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Narrow'; font-weight: 600; src: url('Virage-NarrowSemibold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Condensed'; font-weight: 400; src: url('Virage-CondensedRegular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Condensed'; font-weight: 500; src: url('Virage-CondensedMedium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Condensed'; font-weight: 600; src: url('Virage-CondensedSemibold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Compact'; font-weight: 400; src: url('Virage-CompactRegular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Compact'; font-weight: 500; src: url('Virage-CompactMedium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Compact'; font-weight: 600; src: url('Virage-CompactSemibold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Extended'; font-weight: 400; src: url('Virage-ExtendedRegular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Extended'; font-weight: 500; src: url('Virage-ExtendedMedium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Extended'; font-weight: 600; src: url('Virage-ExtendedSemibold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Wide'; font-weight: 400; src: url('Virage-WideRegular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Wide'; font-weight: 500; src: url('Virage-WideMedium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Virage Wide'; font-weight: 600; src: url('Virage-WideSemibold.otf') format('opentype'); font-display: swap; }
